@@ -1,0 +1,59 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="false"></app-page-breadcrumb>
+<ng-container [ngTemplateOutlet]="tab?.modifyAlert"></ng-container>
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12" [hidden]="dataLoading">
+        <div class="card">
+            <tab-head #tab [checkValidSegment]="checkSegmentStatus" [type]="'MODIFICATION_SUBMIT'" [segment]="segment"
+                [initial]="segment.BASIC" (onSubmitEvent)="onSubmit()" [loading]="dataLoading"
+                [getModificationPayload]="apiPayloadModify" [data]="churchData">
+                <ng-template #tabBody let-active="active">
+                    <div class="body">
+                        <div class="tab-pane show active" [hidden]="active != segment.BASIC">
+                            <app-form-generator #basicForm (onChangeEvent)="onChange($event)"
+                                [formData]="basicFormData">
+                            </app-form-generator>
+                            <h6 class="title text-center">Field Info</h6>
+                            <div class="row clearfix">
+                                <ng-container *ngFor="let a of filedDisplayKey">
+                                    <div *ngIf="fieldData[a.name]" class="col-md-3 col-lg-3">
+                                        <label class="text-muted">{{a.title}}</label>
+                                        <p>{{fieldData[a.name]}}</p>
+                                    </div>
+                                </ng-container>
+                            </div>
+                            <app-form-generator #basicFormPart (onChangeEvent)="onChange($event)"
+                                [formData]="basicFormPartData"
+                                [dynamicValidator]="dynamicValidatorBasic"></app-form-generator>
+                        </div> <!-- tab pane-->
+                    </div>
+                    <div class="tab-pane show active" [hidden]="active != segment.BUILDING">
+                        <app-form-generator #buildingForm (onChangeEvent)="onChange($event)"
+                            [dynamicValidator]="dynamicValidatorBasic" [formData]="buildingFormData">
+                        </app-form-generator>
+                    </div>
+                    <div class="tab-pane show active" [hidden]="active != segment.DEMOGRAPHIC">
+                        <app-form-generator #demographicForm (onChangeEvent)="onChange($event)"
+                            [formData]="demographicFormData"></app-form-generator>
+                    </div>
+                    <div class="tab-pane show active" [hidden]="active != segment.COUNCIL">
+                        <app-council-member #councilDiv [church_id]="churchId"></app-council-member>
+                    </div>
+                    <div class="tab-pane show active" [hidden]="active != segment.ADDRESS">
+                        <app-address #address [isPage]="true" [submitted]="true" title="">
+                        </app-address>
+                    </div>
+                    <div class="tab-pane show active" [hidden]="active != segment.OTHERS">
+                        <app-form-generator #othersForm (onChangeEvent)="onChange($event)"
+                            [dynamicValidator]="dynamicValidatorBasic" [formData]="othersFormData">
+                        </app-form-generator>
+                        <app-church-doc #churchDoc></app-church-doc>
+                    </div>
+                </ng-template>
+            </tab-head>
+
+            <ng-container [ngTemplateOutlet]="tab?.tabFooter"></ng-container>
+            <app-page-loader [loading]="dataLoading"></app-page-loader>
+            <!-- </div> end body -->
+        </div> <!-- end of card-->
+    </div>
+</div> <!-- End Of tab row-->

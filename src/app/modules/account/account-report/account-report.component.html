@@ -1,0 +1,26 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" />
+<div class="card">
+    <div class="body">
+        <ng-container >
+            <app-form-generator #exportForm [formData]="exportFormData" />
+            <div class="text-center mb-2">
+                <button class="btn btn-primary" [disabled]="!exportForm?.isValid() || dataLoading" (click)="submit()">
+                    <i *ngIf="dataLoading" class="pi pi-spin pi-spinner"></i>
+                    {{ dataLoading ? 'loading...' : 'Submit'}}
+                </button>
+            </div>
+        </ng-container>
+        <div [hidden]="dataLoading">
+            <div class="text-left">
+                <div><b>Total Transations :{{ reportdata?.total_transaction   || 0 | currencyFormat}}</b></div>
+            </div>
+            <div class="text-right">
+                <div><b>Total Credit :{{ reportdata?.total_credit   || 0 | currencyFormat}}</b></div>
+                <b>Total Debit : {{ reportdata?.total_debit || 0 | currencyFormat}}</b>
+            </div>
+            <app-table-list #tableList [tableConfig]="tableConfig"  [parentGetList]="gettblData"  />
+           
+        </div>
+    </div>
+</div>
+<app-page-loader [loading]="dataLoading"></app-page-loader>

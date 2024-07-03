@@ -1,0 +1,28 @@
+<app-page-breadcrumb [pageInfo]="pageInfo"></app-page-breadcrumb>
+<div class="container-fluid">
+    <div class="card">
+        <div class="body">
+            <app-form-generator #basicForm [formData]="basicFormData"></app-form-generator>
+
+            <button class=" btn btn-primary" [disabled]="loading" style="margin-left: 45%;margin-top: 1%;"
+                (click)="getdetails()">
+                <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                {{ loading ? 'loading...' : 'Show'}}
+            </button>
+
+            <button class=" btn btn-primary" [disabled]="loading" style="margin-left:2%;margin-top: 1%;"
+                (click)="export()">
+
+                <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                {{ loading ? 'loading...' : 'Export'}}</button>
+        </div>
+    </div>
+    <div *ngIf="totalamount" class="card">
+        <div class="body">
+            <div><b>Total Amount :</b> {{totalamount | currency:'INR':'symbol':'1.2-2'}}</div>
+        </div>
+    </div>
+    <app-table-list #tableList [tableConfig]="toplisttable" [viewAction]="viewInfoHandler"
+        [parentGetList]="getAccountData">
+    </app-table-list>
+</div>

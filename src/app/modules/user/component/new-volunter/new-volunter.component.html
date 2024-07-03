@@ -1,0 +1,24 @@
+<app-page-breadcrumb [pageInfo]="pageInfo"></app-page-breadcrumb>
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12" [hidden]="dataLoading">
+        <div class="card">
+            <div class="body">
+                <app-form-generator #basicForm [formData]="basicFormData" (onChangeEvent)="onChange($event)"></app-form-generator>
+                <div *ngIf="!volunterId">Reported To : {{reportaccount}}</div>
+                <div *ngIf="volunterId">Reported To : {{volunterData?.promotionalReport_code}}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 text-center">
+        <div class="btn-group btn-group-lg">
+            <button noDoubleClick 
+                [disabled]=" loading" type="button" (click)="onSubmit()"
+                class="btn btn-primary mr-1">
+                <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                {{ loading ? 'Saving...' : 'Submit'}}
+            </button>
+            <button [disabled]="loading" (click)="close()" type="button"
+            class="btn btn-outline-danger ml-1">Cancel</button>
+        </div>
+    </div>
+</div>

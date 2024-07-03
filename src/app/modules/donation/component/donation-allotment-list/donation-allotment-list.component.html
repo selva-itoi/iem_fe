@@ -1,0 +1,12 @@
+<app-page-breadcrumb [pageInfo]="pageInfo"></app-page-breadcrumb>
+<tab-head [segment]="segment" [initial]="segment.LIST"
+    (onSelect)="segmentVisited = $event.visited; currentSegment =$event.key"></tab-head>
+
+<div class="tab-content mt-0">
+    <div class="tab-pane show active" [hidden]="currentSegment != segment.LIST">
+        <donation-allotment-ref *ngIf="segmentVisited.LIST"></donation-allotment-ref>
+    </div>
+    <div class="tab-pane show active" [hidden]="currentSegment != segment?.PENDING">
+        <donation-allotment-ref *ngIf="segmentVisited.PENDING" [whereField]="globalWherePending"></donation-allotment-ref>
+    </div>
+</div>

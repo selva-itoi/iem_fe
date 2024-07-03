@@ -1,0 +1,266 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="isModal"></app-page-breadcrumb>
+<div class="modal-body  pt-4 mb-4">
+    <div [hidden]="dataLoading">
+        <div class="row clearfix">
+            <!-- <div class="col-lg-3 col-md-3 col-xl-3">
+                <div class="card">
+                    <div class="body">
+                        <ng-container *ngFor="let a of officeKeys">
+                            <small class="text-muted">{{a?.title}}: </small>
+                            <p *ngIf="settlementData?.id">{{settlementData[a?.colName] || ''}}</p>
+                            <hr class="mt-2">
+                        </ng-container>
+                        <small class="text-muted">Document : </small>
+
+                        <img class="img-thumbnail" (click)="previewImage($event)" [src]="settlementData?.document" imageLoad [alt]="">
+                    </div>
+                </div>
+            </div> -->
+            <div class="col-lg-12 col-md-12 col-xl-12">
+
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-xl-6">
+                        <h6>From Account Details</h6>
+                        <div class="card">
+                            <div class="body">
+                                <ng-container *ngFor="let a of fromaccountkeys">
+                                    <small class="text-muted">{{a?.title}}: </small>
+                                    <p *ngIf="settlementData?.id">{{settlementData[a?.colName] || ''}}
+                                        ({{settlementData?.account_code}})</p>
+                                    <hr class="mt-2">
+
+
+
+                                </ng-container>
+                            </div>
+                        </div>
+
+                        <!-- <info-view [mode]="type" [sourceData]="settlementData" [formData]="basicFormData"></info-view> -->
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-xl-6">
+                        <h6>To Account Details</h6>
+                        <div class="card">
+                            <div class="body">
+                                <ng-container *ngFor="let a of toaccountkeys">
+                                    <div class="text-muted">{{a?.title}}: </div>
+                                    <p *ngIf="settlementData?.id">{{settlementData[a?.colName] || ''}}
+                                        ({{settlementData?.to_account_code}}) </p>
+                                    <small class="text-muted">Bank Name: </small>
+                                    <p *ngIf="settlementData?.id">
+                                        {{settlementData?.bank_name}}</p>
+                                    <small class="text-muted">IFSC: </small>
+                                    <p *ngIf="settlementData?.id">
+                                        {{settlementData?.bank_ifc_code}}</p>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <!-- <info-view [mode]="type" [sourceData]="settlementData" [formData]="basicFormData"></info-view> -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-xl-12">
+                <div class="card">
+                    <div class="body">
+                        <info-view [mode]="type" [sourceData]="settlementData" [formData]="officeKeys"></info-view>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="body">
+                        <div class="row">
+                            <div class="col-5">
+                                <ng-container *ngFor="let a of settlementData?.item let i-index">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <b class="text-muted">{{a.payment_modeName}} : </b>
+                                        </div>
+                                        <div>
+                                            <div> {{a.amount}}
+                                            </div>
+                                            <br>
+                                        </div>
+
+                                    </div>
+
+                                </ng-container>
+                            </div>
+                            <div class="col-7" style="margin-left: 0px;">
+                                <b class="text-muted">Attachment : </b>
+                                <!-- <img style="width: 30%;height: 90%;" class="img-thumbnail"
+                                    (click)="previewImage($event)" [src]="settlementData?.document" imageLoad [alt]=""> -->
+                                <img style="width: 30%;height: 90%;" *ngIf="settlementData?.document"
+                                    class="img-thumbnail" [src]="settlementData?.document" alt="Image"
+                                    (click)="openPreview(settlementData?.document)">
+
+                                <div class="image-preview-modal" *ngIf="isPreviewOpen" (click)="closePreview()">
+                                    <span class="close" (click)="closePreview()">&times;</span>
+                                    <img class="image-preview-content" [src]="previewImageUrl">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="col-lg-9 col-md-9 col-xl-9">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-xl-6">
+                        <h6>From Account Details</h6>
+                        <div class="card">
+                            <div class="body">
+                                <ng-container *ngFor="let a of fromaccountkeys">
+                                    <small class="text-muted">{{a?.title}}: </small>
+                                    <p *ngIf="settlementData?.id">{{settlementData[a?.colName] || ''}}
+                                        ({{settlementData?.account_code}})</p>
+                                    <hr class="mt-2">
+                                </ng-container>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-xl-6">
+                        <h6>To Account Details</h6>
+                        <div class="card">
+                            <div class="body">
+                                <ng-container *ngFor="let a of toaccountkeys">
+                                    <small class="text-muted">{{a?.title}}: </small>
+                                    <p *ngIf="settlementData?.id">{{settlementData[a?.colName] || ''}}
+                                        ({{settlementData?.to_account_code}}) </p>
+                                    <hr class="mt-2">
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="col-8">
+                        <div class="card">
+                            <div style="text-align: center;" class="body">
+                                <div style="justify-content: center;">
+
+                                    <div style="margin-left: 15%;" class="row">
+                                        <div style="margin-bottom: 10px;" class="col-3">
+                                            payment mode
+                                        </div><br>
+                                        <div style="margin-left: 18%;" class="col-3">
+                                            Amount
+                                        </div> <br>
+
+                                    </div>
+                                    <div style="margin-left: 17%;">
+                                        <ng-container *ngFor="let a of settlementData.item let i-index">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <div class="text-muted">{{a.payment_modeName}} </div>
+                                                    <br>
+                                                </div>
+                                                <div style="margin-left: 18%;" class="col-3">
+                                                    <div class="text-muted"> {{a.amount}}
+                                                    </div>
+                                                    <br>
+                                                </div>
+
+                                            </div>
+                                           
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-2"></div>
+                </div>
+            </div> -->
+        </div>
+        <!-- <app-table-list #tableList [tableConfig]="tableConfig" [parentGetList]="getListData">
+        </app-table-list> -->
+        <div class="card">
+            <p-table [value]="customers" rowGroupMode="rowspan" groupRowsBy="sponsorName" sortField="sponsorName"
+                sortMode="single" [tableStyle]="{'min-width': '50rem'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width:3rem">#</th>
+                        <th>Name of Donor</th>
+                        <th>Receipt No</th>
+                        <th>purpose</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Payment Mode</th>
+                        <th>transaction Ref</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                </ng-template>
+                <ng-template pTemplate="body" let-customer let-rowIndex="rowIndex" let-rowgroup="rowgroup"
+                    let-rowspan="rowspan">
+                    <tr>
+                        <td>{{rowIndex +1 }}</td>
+                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
+                            <span class="font-bold ml-2">{{customer.sponsorName}}</span>
+                        </td>
+                        <td>
+                            <span class="font-bold ml-2">{{customer.donation_id}}</span>
+                        </td>
+                        <td>
+                            {{customer.sponsorship_moduleName}}
+
+                        </td>
+                        <td>
+                            {{customer.sponsorship_amount}}
+                        </td>
+                        <td>
+                            {{customer.donation_date | date: 'dd-MM-yyyy'}}
+
+                        </td>
+                        <td>
+                            {{customer.payment_modeName}}
+                        </td>
+                        <td>
+                            {{customer.transaction_ref}}
+
+                        </td>
+                        <td>
+                            {{customer.statusName}}
+
+                        </td>
+                        <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
+                            &nbsp;
+                            <a style="cursor:pointer;" tooltip="View Request Details" placement="right" show-delay="500"
+                                (click)="viewDetails(customer)" type="button">
+                                <i class="pi pi-eye" style="color:orange;"></i>
+                            </a>&nbsp; &nbsp;
+                            <a style="cursor:pointer;" tooltip="View Request Details" placement="right" show-delay="500"
+                                (click)="approve(customer)" type="button">
+                                <i class="icon-paper-plane" style="color:blue;"></i>
+                            </a>
+                            &nbsp;
+                            <!-- { name: '', type: 'APPROVE', class: 'btn-info', icon: 'icon-paper-plane', condition: [{ key: 'status', operation: '==', value: 4 }] } -->
+
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="row clearfix align-center">
+            <ng-container *ngIf="settlementData?.status == 2 && type != 'VIEW'">
+                <button [disabled]="loading" (click)="makeApproveReject('APPROVE')" class="btn btn-round btn-success">
+                    <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                    {{loading ? 'Approving..' :'Approve'}}
+                </button>
+                <button [disabled]="loading" (click)="makeApproveReject('REJECT')"
+                    class="btn ml-1 btn-round btn-danger">
+                    <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                    {{loading ? 'Rejecting..' : 'Reject'}}
+                </button>
+            </ng-container>
+            <div>
+                <button (click)="close()" class="btn ml-1 btn-round btn-warning">
+                    {{ isModal ? 'Close' : 'Back'}}</button>
+                <button (click)="export()" class="btn ml-1 btn-round btn-info">
+                    Export</button>
+            </div>
+        </div>
+    </div>
+</div>

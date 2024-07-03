@@ -1,0 +1,19 @@
+<div class="body">
+    <div class="d-flex">
+        <label class="title w-50">All Region</label>
+        <div class="w-50 m-2" style="text-align: -webkit-right;">
+            <select style="max-width: 150px;" class="form-control" [formControl]="searchControl" (change)="changeStatus()">
+                <option value="ALL">All</option>
+                <option value="REGION">Region</option>
+                <option value="ZONE">Zone</option>
+                <!-- <option value="FIELD">Field</option> -->
+            </select>
+        </div>
+    </div>
+    <div class=" align-right " style="font-size: small;">
+        <i class="pi pi-circle-on text-warning" style="color: #037170;"></i> Region
+        <i class="pi pi-circle-on text-success" style="color: #62944b;"></i> Zone
+        <!-- <i class="pi pi-circle-on" style="color: #f06a8a;"></i> Field -->
+    </div>
+</div>
+<app-map #map></app-map>

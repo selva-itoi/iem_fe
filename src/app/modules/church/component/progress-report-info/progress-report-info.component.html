@@ -1,0 +1,29 @@
+<app-page-breadcrumb [pageInfo]="{title :'Progress Report Details'}" [isModal]="true"></app-page-breadcrumb>
+<div class="modal-body   pt-4 mb-4">
+    <div [hidden]="loadingData">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-xl-12">
+                <tab-head [segment]="segement" [initial]="segement.BASIC" (onSelect)="segmentVisited = $event.visited; currentSegment =$event.key"></tab-head>
+                <div class="tab-content mt-0">
+                    <div class="tab-pane show active" [hidden]="currentSegment != segement.BASIC">
+                        <div class="card">
+                            <div class="body">
+                                <info-view [sourceData]="progressData" [formData]="showData" ></info-view>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane show active body" [hidden]="currentSegment != segement.DOCUMENT">
+                        <!-- document -->
+                        <app-form-doc #docForm [mode]="'VIEW'"></app-form-doc>
+                    </div>
+                </div>
+                <div class="row clearfix text-center">
+                    <div class="col-12">
+                        <button [disabled]="loadingData" (click)="close()" class="btn ml-1 btn-round btn-warning">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-page-loader *ngIf="loadingData"></app-page-loader>
+</div>

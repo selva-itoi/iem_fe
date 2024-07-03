@@ -1,0 +1,6 @@
+<div class="card">
+    <div class="body">
+        <app-form-generator #basicForm *ngIf="basicFormData?.length" 
+            [formData]="basicFormData" [dynamicValidator]="dynamicValidatorBasic"></app-form-generator>
+    </div>
+</div>

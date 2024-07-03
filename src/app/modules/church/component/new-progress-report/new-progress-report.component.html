@@ -1,0 +1,93 @@
+<app-page-breadcrumb [pageInfo]="pageInfo"></app-page-breadcrumb>
+
+<div class="row clearfix" [hidden]="dataLoading">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="card">
+            <div class="tab-content mt-0">
+                <div class="card">
+                    <div class="body">
+                        <div class="list-group cursor-pointer" *ngIf="!progressId" style="flex-direction: row;"
+                            (click)="openSearchModal()">
+                            <div
+                                class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                                <label class="cursor-pointer">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Select Church</h5>
+                                    </div>
+                                    <small>To select the Church to progress report</small>
+                                </label>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row clearfix" *ngIf="churchData?.id">
+                            <div class="col-lg-3 col-md-3 col-xl-3">
+                                <div class="card">
+                                    <div class="body">
+                                        <!-- <h6>Church Details</h6> -->
+                                        <small class="text-muted">Church Name: </small>
+                                        <p>{{churchData?.church_name}}</p>
+                                        <hr>
+                                        <small class="text-muted">Church Type: </small>
+                                        <p>{{churchData?.church_typeName}}</p>
+                                        <hr>
+                                        <small class="text-muted">Church Id: </small>
+                                        <p>{{churchData?.church_id}}</p>
+                                        <hr>
+                                        <small class="text-muted">Zone/State: </small>
+                                        <p>{{churchData?.zoneName}}</p>
+                                        <!-- <hr> -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-xl-9">
+                                <!-- <div class="card" *ngIf="!progressId">
+                                    <h6>Recent Progess Report</h6>
+                                    <div class="body">
+                                        <app-table-list [tableConfig]="tableConfig" [parenttblAction]="tblAction"
+                                            [parentGetList]="getListData">
+                                        </app-table-list>
+                                    </div>
+                                </div> -->
+                                <div class="card">
+                                    <div class="body">
+                                        <app-form-generator *ngIf="mode =='NEW'" #basicForm (onChangeEvent)="onChange($event)"
+                                            [formData]="basicFormData"></app-form-generator>
+                                            <info-view *ngIf="mode !='NEW' && progressData?.id" [formData]="basicFormData"
+                                            [sourceData]="progressData"></info-view>
+                                        <app-form-doc #docForm [mode]=" !progressId ? 'EDIT' : 'VIEW'"></app-form-doc>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <div class="btn-group btn-group-lg" *ngIf="!dataLoading">
+                                <button noDoubleClick *ngIf="!progressId && churchData?.id" [disabled]="loading"
+                                    type="button" (click)="onSubmit()" class="btn btn-primary mr-1">
+                                    <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                                    {{ loading ? 'Saving...' : 'Submit'}}
+                                </button>
+                                <ng-container *ngIf="mode=='APPROVE' && progressId && hasPermission">
+                                    <button noDoubleClick [disabled]="loading" type="button"
+                                        (click)="onApprove('APPROVE')" class="btn btn-primary mr-1">
+                                        <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                                        {{ loading ? 'Approving...' : 'Approve'}}
+                                    </button>
+                                    <button noDoubleClick [disabled]="loading" type="button"
+                                        (click)="onApprove('REJECT')" class="btn btn-danger mr-1">
+                                        <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                                        {{ loading ? 'Rejecting...' : 'Reject'}}
+                                    </button>
+                                </ng-container>
+                                <button noDoubleClick [disabled]="loading" type="button" (click)="goBack()"
+                                    class="btn btn-warning mr-1">
+                                    <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-page-loader [loading]="dataLoading"></app-page-loader>

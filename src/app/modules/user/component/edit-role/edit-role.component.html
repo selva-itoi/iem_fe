@@ -1,0 +1,30 @@
+<div class="modal-header">
+    <h6 class="mb-0 modal-title">{{roleData?.id? 'Update ROle Details' : 'Add New Role'}}</h6>
+    <button type="button" class="close" (click)="close()"><span>×</span></button>
+</div>
+<div class="modal-body pt-4 mb-4" (keyup.enter)="saveData()">
+    <div class="card" [formGroup]="dataForm">
+        <div class="body border-0">
+            <div class="form-group">
+                <div class="row clearfix">
+                    <div class="col-md-6 col-lg-6">
+                        <label>Role Name *</label>
+                        <input placeholder="Role Name" [class.error]="submitted && dataForm.get('name')?.errors"
+                            class="form-control" formControlName="name" type="text">
+                        <span class="error" *ngIf="submitted && dataForm.get('name')?.errors?.required">
+                            Role Name should not be Blank
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" (click)="close()" [disabled]="loading"
+        class="btn btn-round btn-default pull-left">Close</button>
+    <button type="button" [disabled]="loading" (click)="saveData()" class="btn btn-round btn-primary">Save
+        {{roleData?.id ? 'changes' :
+        ''}} <i *ngIf="loading" class="pi pi-spin pi-spinner"></i> </button>
+</div>

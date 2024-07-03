@@ -1,0 +1,23 @@
+<div class="alert-box">
+    <div class="modal-header">
+        <h4 class="modal-title">{{data?.title || 'Confirm'}}</h4>
+        <button *ngIf="!data?.disableClose" type="button" class="close" aria-label="Close" (click)="onCancel()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+       <ng-container *ngIf="type == 'CONFIRM'"> {{data?.message ||'Are you sure want to delete this?'}}</ng-container>
+        <div class="m-2" *ngIf="data?.isFormField && formField.length">
+            <app-form-generator #basicForm [dynamicValidator]="dynamicValidator || []" (onChangeEvent)="onChange($event)" [formData]="formField">
+            </app-form-generator>
+        </div>
+
+    </div>
+    <span *ngIf="data?.info" class="text-info m-2">{{data?.info}}</span>
+    <div class="modal-footer">
+        <button type="button" [disabled]="data.isFormField && isValid" class="btn btn-success pull-right"
+            (click)="onConfirm()">{{data?.btnOK ||'Yes'}}</button>
+        <button type="button" class="btn btn-warning pull-left" (click)="onCancel()">{{data?.btnCancel ||
+            'No'}}</button>
+    </div>
+</div>

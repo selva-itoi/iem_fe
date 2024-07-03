@@ -1,0 +1,105 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="false"></app-page-breadcrumb>
+<div class="col-lg-12 col-md-12 col-sm-12" [hidden]="dataLoading">
+    <div class="card">
+        <ul class="nav nav-tabs1 table-nav">
+            <ng-container *ngFor="let s of segement | keyvalue:returnZero">
+                <li class="nav-item">
+                    <a class="nav-link"
+                        [ngClass]="{'show active': currentSegment==s.value, 'error-segment' : segementError[s.key] == true}"
+                        (click)="changeSegment(s.value)" href="javascript:void(0)">{{s.value}}</a>
+                </li>
+            </ng-container>
+        </ul>
+        <div class="body">
+            <div class="tab-content mt-0">
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.BASIC">
+                    <div *ngIf="!reportId" class="list-group cursor-pointer mb-2" style="flex-direction: row;"
+                        (click)="openSearchModal()">
+                        <div
+                            class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                            <label class="cursor-pointer">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Select Church</h5>
+                                </div>
+                                <small>Select the Church to Report</small>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12 p-20">
+                        <info-view [sourceData]="churchData" [direction]="'HORIZONTAL'" [mapData]="churchShowData">
+                        </info-view>
+                        <info-view [sourceData]="reportData" [direction]="'HORIZONTAL'" [mapData]="basicShowData">
+                        </info-view>
+                    </div>
+                    <span *ngIf="infoLastReport" class="m-2 text-info">{{infoLastReport}}</span>
+                    <div [hidden]="!churchData?.church_id || reportData?.from_date || !churchData">
+                        <app-form-generator #basicForm (onChangeEvent)="onChange($event)" [formData]="basicFormData">
+                        </app-form-generator>
+                    </div>
+
+                </div> <!-- tab pane-->
+
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.TRAINING">
+                    <app-form-generator *ngIf="!isViewMode; else tv" #trainingForm (onChangeEvent)="onChange($event)"
+                        [formData]="trainingFormData">
+                    </app-form-generator>
+                    <ng-template #tv>
+                        <info-view [sourceData]="reportData" [formData]="trainingFormData"></info-view>
+                    </ng-template>
+                </div>
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.CONGREGATION">
+                    <h6 class="title text-left text-muted m-3">Congregation Details</h6>
+                    <app-form-generator *ngIf="!isViewMode; else bv" #congregationForm
+                        (onChangeEvent)="onChange($event)" [formData]="congregationFormData">
+                    </app-form-generator>
+                    <ng-template #bv>
+                        <info-view [sourceData]="reportData" [formData]="congregationFormData">
+                        </info-view>
+                    </ng-template>
+                </div>
+
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.PROGRAM">
+                    <h6 class="title text-left text-muted m-3">Program Details</h6>
+                    <app-form-generator *ngIf="!isViewMode; else pv" #programForm (onChangeEvent)="onChange($event)"
+                        [formData]="programFormData">
+                    </app-form-generator>
+                    <ng-template #pv>
+                        <info-view [sourceData]="reportData" [formData]="programFormData"></info-view>
+                    </ng-template>
+                </div>
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.OTHERS">
+                    <app-form-generator *ngIf="!isViewMode; else ov" #othersForm (onChangeEvent)="onChange($event)"
+                        [formData]="othersFormData">
+                    </app-form-generator>
+                    <ng-template #ov>
+                        <info-view [sourceData]="reportData" [formData]="othersFormData"></info-view>
+                    </ng-template>
+                </div>
+            </div> <!-- end of tab-->
+
+            <div class="row clearfix align-center" [hidden]="dataLoading">
+                <div class="col-md-12 mb-2 text-center">
+                    <span class="error" *ngIf="validSegement && !isViewMode"> Please Make sure all are Valid</span>
+                    <span class="text-primary" *ngIf="textInfo"> {{textInfo}}</span>
+                </div>
+                <div class="col-md-12 text-center">
+                    <div class="btn-group btn-group-lg">
+
+                        <button [disabled]="loading" *ngIf="pSegment" (click)="changeSegment(pSegment)" type="button"
+                            class="btn btn-primary mr-1">Prev</button>
+                        <button noDoubleClick *ngIf="currentSegment == segement.OTHERS && textSave && !isViewMode"
+                            [disabled]="disabled_save || loading || loadingTotal" type="button" (click)="onSubmit()"
+                            class="btn btn-primary mr-1"><i *ngIf="loading" class="pi pi-spin pi-spinner"></i>{{
+                            loading
+                            ? 'Saving...' : textSave}}</button>
+                        <button [disabled]="loading" *ngIf="nSegment" (click)="changeSegment(nSegment)"
+                            type="button" class="btn btn-primary">{{isViewMode ? 'Next' : 'Save & Next'}}</button>
+                        <button [disabled]="loading" (click)="close()" type="button"
+                            class="btn btn-danger">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <app-page-loader [loading]="dataLoading"></app-page-loader>
+    </div> <!-- end body-->
+</div> <!-- end of card-->

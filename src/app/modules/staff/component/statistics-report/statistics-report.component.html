@@ -1,0 +1,38 @@
+<app-page-breadcrumb [isModal]="false" [pageInfo]="pageInfo"></app-page-breadcrumb>
+<!-- <div class="container-fluid">
+    <div class="card">
+        <div class="body">
+            <div class="row">
+                <div class="col-3">
+                    <label>From Date</label>&nbsp;&nbsp;
+                    <input type="date" placeholder="From Date">
+                </div>
+                <div class="col-3">
+                    <label>To Date</label>&nbsp;&nbsp;
+                    <input type="date" placeholder="To Date">
+                </div>
+                <div class="col-2">
+                    <button type="button" (click)="search()" class="btn btn-outline-primary"
+                        style="display: flex; justify-content: space-between;border: 1px solid rgb(64, 173, 250);">
+                        search &nbsp;
+                        <i class="icon-magnifier" style="padding-top: 5px;"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+<div class="row d-flex">
+
+    <div class="" style="width: 80%;">
+        <app-form-generator #basicForm [formData]="month_year_col" style="width: 100%;"></app-form-generator>
+    </div>
+    <div class="pl-4 pt-4 mt-2">
+        <button type="button" class="btn btn-primary" (click)="search()">Search</button>
+    </div>
+</div>
+
+<app-table-list #tablelist *ngIf="statisticschurch" [tableConfig]="tableConfig" [parenttblAction]="tblAction" [parentGetList]="getListData">
+</app-table-list>
+<app-table-list #tablelist *ngIf="statisticsfield" [tableConfig]="tableConfig1" [parenttblAction]="tblAction" [parentGetList]="getListData">
+</app-table-list>

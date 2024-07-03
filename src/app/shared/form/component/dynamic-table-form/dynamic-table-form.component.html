@@ -1,0 +1,27 @@
+<ng-container *ngIf="mode=='EDIT'">
+    <a *ngIf="!showForm && pageConfig.addAllow" href="javascript:void(0)" (click)="showForm=true">Add New</a>
+    <span [hidden]="!showForm">
+        <app-form-generator [submitted]="false" [hidden]="pageConfig?.showOnUpdate && !currentData?.id" #dataForm
+            (onChangeEvent)="onChange($event)" [formData]="formData"
+            [dynamicValidator]="dynamicValidator"></app-form-generator>
+        <div class="form-group" [hidden]="pageConfig?.showOnUpdate && !currentData?.id"
+            *ngIf="(pageConfig?.addAllow || pageConfig?.updateAllow) && mode =='EDIT'">
+            <div class="clearfix row">
+                <div class="col-md-3 col-lg-3 align-center"
+                    *ngIf="(pageConfig?.addAllow && !currentData.id) || (pageConfig?.updateAllow && currentData.id) ">
+                    <button noDoubleClick (click)="saveData('BTN')"
+                        class="btn-sm btn btn-primary mr-1">{{currentData?.id ? ' Update ' :'Add New'}}</button>
+                    <button (click)="reset()" class="btn-sm btn bg-indigo">Reset</button>
+                </div>
+            </div>
+        </div>
+        <a *ngIf="showForm" href="javascript:void(0)" (click)="hideBtn()">Hide</a>
+    </span>
+</ng-container>
+<div class="align-right" *ngIf="mode == 'MODIFICATION'">
+    <i class="pi pi-circle-on text-success"></i> New
+    <i class="pi pi-circle-on text-warning"></i> Update
+    <i class="pi pi-circle-on text-danger"></i> Delete
+</div>
+<app-table-list *ngIf="tblBuild?.column" #tbl [tableConfig]="tblBuild" [parenttblAction]="tblAction"
+    [parentGetList]="getListData"></app-table-list>

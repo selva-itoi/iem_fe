@@ -1,0 +1,103 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="isModal"></app-page-breadcrumb>
+<div class="modal-body   pt-4 mb-4">
+    <div [hidden]="dataLoading">
+        <div class="row clearfix">
+            <div class="col-lg-3 col-md-3 col-xl-3">
+                <profile-widget [profileData]="modifyData?.request_data?.name ? modifyData.request_data : childData " type='CHILD'></profile-widget>
+                <div class="card" *ngIf="!isDeleteMode">
+                    <div class="body">
+                        <hr>
+                        <small class="text-muted">Email Address: </small>
+                        <p
+                            [class]="childData?.email_id != modifyData.request_data?.email_id && type=='MODIFICATION' ? 'line-through' : ''">
+                            {{childData?.email_id}}</p>
+                        <mark *ngIf="childData?.email_id != modifyData.request_data?.email_id && type=='MODIFICATION'">
+                            {{modifyData.request_data?.email_id}}</mark>
+                        <hr>
+                        <small class="text-muted">Mobile No: </small>
+                        <p
+                            [class]="childData?.mobile_no != modifyData.request_data?.mobile_no && type=='MODIFICATION' ? 'line-through' : ''">
+                            {{childData?.mobile_no}}</p>
+                        <mark
+                            *ngIf="childData?.mobile_no != modifyData.request_data?.mobile_no && type=='MODIFICATION'">
+                            {{modifyData.request_data?.mobile_no}}</mark>
+                        <hr>
+                        <small class="text-muted">Date Of Birth: </small>
+                        <p
+                            [class]="childData?.dob != modifyData.request_data?.dob && type=='MODIFICATION' ? 'line-through' : ''">
+                            {{childData?.dob | date}}</p>
+                        <mark *ngIf="childData?.dob != modifyData.request_data?.dob && type=='MODIFICATION'">
+                            {{modifyData.request_data?.dob | date}}</mark>
+                    </div>
+                </div>
+            </div>
+            <!-- end widget -->
+            <div class="col-lg-9 col-md-9 col-xl-9">
+                <tab-head #tab [type]="type =='MODIFICATION' ? 'MODIFICATION_APPROVE' : 'VIEW'" [segment]="segment" [initial]="segment.BASIC"
+                    [loading]="dataLoading" [modifyData]="modifyData" [bsModalRef]="_bsModalRef" module="CHILD" [getApiApprove]="approveRequest">
+                    <ng-template #tabBody let-active="active" let-visited="visited">
+                        <div class="tab-pane show active" [hidden]="active != segment.BASIC">
+                            <info-view [mode]="type" [modifyData]="modifyData?.request_data" [sourceData]="childData"
+                                [formData]="basicFormData"></info-view>
+                        </div>
+                        <div class="tab-pane show active" [hidden]="active != segment.ADDRESS">
+                            <div class="card">
+                                <div class="body">
+                                    <info-view [mode]="type" [modifyData]="modifyData?.request_data?.address"
+                                        [sourceData]="childData?.address" [formData]="addressFormData"></info-view>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- End Tab sctive -->
+                        <div class="tab-pane show active" [hidden]="active != segment.GAURDIAN">
+                            <app-parents mode="VIEW" #parentsDiv
+                                [config]="{title : 'Child Parents',isView:true, isRequest:isRequest}">
+                            </app-parents>
+                        </div> <!-- tab pane-->
+
+                        <div class="tab-pane show active" [hidden]="active != segment.EDUCATION">
+                            <app-staff-education #childEdu [config]="{title : 'Academic Details',
+                            type : 'CHILD',isView:true, isRequest:isRequest}"></app-staff-education>
+                        </div>
+                        <div class="tab-pane show active" [hidden]="active != segment.PHYSICAL">
+                            <app-child-physical #childPhysical
+                                [config]="{title : 'Child Physical Condition' ,isView:true, isRequest:isRequest}">
+                            </app-child-physical>
+                        </div>
+                        <div class="tab-pane show active" [hidden]="active != segment.SIBILING">
+                            <app-child-sbiling #childSibiling [staffEmpId]="staffEmpId" [childId]="child_id"
+                                [config]="{title : 'Child Sbiling Details',isView:true, isRequest:isRequest}">
+                            </app-child-sbiling>
+                        </div>
+
+                        <div class="tab-pane show active" [hidden]="active != segment.OTHERS">
+                            <div class="card">
+                                <div class="body">
+                                    <info-view [modifyData]="modifyData?.request_data?.others" [mode]="type"
+                                        [sourceData]="childData?.others" [formData]="otherFormData"></info-view>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane show active" [hidden]="active != segment.SPONSORSHIP">
+                            <div class="card">
+                                <div class="body">
+                                    <app-sponsorship-allotment-ref-list *ngIf="visited.SPONSORSHIP && childData?.id"
+                                        [ref_id]="childData?.id" module_id="2"></app-sponsorship-allotment-ref-list>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End tab pane -->
+                    </ng-template>
+                </tab-head>
+            </div>
+            <!-- end tab -->
+        </div>
+        <span class="text-muted helper-text m-b-10" *ngIf="type=='RELIVE'">* All the sponsorship will be
+            In active</span>
+        <ng-container [ngTemplateOutlet]="tab?.tabFooter"></ng-container>
+    </div>
+    <!-- end of page content -->
+    <app-page-loader [loading]="dataLoading"></app-page-loader>
+</div>

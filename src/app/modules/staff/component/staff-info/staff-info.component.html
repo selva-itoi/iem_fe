@@ -1,0 +1,353 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="isModal"></app-page-breadcrumb>
+<div class="modal-body  pt-4 mb-4">
+    <div class="row clearfix" *ngIf="info_message">
+        <div class="col-lg-12 col-md-12 col-sm-12 card">
+            <div class="body text-center">
+                {{info_message}}
+            </div>
+        </div>
+    </div>
+    <div class="modal-body" *ngIf="info_message">
+        <div class="row">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4">
+                        <p> Name :</p>
+                    </div>
+                    <div class="col-8 ">
+                        <p> {{profiledata?.fname}} {{profiledata?.lname}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4">
+                        <p> Email Id :</p>
+                    </div>
+                    <div class="col-8 ">
+                        <p> {{profiledata?.email_id}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4">
+                        <p> Mobile No :</p>
+                    </div>
+                    <div class="col-8 ">
+                        <p> {{profiledata?.mobile_no}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4">
+                        <p> Created on :</p>
+                    </div>
+                    <div class="col-8 ">
+                        <p> {{profiledata?.created_at}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4">
+                        <p>Role :</p>
+                    </div>
+                    <div class="col-8 ">
+                        <p> {{profiledata.role?.[0].roleName}}</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div [hidden]="dataLoading" *ngIf="!info_message">
+        <div class="row clearfix">
+            <div class="col-12 text-right">
+                <ng-container *ngIf="staffData?.last_rejoin_date">
+                    <div class="badge badge-warning font-14 p-10">
+                        <span>Rejoined</span>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="!isModal && !info_message">
+                    <a href="javascript:void(0)" *ngIf="staffData?.id" (click)="download()"
+                        class="btn btn-primary mr-2"><i class="icon-cloud-download"></i></a>
+                    <a href="javascript:void(0)" (click)="edit()" class="btn bg-pink"><i></i>Edit</a>
+                </ng-container>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-3 col-md-3 col-xl-3">
+                <profile-widget #profileWidget></profile-widget>
+                <div class="card">
+                    <div class="body">
+                        <small class="text-muted">Birth Date: </small>
+                        <p class="m-b-0"
+                            [class]="(staffData?.dob |dateFormat) != (modifyData.request_data?.dob | dateFormat) && type=='MODIFICATION' ? 'line-through' : ''">
+                            {{staffData?.dob | dateFormat}}</p>
+                        <mark
+                            *ngIf="(staffData?.dob|dateFormat) != (modifyData.request_data?.dob | dateFormat) && type=='MODIFICATION'">
+                            {{modifyData.request_data?.dob| dateFormat}}</mark>
+                        <hr>
+                        <!-- <small class="text-muted">Address: </small>
+                        <p [class]="modifyPresentAddress && type=='MODIFICATION' ? 'line-through' : ''">
+                            {{presentAddress?.full_address}}</p>
+                        <mark
+                            *ngIf="modifyPresentAddress && type=='MODIFICATION' ">{{modifyPresentAddress?.full_address}}</mark>
+                        <hr> -->
+                        <small class="text-muted">Email Address: </small>
+                        <p
+                            [class]="staffData?.email_id != modifyData.request_data?.email_id && type=='MODIFICATION' ? 'line-through' : ''">
+                            {{staffData?.email_id}}</p>
+                        <mark *ngIf="staffData?.email_id != modifyData.request_data?.email_id && type=='MODIFICATION'">
+                            {{modifyData.request_data?.email_id}}</mark>
+                        <hr>
+                        <small class="text-muted">Mobile: </small>
+                        <p
+                            [class]="staffData?.mobile_no != modifyData.request_data?.mobile_no && type=='MODIFICATION' ? 'line-through' : ''">
+                            {{staffData?.mobile_no}}</p>
+                        <mark
+                            *ngIf="staffData?.mobile_no != modifyData.request_data?.mobile_no && type=='MODIFICATION'">
+                            {{modifyData.request_data?.mobile_no}}</mark>
+                        <hr>
+                        <small class="text-muted">Present Address: </small>
+                        <p style="white-space: pre-line"
+                            [class]="modifyPresentAddress && type=='MODIFICATION' ? 'line-through' : ''">
+                            {{presentAddress?.full_address }}</p>
+                        <mark style="white-space: pre-line"
+                            *ngIf="modifyPresentAddress && type=='MODIFICATION' ">{{modifyPresentAddress?.full_address}}</mark>
+                        <hr>
+                        <small class="text-muted">Permanent Address: </small>
+                        <p style="white-space: pre-line"
+                            [class]="modifyPermanentAddress && type=='MODIFICATION' ? 'line-through' : ''">
+                            {{premanentAddress?.full_address}}</p>
+                        <mark style="white-space: pre-line"
+                            *ngIf="modifyPermanentAddress && type=='MODIFICATION'">{{modifyPermanentAddress?.full_address}}</mark>
+                        <div style="height: 300px; width:100%;margin-top: 5px; ">
+                            <app-map type="LOCATION_POINTER" [locationPointer]="[staffData?.lat,staffData?.lng]">
+                            </app-map>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" [hidden]="tab?.currentSegment != segment.OTHERS">
+                    <small class="text-muted mb-2">Family Image: </small>
+                    <img class="card-img-top" [src]="staffData?.family_img_path" imageLoad alt="Family Image">
+                </div>
+            </div>
+            <div class="col-lg-9 col-md-9 col-xl-9">
+                <tab-head #tab [type]="type !='VIEW' ? 'MODIFICATION_APPROVE' : 'VIEW'" [segment]="segment"
+                    [initial]="segment.BASIC" [loading]="dataLoading" [modifyData]="modifyData"
+                    [bsModalRef]="_bsModalRef" module="STAFF" [getApiApprove]="approveRequest">
+                    <ng-template #tabBody let-active="active" let-visited="visited">
+                        <div class="tab-pane show active" [hidden]="active != segment.BASIC">
+                            <div class="card">
+                                <div class="body">
+                                    <info-view [mode]="type" [modifyData]="modifyData.request_data"
+                                        [sourceData]="staffData" [formData]="basicFormData"></info-view>
+                                </div>
+                            </div>
+
+
+                            <!-- <app-staff-exp-gems #activeGems [mode]="'ACTIVE'" [type]="'TRANSFER'"
+                                [staffId]="staffData?.staff_emp_id" [config]="{title : 'Active Position',isView:true}">
+                            </app-staff-exp-gems> -->
+
+                            <div class="card">
+                                <div class="body">
+                                    <info-view [mode]="type" [modifyData]="modifyData?.request_data"
+                                        [sourceData]="staffData" [formData]="officeFormData" direction="VERTICAL">
+                                    </info-view>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane show active" [hidden]="active != segment.ADDRESS">
+                            <!-- <div class="card">
+                                <div class="body">
+                                    <div class="header">
+                                        <h2>Present Address</h2>
+                                    </div>
+                                    <info-view [mode]="type" [modifyData]="modifyPresentAddress"
+                                        [sourceData]="presentAddress" [formData]="addressFormData"></info-view>
+                                    <div class="header">
+                                        <h2>Permanent Address</h2>
+                                    </div>
+                                    <info-view [mode]="type" [modifyData]="modifyPermanentAddress"
+                                        [sourceData]="premanentAddress" [formData]="addressFormData"></info-view>
+                                </div>
+                            </div> -->
+
+                            <div class="header">
+                                <h2>Testimony</h2>
+                            </div>
+                            <div class="body">
+                                {{staffData?.others?.testimony}}
+                                <!-- <info-view [mode]="type" [modifyData]="modifyData?.request_data?.others"
+                                    [sourceData]="staffData?.others" [formData]="othersCommentsFormData">
+                                </info-view> -->
+                            </div>
+                        </div>
+                        
+                            <div class="tab-pane show active" [hidden]="active != segment.FAMILY_INFO">
+                                <div class="card">
+                                    <div class="body">
+                                        <div class="header">
+                                            <h2>Spouse Info</h2>
+                                        </div>
+                                        <info-view [sourceData]="spouseDetail" [mapData]="spouseInfoView"></info-view>
+                                        <div class="header">
+                                            <!-- <h2>Child Info</h2> -->
+                                        </div>
+                                        <!-- <info-view [mode]="type" ></info-view> -->
+                                    </div>
+                                </div>
+                                <ng-container *ngIf="type == 'VIEW'">
+                                    <app-child-sbiling #childSibiling [staffEmpId]="staffData?.staff_emp_id"
+                                        [config]="{title : 'Child Details',isView:true}">
+                                    </app-child-sbiling>
+                                </ng-container>
+                            </div>
+                        <div class="tab-pane show active" [hidden]="active != segment.EDUCATION">
+                            <app-staff-education *ngIf="type =='MODIFICATION' || type =='VIEW'" #staffEduAcadmic
+                                [config]="{title : 'Academic Details',
+                            type : 'ACADAEMIC' , isView:true, isRequest:type =='MODIFICATION'}"></app-staff-education>
+                            <app-staff-education #staffEduTheology [config]="{title : 'Theology/Missiology Details',
+                        type : 'THEOLOGY',isView:true,isRequest:type =='MODIFICATION'}"></app-staff-education>
+                        </div>
+
+                        <div class="tab-pane show active" [hidden]="active != segment.TRAINING">
+                            <app-staff-training #staffTraining *ngIf="type =='MODIFICATION' || type =='VIEW'"
+                                [config]="{title : 'Training Details',isView:true,isRequest:type =='MODIFICATION'}">
+                            </app-staff-training>
+                        </div>
+
+                        <div class="tab-pane show active" [hidden]="active != segment.EXPERIENCE">
+                            <app-staff-experience #staffExpMinstrial *ngIf="type =='MODIFICATION' || type =='VIEW'"
+                                [config]="{title : 'Ministerial Experience Details', type : 'MINISTRIAL',isView:true,isRequest:type =='MODIFICATION'}">
+                            </app-staff-experience>
+                            <app-staff-experience #staffExpSecular
+                                [config]="{title : 'Secular Experience Details', type : 'SECULAR',isView:true,isRequest:type =='MODIFICATION'}">
+                            </app-staff-experience>
+                        </div>
+
+                        <div class="tab-pane show active" [hidden]="active != segment.EXP_GEMS">
+                            <app-staff-exp-gems #staffExpGems
+                                [config]="{title : shortOrg+' Experience Details', type : 'SECULAR',isView:true,isRequest:type =='MODIFICATION'}">
+                            </app-staff-exp-gems>
+                        </div>
+                        <!-- start others tab -->
+
+                        <div class="tab-pane active show" [hidden]="active != segment.OTHERS">
+                            <div class="card">
+                                <div class="header">
+                                    <h2>Others Info</h2>
+                                </div>
+                                <div class="body">
+                                    <info-view [mode]="type" [modifyData]="modifyData?.request_data?.others || {}"
+                                        [sourceData]="staffData?.others" [formData]="othersInfoFormData">
+                                    </info-view>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <!-- <div class="header">
+                                    <h2>Comment</h2>
+                                </div>
+                                <div class="body">
+                                    <info-view  [mode]="type" [modifyData]="modifyData?.request_data?.others"
+                                        [sourceData]="staffData?.others" [formData]="othersCommentsFormData">
+                                    </info-view>
+                                </div> -->
+
+                                <div class="card">
+                                    <div class="header">
+                                        <h2>Medical Info</h2>
+                                    </div>
+                                    <div class="body">
+                                        <info-view [mode]="type" [modifyData]="modifyData?.request_data?.others"
+                                            [sourceData]="staffData?.others" [formData]="othersMedicalFormData">
+                                        </info-view>
+                                    </div>
+                                </div>
+
+                                <div class="card">
+                                    <div class="header">
+                                        <h2>Bank Details</h2>
+                                    </div>
+                                    <div class="body">
+                                        <info-view [mode]="type" [modifyData]="modifyData?.request_data?.others"
+                                            [sourceData]="staffData?.others" [formData]="othersBankFormData">
+                                        </info-view>
+                                    </div>
+                                    <div class="row clearfix">
+                                        <h2 class="title">Support Documents</h2>
+                                    </div>
+
+                                    <div class="row clearfix">
+                                        <div class="body">
+                                            <info-view [mode]="type" [modifyData]="modifyData?.request_data?.others"
+                                                [sourceData]="staffData?.others" [formData]="othersSupportFormData">
+                                            </info-view>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane active show" [hidden]="active != segment.PAYROLL">
+                            <div class="card">
+                                <div class="body">
+                                    <!-- <info-view [mode]="type" [modifyData]="modifyData?.request_data"
+                                    [sourceData]="staffData" [formData]="payrollFormData">
+                                </info-view> -->
+                                    <app-payroll-setting [type]="type == 'VIEW' ? 'VIEW':'MODIFICATION'"
+                                        [modifyData]="modifyData?.request_data?.payroll"
+                                        [sourceData]="staffData?.payroll"></app-payroll-setting>
+                                    <label class="text-muted">Years Of Exp :</label><span
+                                        class="font-14 ml-2 text-azura">{{+staffData?.year_of_exp|| 0}}</span><br>
+                                    <label class="text-muted">Years Of Payroll Exp :</label><span
+                                        class="font-14 ml-2 text-azura">
+                                        {{(+staffData?.year_of_exp || 0) + (+payrollExpCal || 0)}}</span>
+                                </div>
+                                <div class="row clearfix  p-10">
+                                    <div class="col-md-12 col-lg-12">
+                                        <span class="sub_title">{{'Additional Experience'}}</span>
+                                    </div>
+                                </div>
+                                <dynamic-table-form #payrollDynForm [mode]="type == 'VIEW'?'VIEW':'MODIFICATION'"
+                                    [formData]="payrollDynTableForm"></dynamic-table-form>
+                            </div>
+                        </div>
+                        <!-- End tab pane -->
+
+                        <!-- start tab Sponsor -->
+                        <div class="tab-pane show active" [hidden]="active != segment.SPONSORSHIP">
+                            <div class="card">
+                                <div class="body">
+                                    <app-sponsorship-allotment-ref-list *ngIf="visited.SPONSORSHIP && staffData?.id"
+                                        [ref_id]="staffData?.id"></app-sponsorship-allotment-ref-list>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End tab sponsor -->
+
+                    </ng-template>
+                </tab-head>
+            </div>
+            <!-- end tab -->
+        </div>
+        <span class="text-muted helper-text m-b-10" *ngIf="type=='RELIVE'">* All the designation and sponsorship
+            will be
+            In active</span>
+        <span class="text-danger" *ngIf="staffData?.deleted_at && !modifyData.status">Staff is not active
+            now</span>
+        <ng-container [ngTemplateOutlet]="tab?.tabFooter"></ng-container>
+    </div>
+    <!-- end of page content -->
+    <app-page-loader [loading]="dataLoading"></app-page-loader>

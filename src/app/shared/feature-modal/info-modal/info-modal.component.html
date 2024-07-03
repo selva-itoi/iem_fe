@@ -1,0 +1,16 @@
+<div class="alert-box">
+    <div class="modal-header">
+        <h4 class="modal-title">{{data?.title || 'Info'}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div [innerHTML]="data?.content" *ngIf="type != 'FORM'"></div>
+        <info-view *ngIf="type == 'FORM'" [modifyData]="data?.modifyData || {}" [mode]="mode" [sourceData]="data?.sourceData" [formData]="data?.formData"></info-view>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">{{data?.btn||'Ok'}}</button>
+    </div>
+</div>

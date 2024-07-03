@@ -1,0 +1,88 @@
+<div class="row clearfix m-0 p-10">
+    <div class="col-md-12 col-lg-12">
+        <span class="sub_title">{{data?.title}}</span>
+    </div>
+</div>
+<div class="card" *ngIf="type != 'TRANSFER'">
+    <div class="body">
+        <dynamic-table-form #dynTbl [mode]="viewMode" [formData]="dataFormData"
+            [dynamicValidator]="dynamicValidatorBasic"></dynamic-table-form>
+    </div>
+</div>
+<!-- form start -->
+<div class="body border-0" *ngIf="type == 'TRANSFER'">
+    <ng-container *ngIf="!data?.isView && !data.updateOnly || (type == 'TRANSFER' && currentData?.id)">
+        <app-form-generator #dataForm (onChangeEvent)="onChange($event)" [formData]="dataFormData"
+            [dynamicValidator]="dynamicValidatorBasic"></app-form-generator>
+        <div class="form-group">
+            <div class="clearfix row">
+                <div class="col-md-3 col-lg-3 align-center">
+                    <button (click)="saveData()" class="btn-sm btn btn-primary mr-1">{{currentData?.id ? 'update' :
+                        'Add'}}</button>
+                    <button (click)="reset()" class="btn-sm btn btn-primary">Reset</button>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <div class="form-group">
+        <div class="row clearfix">
+            <div class="col-md-12 col-lg-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <ng-container *ngFor="let c of cols; let i = index">
+                                    <th>{{c?.title}}</th>
+                                </ng-container>
+                                <ng-container>
+                                    <th>Action</th>
+                                </ng-container>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let e of eduData; let i = index">
+                                <tr>
+                                    <td>{{i + 1}}</td>
+                                    <ng-container *ngFor="let col of cols;">
+                                        <ng-container [ngSwitch]="col.colName">
+                                            <td *ngSwitchCase="'exp_year'">{{e?.from_date | dateFormat}} <b> to </b>
+                                                {{e?.to_date | dateFormat}}</td>
+                                            <td *ngSwitchCase="'is_primary'">{{e[col.colName] ? 'Yes' : 'NO'}}</td>
+                                            <td *ngSwitchCase="'document_path'"><img imageLoad [src]="e?.document_path"
+                                                    alt="Document" class="w35 h35 rounded"></td>
+                                            <td *ngSwitchDefault>{{e[col.colName]}}</td>
+                                        </ng-container>
+                                    </ng-container>
+                                    <td>
+                                        <ng-container *ngIf="!data?.isView">
+                                            <ng-container *ngIf="e?.action !== 3; else noData">
+                                                <button *ngIf="e?.id" class="btn btn-sm btn-default ml-1" title="Edit"
+                                                    (click)="applyFormValue(e)"><i
+                                                        class="icon-pencil text-info"></i></button>
+                                                <button type="button" *ngIf="type !='TRANSFER'"
+                                                    class="btn btn-sm btn-default  ml-1" title="Delete itemI"
+                                                    (click)="deleteTableData(i)"><i
+                                                        class="icon-trash text-danger"></i></button>
+                                            </ng-container>
+                                            <ng-template #noData>
+                                                Deleted
+                                            </ng-template>
+                                        </ng-container>
+                                        <ng-container *ngIf="data?.isRequest">
+                                            {{e?.action==3? 'Deleted' : e?.action==2? 'updated': 'New' }}
+                                        </ng-container>
+                                        <button *ngIf="e?.id" type="button" class="btn btn-sm btn-default  ml-1"
+                                            title="View" (click)="showView(e)"><i
+                                                class="icon-eye text-warning"></i></button>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

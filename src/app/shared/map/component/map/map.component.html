@@ -1,0 +1,4 @@
+<div style="z-index: 1" class="iff_map_containner" leaflet [leafletOptions]="LeafletService.options"
+            [(leafletZoom)]="LeafletService.zoom" [leafletLayers]="LeafletService.layers"
+            (leafletMapReady)="LeafletService.mapReady($event)"></div>
+    <div class="map_loading" *ngIf="LeafletService.mapLoadingStatus"> Loading Please Wait.....</div>

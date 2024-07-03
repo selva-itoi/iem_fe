@@ -1,0 +1,20 @@
+
+<app-page-breadcrumb [pageInfo]="pageInfo" />
+<div class="card">
+    <div class="body">
+        <ng-container >
+            <app-form-generator #exportForm [formData]="exportFormData" (onChangeEvent)="onChange($event)"  />
+            <div class="text-center mb-2">
+                <button class="btn btn-primary" [disabled]="!exportForm?.isValid() || dataLoading" (click)="submit()">
+                    <i *ngIf="dataLoading" class="pi pi-spin pi-spinner"></i>
+                    {{ dataLoading ? 'loading...' : 'Submit'}}
+                </button>
+            </div>
+        </ng-container>
+        <div [hidden]="dataLoading">
+            <app-table-list #tableList [tableConfig]="tableConfig"  [parentGetList]="gettblData"  />
+           
+        </div>
+    </div>
+</div>
+<app-page-loader [loading]="dataLoading"></app-page-loader>

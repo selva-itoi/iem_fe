@@ -1,0 +1,184 @@
+<div class="row clearfix" [formGroup]="dataForm">
+    <ng-container *ngIf="data.length">
+        <ng-container *ngFor="let f of data; let od = odd;">
+            <div class="col-md-12 col-lg-12 mt-1 mb-1" *ngIf="f?.groupTitle || f?.groupStart">
+                <h6 class="text-muted">{{f?.groupTitle}}</h6>
+            </div>
+            <ng-container *ngIf="!f.hidden">
+                <div [class.hide_me]="f?.invisible" class="form-group col-{{f?.col_size? f.col_size : '6'}}">
+                    <label>{{f?.title_case == 'NONE' ? f.title : f?.title |titlecase}}</label>
+                    <ng-container [ngSwitch]="f.type">
+                        <ng-container *ngSwitchCase="'editor'">
+                            <app-editor [content]="EDITOR_DATA[f?.colName]"
+                                (onChangeData)="onDescriptionChange($event,f.colName)"></app-editor>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'chips'">
+                            <p-chips separator="," (onAdd)="onAddChips($event, f.colName)" [allowDuplicate]="false"
+                                styleClass="full_width form-control"
+                                [formControl]="dataForm.controls[f.colName]"></p-chips>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'select'">
+                            <p-dropdown *ngIf="f.type == 'select'" [options]="FORM_SUPPORT_DATA[f?.colName]"
+                                [optionValue]="f?.selectPrimaryKey" [disabled]="f?.readonly? true : false"
+                                [styleClass]="(submitted && dataForm.get(f.colName)?.errors) ? 'error':''"
+                                [filter]="(FORM_SUPPORT_DATA[f?.colName]?.length || 0) > 10 ? true :false "
+                                [style]="{'width':'100%' ,'padding' : '0'}" [optionLabel]="f?.selectKeyName"
+                                (onChange)="f.event?.name == 'change' && f.event?.isCallback ? onChange(f.colName,$event) : f.event?.name == 'change' ? getFullData(f.event.apiTblName,[],f.event.valueAssign,true,f.colName,f.event?.apiFunName) : ''; "
+                                [placeholder]="DATA_LOADING[f?.colName] ? 'loading...' : 'Select '+f?.title"
+                                [formControl]="dataForm.controls[f.colName]"
+                                [showClear]="dataForm.controls[f.colName].value ? true :false">
+                            </p-dropdown>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'MULTISELECT'">
+                            <p-multiSelect styleClass="form-control"
+                                (onChange)="f.event?.name == 'change' && f.event?.isCallback ? onChange(f.colName,$event) : f.event?.name == 'change' ? getFullData(f.event.apiTblName,[],f.event.valueAssign,true,f.colName,f.event?.apiFunName) : ''; "
+                                [formControl]="dataForm.controls[f.colName]" [options]="FORM_SUPPORT_DATA[f?.colName]"
+                                [optionLabel]="f?.selectKeyName" [optionValue]="f?.selectPrimaryKey"
+                                [placeholder]="f?.placeholder ? f.placeholder: f.title"></p-multiSelect>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="'checkbox'">
+                            <ng-container *ngFor="let m of FORM_SUPPORT_DATA[f?.colName]">
+                                <label class="control-inline fancy-checkbox ml-4">
+                                    <input [value]="m[f?.selectPrimaryKey]"
+                                        (change)="f.event?.name == 'change' && f.event?.isCallback ? onChange(f.colName,$event) : ''"
+                                        [formControl]="dataForm.controls[f.colName]" type="checkbox">
+                                    <span>{{m[f?.selectKeyName]}}</span>
+                                </label>
+                            </ng-container>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'radio'">
+                            <hr class="m-0">
+                            <ng-container *ngFor="let m of FORM_SUPPORT_DATA[f?.colName]">
+                                <label class="control-inline fancy-checkbox ml-4">
+                                    <input [value]="m[f?.selectPrimaryKey]"
+                                        (change)="f.event?.name == 'change' && f.event?.isCallback ? onChange(f.colName,$event) : ''"
+                                        [formControl]="dataForm.controls[f.colName]"
+                                        [name]="dataForm.controls[f.colName]" class="mr-2" type="radio">
+                                    <span style="font-size: initial;">{{m[f?.selectKeyName]}}</span>
+                                </label>
+                            </ng-container>
+                        </ng-container>
+                        <textarea *ngSwitchCase="'TEXTAREA'" class="form-control" (paste)="toremoveWhiteSpace()"
+                            [class.error]="submitted && dataForm.get(f.colName)?.errors"
+                            [formControl]="dataForm.controls[f.colName]"></textarea>
+                        <ng-container *ngSwitchCase="'DATE'">
+                            <p-calendar #calender [disabled]="f?.readonly" [dateFormat]="f?.dateFormat || dateFormat"
+                                [view]="f?.dateViewMode || 'date'" [formControl]="dataForm.controls[f.colName]"
+                                (onSelect)="onChange(f.colName,$event)" [showTime]="f?.showTime"
+                                [showSeconds]="f?.showSeconds" [timeOnly]="f?.timeOnly"
+                                [class.error]="submitted && dataForm.get(f.colName)?.errors"
+                                [minDate]="f?.minDate || undefined" [maxDate]="f?.maxDate || undefined"
+                                [monthNavigator]="f?.monthNavigator ?true : false" [yearRange]="f?.dateRange"
+                                [yearNavigator]="f?.yearNavigator ? true : false" inputStyleClass="form-control"
+                                [placeholder]="f?.placeholder ? f.placeholder: f.title"
+                                [selectionMode]="f?.selectionMode || 'single'">
+                            </p-calendar>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'DATETIME'">
+                            <p-calendar [disabled]="f?.readonly" [dateFormat]="f?.dateFormat || dateFormat"
+                                [view]="f?.dateViewMode || 'date'" [formControl]="dataForm.controls[f.colName]"
+                                (onSelect)="onChange(f.colName,$event)" [showTime]="f?.showTime"
+                                [showSeconds]="f?.showSeconds" [timeOnly]="f?.timeOnly"
+                                [class.error]="submitted && dataForm.get(f.colName)?.errors"
+                                [monthNavigator]="f?.monthNavigator ?true : false" [yearRange]="f?.dateRange"
+                                [yearNavigator]="f?.yearNavigator ? true : false" inputStyleClass="form-control"
+                                [placeholder]="f?.placeholder ? f.placeholder: f.title">
+                            </p-calendar>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="'FILE'">
+                            <app-image-upload *ngIf="f?.type=='FILE'" #imageUploader
+                                (uploadedFileInfo)="didUpload($event,f?.colName)" [inputFile]="fileConfig[f?.colName]">
+                            </app-image-upload>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'INFO'">
+                            <span *ngIf="f?.controlAction?.operation=='MULTIPLE'">
+                                {{dataForm?.value[f?.controlAction.controls[0]]
+                                * dataForm?.value[f?.controlAction.controls[1]]}} {{f?.controlAction.info_text ||
+                                ''}}</span>
+                            <span *ngIf="f?.controlAction?.operation=='ADD'">{{f?.controlAction.controls[0] +
+                                f?.controlAction.controls[1]}} {{f?.controlAction.info_text || ''}}</span>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'AUTOCOMPLETE'">
+                            <p-autoComplete [formControl]="dataForm.controls[f.colName]"
+                                [class.error]="submitted && dataForm.get(f.colName)?.errors"
+                                [style]="{'width':'100%' ,'padding' : '0'}"
+                                inputStyleClass="form-control {'error' :submitted && dataForm.get(f.colName)?.errors}"
+                                [inputStyle]="{'width':'100%'}" [suggestions]="FORM_SUPPORT_DATA[f?.colName]"
+                                [forceSelection]="true" [itemSize]="10" (onSelect)="onSelectAutocomplete($event,f)"
+                                (completeMethod)="filterItems($event,f)" [field]="f?.selectKeyName">
+                                <ng-template let-item pTemplate="item">
+                                    <span class="ui-autocomplete-token-label">
+                                        <ng-container *ngIf="f.autoSearch?.selectFieldKeys;else showdf">
+                                            <ng-container *ngFor="let a of f.autoSearch?.selectFieldKeys;let i =index">
+                                                {{i !=0 ? ' | ' : '' }} {{item[a]}}
+                                            </ng-container>
+                                        </ng-container>
+                                        <ng-template #showdf>{{item[f?.selectKeyName]}} </ng-template></span>
+                                </ng-template>
+                            </p-autoComplete>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'COLORPICKER'">
+                            <p-colorPicker [formControl]="dataForm.controls[f.colName]"
+                                [class.error]="submitted && dataForm.get(f.colName)?.errors"
+                                [style]="{'width':'100%' ,'padding' : '0'}"
+                                (change)="f.event?.name == 'change' ? onChange(f.colName,$event) : ''; "
+                                (click)="f.event.name =='click' ? onChange(f.colName,$event) : ''"
+                                [disabled]="f?.readonly? true : false" [inline]="f?.inline? true:false"></p-colorPicker>
+                            <strong
+                                [style.color]="dataForm.controls[f.colName]?.value">{{dataForm.controls[f.colName]?.value}}</strong>
+                        </ng-container>
+
+                        <ng-container *ngSwitchDefault>
+                            <!-- <span
+                                class="{{f?.icon_append ? (f?.icon_append?.category=='PREPAND'  ? 'p-input-icon-left' :'p-input-icon-right') : ''}}">
+                                <input [style]="{'width':'100%' }"
+                                    inputStyleClass="form-control {'error' :submitted && dataForm.get(f.colName)?.errors}"
+                                    pInputText (input)="f?.event?.name == 'input' ? onInput(f.colName,f.event):'';"
+                                    [readonly]="f?.readonly? true : false"
+                                    (change)="f?.event?.name == 'change' ? onChange(f.colName,$event) : ''; "
+                                    (click)="f?.event?.name =='click' ? onChange(f.colName,$event) : ''"
+                                    placeholder="{{f?.placeholder ? f.placeholder: f?.title}}"
+                                    [class.error]="submitted && dataForm.get(f.colName)?.errors" class="form-control"
+                                    [formControl]="dataForm.controls[f.colName]" type="text">
+                                <i *ngIf=" f?.icon_append?.icon"
+                                    class="{{f?.icon_append?.icon}}"></i>
+                                <ng-container *ngIf="f?.icon_append ">
+                                    <div
+                                        class="input-group-{{f?.icon_append?.category=='APPEND' ? 'append' : 'prepend'}}">
+                                        <span class="input-group-text">{{f?.icon_append?.text}}</span>
+                                    </div>
+                                </ng-container>
+                            </span> -->
+                            <div class="{{f?.icon_append ? 'input-group input-group-sm' : ''}}">
+                                <input (paste)="toremoveWhiteSpace()" (input)="f?.event?.name == 'input' ? onInput(f.colName,f.event):'';"
+                                    [readonly]="f?.readonly? true : false"
+                                    (change)="f?.event?.name == 'change' ? onChange(f.colName,$event) : ''; "
+                                    (click)="f?.event?.name =='click' ? onChange(f.colName,$event) : ''"
+                                    placeholder="{{f?.placeholder ? f.placeholder: f?.title}}"
+                                    [class.error]="submitted && dataForm.get(f.colName)?.errors" class="form-control"
+                                    [formControl]="dataForm.controls[f.colName]" type="text">
+                                <ng-container *ngIf="f?.icon_append ">
+                                    <div
+                                        class="input-group-{{f?.icon_append?.category=='APPEND' ? 'append' : 'prepend'}}">
+                                        <span class="input-group-text">{{f?.icon_append?.text}}</span>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </ng-container>
+
+                    </ng-container>
+                    <span class="helper p-2" *ngIf="f?.info"> {{f.info}}</span>
+                    <ng-container *ngFor="let val of f.validator">
+                        <ng-container *ngIf="dataForm?.get(f.colName)?.errors">
+                            <span class="error" *ngIf="submitted && dataForm?.get(f.colName)?.errors[val?.name]">
+                                {{val?.error}}
+                            </span>
+                        </ng-container>
+                    </ng-container>
+                </div>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+</div>

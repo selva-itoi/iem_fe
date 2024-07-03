@@ -1,0 +1,385 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="false"></app-page-breadcrumb>
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12 card" *ngIf="info_message">
+        <div class="body text-center">
+            {{info_message}}
+        </div>
+    </div>
+    <div class="col-12" *ngIf="isModifyRequest">
+        <div class="alert alert-warning" role="alert">
+            Modification Request is Pending you can'nt Raise New Request!.
+        </div>
+    </div>
+</div>
+
+
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12" [hidden]="dataLoading || info_message">
+        <div class="card">
+            <ul class="nav nav-tabs1 table-nav">
+                <ng-container *ngFor="let s of segement | keyvalue:returnZero">
+                    <li class="nav-item">
+                        <a class="nav-link"
+                            [ngClass]="{'show active': currentSegment==s.value, 'error-segment' : segementError[s.key] == true}"
+                            (click)="changeSegment(s.value)" href="javascript:void(0)">{{s.value}}</a>
+                    </li>
+                </ng-container>
+            </ul>
+            <div class="tab-content mt-0" [formGroup]="staff_Form">
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.BASIC">
+                    <div class="card">
+                        <div class="body">
+                            <app-form-generator #basicForm *ngIf="basicFormData?.length"
+                                [dynamicValidator]="basicDynValidator" (onChangeEvent)="onChange($event)"
+                                [formData]="basicFormData"></app-form-generator>
+                            <div class="form-group">
+                                <div class="row clearfix">
+                                    <div class="col-md-6 col-lg-6">
+                                        <label>Date of Birth *</label>
+                                        <br>
+                                        <p-calendar [dateFormat]="dateFormat" [monthNavigator]="true"
+                                            (onSelect)="calage(staff_Form.get('dob')?.value,'DOB')"
+                                            [yearRange]="dateRange" [yearNavigator]="true"
+                                            [class.error]="submitted && staff_Form.get('dob')?.errors"
+                                            inputStyleClass="form-control" placeholder="Date of Birth"
+                                            formControlName="dob">
+                                        </p-calendar>
+                                        <span class="error" *ngIf="staff_Form.get('dob')?.errors?.required">
+                                            Date of Birth is Required</span>
+                                        <span class="text-blue" *ngIf="!staff_Form.get('dob')?.errors?.required">
+                                            {{calDate.DOB+' '+'Years Old'}}</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <label>Marital Status * </label>
+                                        <select class="custom-select" (change)="changeMaritialStatus()"
+                                            formControlName="maritial_status"
+                                            [class.error]="submitted && staff_Form.get('maritial_status')?.errors">
+                                            <option value="">Select Marital Status</option>
+                                            <ng-container *ngFor="let m of Marital_Status">
+                                                <option [value]="m?.id">{{m?.maritalName}}</option>
+                                            </ng-container>
+                                        </select>
+                                        <span class="error" *ngIf="staff_Form.get('maritial_status')?.errors?.required">
+                                            Marital Status is Required</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix" *ngIf="showSpouseCheckbox">
+                                <div class="form-group">
+                                    <div class="col-md-12 col-lg-12">
+                                        <label>Is your spouse already staff in IEM and his/her details already
+                                            added?</label>
+                                        <label class="control-inline fancy-checkbox ml-4">
+                                            <input (change)='changeSpouceCheckbox()' formControlName="isGemsStaff"
+                                                type="checkbox">
+                                            <span>Yes</span>
+                                        </label>
+                                        <a *ngIf="staff_Form.get('isGemsStaff')?.value" class="ml-4"
+                                            href="javascript:void(0)" (click)="openSearchModal()">Search Spouse
+                                            Detail</a>
+
+                                        <input readonly class="form-control" hidden formControlName="staff_cross_id"
+                                            type="text">
+
+                                        <span><a *ngIf="staffData?.staff_cross_id" class="ml-4"
+                                                href="javascript:void(0)">{{staffData?.staff_cross_id}}</a></span>
+                                    </div>
+                                    <span class="error ml-4"
+                                        *ngIf="staff_Form.get('req_staff_emp_ref')?.errors?.required">
+                                        Spouse Id Required</span>
+                                </div>
+                            </div>
+                            <div class="row clearfix" *ngIf="spouceDetails?.name">
+                                <div class="form-group col-12">
+                                    <div class="col-md-6 col-lg-6 w-100">
+                                        <div class="d-flex align-items-center">
+                                            <img [src]="spouceDetails?.profile_img_path" imageLoad
+                                                [alt]="spouceDetails?.name" class="w35 h35 rounded">
+                                            <div class="ml-3">
+                                                <a href="javascript:void(0)">{{spouceDetails?.name}}
+                                                    {{spouceDetails?.last_name}}</a>
+                                                <p class="mb-0">{{spouceDetails?.zoneName}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row clearfix">
+                                    <div class="col-md-6 col-lg-6" [hidden]="!showSpouseCheckbox">
+                                        <label>Date Of Marriage* </label>
+                                        <br>
+                                        <p-calendar [dateFormat]="dateFormat" [monthNavigator]="true"
+                                            [yearRange]="dateRange" view="date" [yearNavigator]="true"
+                                            [class.error]="submitted && staff_Form.get('do_marraige')?.errors"
+                                            inputStyleClass="{{submitted && staff_Form.get('do_marraige')?.errors ? 'error form-control' : 'form-control'}}"
+                                            placeholder="Date of Marriage" formControlName="do_marraige">
+                                        </p-calendar>
+                                        <span class="error" *ngIf="staff_Form.get('do_marraige')?.errors?.required">
+                                            Date of Marriage Required</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <label>
+                                            Date of Salvation
+                                        </label>
+                                        <br>
+                                        <p-calendar [dateFormat]="dateFormat" [monthNavigator]="true"
+                                            [yearRange]="dateRange" [yearNavigator]="true"
+                                            [class.error]="submitted && staff_Form.get('do_salvation')?.errors"
+                                            inputStyleClass="{{submitted && staff_Form.get('do_salvation')?.errors ? 'error form-control' : 'form-control'}}"
+                                            placeholder="Date of Salvation" formControlName="do_salvation">
+                                        </p-calendar>
+                                        <span class="error" *ngIf="staff_Form.get('do_salvation')?.errors?.required">
+                                            Date of Salvation Required</span>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row clearfix">
+                                    <div class="col-md-6 col-lg-6">
+                                        <label>Date of Baptism </label>
+                                        <br>
+                                        <p-calendar [dateFormat]="dateFormat"
+                                            [class.error]="submitted && staff_Form.get('do_bap')?.errors"
+                                            [monthNavigator]="true" [yearRange]="dateRange" [yearNavigator]="true"
+                                            inputStyleClass="{{submitted && staff_Form.get('do_bap')?.errors ? 'error form-control' : 'form-control'}}"
+                                            placeholder="Date of Baptism" formControlName="do_bap">
+                                        </p-calendar>
+                                        <span class="error" *ngIf="staff_Form.get('do_bap')?.errors?.required">
+                                            Date of Baptism Required</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <label>Date of Confirmation </label>
+                                        <br>
+                                        <p-calendar [dateFormat]="dateFormat"
+                                            [class.error]="submitted && staff_Form.get('do_confirm')?.errors"
+                                            [monthNavigator]="true" [yearRange]="dateRange" [yearNavigator]="true"
+                                            inputStyleClass="{{submitted && staff_Form.get('do_confirm')?.errors ? 'error form-control' : 'form-control'}}"
+                                            placeholder="Date of Confirmation" formControlName="do_confirm">
+                                        </p-calendar>
+                                        <span class="error" *ngIf="staff_Form.get('do_confirm')?.errors?.required">
+                                            Date of Confirmation Required</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 mt-3">
+                                        <label>Date of Appointment </label>
+                                        <br>
+                                        <p-calendar [dateFormat]="dateFormat"
+                                            [class.error]="submitted && staff_Form.get('do_appoint')?.errors"
+                                            [monthNavigator]="true" [yearRange]="dateRange" [yearNavigator]="true"
+                                            inputStyleClass="{{submitted && staff_Form.get('do_appoint')?.errors ? 'error form-control' : 'form-control'}}"
+                                            placeholder="Date of Appointment" formControlName="do_appoint">
+                                        </p-calendar>
+                                        <span class="error" *ngIf="staff_Form.get('do_appoint')?.errors?.required">
+                                            Date of Appointment Required</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 mt-3">
+                                        <label>
+                                            Date of Joining
+                                        </label>
+                                        <br>
+                                        <p-calendar [dateFormat]="dateFormat" [monthNavigator]="true"
+                                            [yearRange]="dateRange" [yearNavigator]="true"
+                                            (onSelect)="calage(staff_Form.get('do_join')?.value,'DOJ')"
+                                            inputStyleClass="{{submitted && staff_Form.get('do_join')?.errors ? 'error form-control' : 'form-control'}}"
+                                            placeholder="Date of Joining" formControlName="do_join">
+                                        </p-calendar>
+                                        <span *ngIf="staff_Form.get('do_join')?.value" class="text-blue">{{calDate.DOJ +
+                                            '
+                                            '+'Years of Experience'}}</span>
+                                        <span class="error" *ngIf="staff_Form.get('do_join')?.errors?.required">
+                                            Date of joining is Required</span>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="form-group">
+                                <div class="row clearfix">
+                                    <div class="col-md-6 col-lg-6">
+                                        <label>Email Id * </label>
+                                        <input class="form-control"
+                                            [class.error]="submitted && staff_Form.get('email_id')?.errors"
+                                            formControlName="email_id" type="text">
+                                        <span class="error" *ngIf="staff_Form.get('email_id')?.errors?.required">
+                                            Email Id is Required</span>
+                                        <span class="error" *ngIf="staff_Form.get('email_id')?.errors?.email">
+                                            Email Should be valid</span>
+                                        <span class="error" *ngIf="staff_Form.get('email_id')?.errors?.isNotUnique">
+                                            Email Exists</span>
+                                        <span *ngIf="emailCheckingloading"> <i
+                                                class="fa fa-refresh fa-spin"></i>Checking.....</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <label>Whatsapp Mobile No *</label>
+                                        <input class="form-control"
+                                            [class.error]="submitted && staff_Form.get('mobile_no')?.errors"
+                                            formControlName="mobile_no" type="text">
+                                        <span class="error" *ngIf="staff_Form.get('mobile_no')?.errors?.required">
+                                            Whatsapp Mobile Number Required</span>
+                                        <span class="error"
+                                            *ngIf=" staff_Form.get('mobile_no').dirty  && staff_Form.get('mobile_no')?.errors?.pattern">
+                                            Whatsapp Mobile should be Valid</span>
+                                        <span class="error" *ngIf="staff_Form.get('mobile_no')?.errors?.isNotUnique">
+                                            Whatsapp Mobile Number Exists</span>
+                                        <span *ngIf="mobileCheckingloading"> <i
+                                                class="fa fa-refresh fa-spin"></i>Checking.....</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6 col-lg-6">
+                                    <label>Alternate Mobile No </label>
+                                    <input class="form-control"
+                                        [class.error]="submitted && staff_Form.get('alt_mobile_no')?.errors"
+                                        formControlName="alt_mobile_no" type="text">
+                                    <span class="error"
+                                        *ngIf=" staff_Form.get('alt_mobile_no').dirty  && staff_Form.get('alt_mobile_no')?.errors?.pattern">
+                                        Mobile should be Valid</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="mr-1">Is Cross Culture ? </label>
+                                        <label class="control-inline fancy-checkbox"><input (change)="crossCultural()"
+                                                formControlName="is_cross_culture" type="checkbox"><span>
+                                                Yes</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6">
+                                <div class="form-group" *ngIf="isCrossCultural">
+                                    <label class="mr-1"> Origin State</label>
+                                    <select class="custom-select" formControlName="origin_state_id"
+                                        [class.error]="isCrossCultural && staff_Form.get('origin_state_id')?.errors">
+                                        <option value=''>{{stateLoading ? 'loading':'Select Origin State '}}</option>
+                                        <ng-container *ngIf="stateData">
+                                            <ng-container *ngFor="let m of stateData">
+                                                <option [value]="m.id">
+                                                    {{m.stateName}}
+                                                </option>
+                                            </ng-container>
+                                        </ng-container>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <app-form-generator #officeForm *ngIf="officeFormData?.length"
+                                    (onChangeEvent)="onChange($event)" [formData]="officeFormData"></app-form-generator>
+                                <div class="form-group mt-1">
+                                    <div class="row clearfix">
+                                        <div class="help-text small text-info">Username is Primary Mobile No and Default
+                                            password
+                                            is staff@2022
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.ADDRESS">
+                    <div class="row clearfix body m-0 mb-3"
+                        *ngIf="staff_Form.get('isGemsStaff')?.value && spouceDetails.name &&!staffEmpId">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <label class="mr-1">Is your spouse Address same as you ?</label>
+                                <label class="control-inline fancy-checkbox ml-4">
+                                    <input (change)='changeSpouceAddress()' formControlName="isSpouseAddress"
+                                        type="checkbox">
+                                    <span>Yes</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <app-address #presentAddress [isPage]="true" [submitted]="submitted"
+                        title="Present/ Correspondence  Address">
+                    </app-address>
+                    <div class="row clearfix body m-0">
+                        <!-- <div class="col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <label class="mr-1">Does Staff Stayed in Sikaria campus ? </label>
+                                <label class="control-inline fancy-checkbox"><input
+                                        formControlName="stay_on_sikaria_campus" type="checkbox"><span>
+                                        yes</span></label>
+                            </div>
+                        </div> -->
+
+                        <div class="col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <label class="mr-1">Is present address same to permanent address ? </label>
+                                <label class="control-inline fancy-checkbox"><input (change)='changeAddressCheckbox()'
+                                        formControlName="isSamePresent" type="checkbox"><span> yes</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    <app-address #permanentAddress [isPage]="true" title="Permanent Address" [submitted]="submitted">
+                    </app-address>
+                </div>
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.TESTIMONY">
+                    <app-form-generator #testimonyform [formData]="testimonydata"></app-form-generator>
+                </div>
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.EDUCATION">
+                    <app-staff-education #staffEduAcadmic [config]="{title : 'Academic Details',
+                            type : 'ACADAEMIC'}"></app-staff-education>
+                    <app-staff-education #staffEduTheology [config]="{title : 'Theology/Missiology Details',
+                        type : 'THEOLOGY'}"></app-staff-education>
+                </div>
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.TRAINING">
+                    <app-staff-training #staffTraining [config]="{title : 'In Service Training Details'}">
+                    </app-staff-training>
+                </div>
+
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.EXPERIENCE">
+                    <app-staff-experience #staffExpSecular
+                        [config]="{title : 'Secular Experience Details', type : 'SECULAR'}">
+                    </app-staff-experience>
+                    <app-staff-experience #staffExpMinstrial
+                        [config]="{title : 'Ministerial Experience Details', type : 'MINISTRIAL'}">
+                    </app-staff-experience>
+                </div>
+
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.EXP_GEMS">
+                    <app-staff-exp-gems #staffExpGems [config]="{title : 'IEM Experience Details', type : 'SECULAR'}">
+                    </app-staff-exp-gems>
+                </div>
+
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.OTHERS">
+                    <app-staff-other-detail #staffOtherDetail [profiletype]="profile"></app-staff-other-detail>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row clearfix align-center" [hidden]="dataLoading || info_message">
+            <div class="col-12" *ngIf="isModifyRequest">
+                <div class="alert alert-primary" role="alert">
+                    Modification Request is Pending you can'nt Raise New Request!.
+                </div>
+            </div>
+            <!-- <div class="col-md-12 mb-2 text-center">
+                <span class="error" *ngIf="segementError.ADDRESS || segementError.BASIC"> Some field not be
+                    valid</span>
+            </div> -->
+            <div class="col-md-12 text-center">
+                <div class="btn-group btn-group-lg">
+                    <button [disabled]="loading" *ngIf="pSegment" (click)="changeSegment(pSegment)" type="button"
+                        class="btn btn-primary mr-1">Prev</button>
+                    <button noDoubleClick *ngIf="!isModifyRequest && currentSegment == segement.OTHERS"
+                        [disabled]="disabled_save || loading" type="button" (click)="onSubmit()"
+                        class="btn btn-primary mr-1">
+                        <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                        {{ loading ? 'Saving...' : 'Submit'}}
+                    </button>
+                    <button [disabled]="loading || validSegemnet" *ngIf="nSegment" (click)="changeSegment(nSegment)"
+                        type="button" class="btn btn-primary">Save & Next</button>
+                </div>
+            </div>
+        </div>
+        <app-page-loader [loading]="dataLoading"></app-page-loader>
+
+    </div>
+</div>

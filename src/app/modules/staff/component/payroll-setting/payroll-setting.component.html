@@ -1,0 +1,10 @@
+<ng-container *ngIf="type == 'EDIT'">
+    <app-form-generator #basicForm *ngIf="formData?.length" [formData]="formData" (onChangeEvent)="onChange($event)"
+        [dynamicValidator]="dynamicValidator"></app-form-generator>
+</ng-container>
+
+<ng-container *ngIf="type != 'EDIT' && payrollHeadData">
+    <info-view *ngIf="formData.length" [mode]="type" [modifyData]="modifyData" [sourceData]="sourceData"
+        [formData]="formData">
+    </info-view>
+</ng-container>

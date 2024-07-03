@@ -1,0 +1,16 @@
+<div class="modal-header" *ngIf="isModal">
+    <h4 class="modal-title pull-left">Child Info</h4>
+    <button type="button" (click)="closeModal()" class="btn-close close pull-right" aria-label="Close">
+        <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+</div>
+
+<div class="row text-center" *ngIf="!loadingData">
+    <div class="col-lg-4 col-md-12 col-xl-4">
+        <profile-widget [profileData]="childData" type="CHILD"></profile-widget>
+    </div>
+    <div class="col-lg-8 col-md-8 col-xl-8">
+        <info-view [sourceData]="childData" [formData]="showData" direction="VERTICAL"></info-view>
+    </div>
+</div>
+<app-page-loader [loading]="loadingData"></app-page-loader>

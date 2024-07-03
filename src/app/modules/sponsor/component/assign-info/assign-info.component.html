@@ -1,0 +1,78 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="isModal"></app-page-breadcrumb>
+<div class="row clearfix">
+    <div class="col-12" *ngIf="isModifyRequest && type == 'EDIT'">
+        <div class="alert alert-warning" role="alert">
+            Modification Request is Pending you can'nt Raise New Request!.
+        </div>
+    </div>
+</div>
+<div class="modal-body  pt-4 mb-4" *ngIf="!dataLoading">
+    <div class="row clearfix">
+        <div class="col-lg-3 col-md-3 col-xl-3">
+            <profile-widget [profileData]="donationInfoData" [refId]="donationInfoData?.sponsor_id"
+                type="SPONSOR"></profile-widget>
+        </div>
+        <div class="col-lg-9 col-md-9 col-xl-9">
+            <div class="tab-content mt-0">
+                <div class="tab-pane show active">
+                    <div class="card">
+                        <div class="body">
+                            <info-view [sourceData]="donationInfoData" [formData]="basicFormData"></info-view>
+                            <div *ngIf="showChurchTbl" class="col-lg-4 col-md-4 col-xl-4 font-weight-bold">
+                                Total Allotted Amount  : {{ getTotalAmt() | currency:'INR'}}
+                            </div>
+                            <dynamic-table-form *ngIf="selectableTblForm.length" [formMode]="'MODAL'"
+                                (onAction)="selectTblAction($event)" #dyTbl [formData]="selectableTblForm"
+                                [config]="{addAllow:false}" [mode]="type">
+                            </dynamic-table-form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ng-container *ngIf="showChurchTbl">
+            <div class="col-md-12">
+                <label class="control-inline fancy-checkbox ml-4">
+                    <input (change)="onChangeShowBtn($event)" [formControl]="showAllChurch" type="checkbox">
+                    <span>Show All Church List</span>
+                </label>
+            </div>
+            <div class="col-12">
+                <app-table-list #tableList selectable="MULTI" (onSelect)="onSelectData($event)"
+                    [maxSelection]="maxSelection" [tableConfig]="tableConfig" [parenttblAction]="tblAction"
+                    [parentGetList]="getListData">
+                </app-table-list>
+            </div>
+        </ng-container>
+
+        <div class="col-md-12 text-center">
+            <div class="col-12" *ngIf="isModifyRequest && type == 'EDIT'">
+                <div class="alert alert-primary" role="alert">
+                    Modification Request is Pending you can'nt Raise New Request!.
+                </div>
+            </div>
+            <div class="btn-group btn-group-lg">
+                <button *ngIf="type=='EDIT' &&!isModifyRequest" noDoubleClick [disabled]="loading || disabled_submit"
+                    type="button" (click)="onSubmit()" class="btn btn-primary mr-1">
+                    <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                    {{ loading ? 'Saving...' : 'Submit'}}
+                </button>
+                <ng-container *ngIf="+modifyData?.status == 2 && hasPermissionApprove">
+                    <button [disabled]="loading" (click)="approve()" class="btn btn-round btn-success">
+                        <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                        {{loading ? 'Approving..' : 'Approve'}}
+                    </button>
+                    <button [disabled]="loading" (click)="reject()" class="btn ml-1 btn-round btn-danger">
+                        <i *ngIf="loading " class="pi pi-spin pi-spinner"></i>
+                        {{loading ? 'Rejecting..' : 'Reject'}}
+                    </button>
+                    <button *ngIf="type == 'VIEW'" [disabled]="loading" (click)="goBack()"
+                        class="btn ml-1 btn-round btn-warning">{{ isModal ?
+                        'Close' : 'Back' }}</button>
+                </ng-container>
+
+            </div>
+        </div>
+    </div>
+</div>
+<app-page-loader [loading]="dataLoading"></app-page-loader>

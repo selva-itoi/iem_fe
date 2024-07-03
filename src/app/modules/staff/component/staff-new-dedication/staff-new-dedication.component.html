@@ -1,0 +1,204 @@
+<app-page-breadcrumb [pageInfo]="{title : dedicationId ? 'New Dedication' : 'Update Dedication'}" [isModal]="isModal">
+</app-page-breadcrumb>
+<div class="row">
+    <div class="card">
+        <div class="body" [formGroup]="dataForm">
+            <div class="row">
+                <div class="col-6">
+                    <div class="list-group cursor-pointer" style="flex-direction: row;"
+                        (click)="openModalSearch('SPONSOR')">
+                        <div
+                            class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                            <label class="cursor-pointer">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Select Donor</h5>
+                                </div>
+                                <div class="d-flex align-items-center" *ngIf="sponsorData?.sponsor_id">
+                                    <img [src]="sponsorData?.profile_img" imageLoad [alt]="sponsorData?.name"
+                                        class="w35 h35 rounded">
+                                    <div class="ml-3">
+                                        <a href="javascript:void(0)">{{sponsorData?.sponsor_id}}</a>
+                                        <p class="mb-0">{{sponsorData?.name}}</p>
+                                    </div>
+                                </div>
+                                <small *ngIf="!sponsorData?.sponsor_id">Search and pick any Sponsor</small>
+                                <span class="error" *ngIf="dataForm.get('sponsor_id')?.errors?.required">
+                                    Sponsor is Required </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <span class="title"> Dedication Request By sponsor</span>
+            </div>
+            <div class="form-group">
+                <div class="row clearfix">
+                    <div class="col-md-6 col-lg-6">
+                        <label>Dedication Place * </label>
+                        <input class="form-control" [class.error]="submitted && dataForm.get('place')?.errors"
+                            formControlName="place" type="text">
+                        <span class="error" *ngIf="dataForm.get('place')?.errors?.required">
+                            Place Required</span>
+                        <span class="error"
+                            *ngIf=" dataForm.get('place').dirty  && dataForm.get('place')?.errors?.pattern">
+                            Place should be Valid</span>
+                    </div>
+
+                    <div class="col-md-6 col-lg-6 form-group">
+                        <label>Dedication Date Time </label>
+                        <p-calendar [showTime]="true" hourFormat="12" [dateFormat]="dateFormat" [monthNavigator]="true"
+                            [yearRange]="dateRange" [yearNavigator]="true"
+                            [class.error]="submitted && dataForm.get('date_time')?.errors"
+                            inputStyleClass="form-control" placeholder="Date of Dedication" formControlName="date_time">
+                        </p-calendar>
+                        <span class="error" *ngIf="dataForm.get('date_time')?.errors?.required">
+                            Dedication Date is Required </span>
+                    </div>
+                    <div class="col-md-6 col-lg-6 form-group">
+                        <label>Arrival Date Time </label>
+                        <p-calendar [showTime]="true" hourFormat="12" [dateFormat]="dateFormat" [monthNavigator]="true"
+                            [yearRange]="dateRange" [yearNavigator]="true"
+                            [class.error]="submitted && dataForm.get('arrival_date_time')?.errors"
+                            inputStyleClass="form-control" placeholder="Date of Dedication Arrival"
+                            formControlName="arrival_date_time">
+                        </p-calendar>
+                        <span class="error" *ngIf="dataForm.get('arrival_date_time')?.errors?.required">
+                            Dedication Arrival Date is Required </span>
+                    </div>
+
+                    <div class="col-md-6 col-lg-6 form-group">
+                        <label>Departure Date Time </label>
+                        <p-calendar [showTime]="true" hourFormat="12" [dateFormat]="dateFormat" [monthNavigator]="true"
+                            [yearRange]="dateRange" [yearNavigator]="true"
+                            [class.error]="submitted && dataForm.get('dept_date_time')?.errors"
+                            inputStyleClass="form-control" placeholder="Date of Departure time"
+                            formControlName="dept_date_time">
+                        </p-calendar>
+                        <span class="error" *ngIf="dataForm.get('dept_date_time')?.errors?.required">
+                            Departure Date is Required </span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="list-group cursor-pointer" style="flex-direction: row;"
+                        (click)="openModalSearch('STAFF','DEDICATE')">
+                        <div
+                            class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                            <label class="cursor-pointer">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Select Staff</h5>
+                                </div>
+                                <div class="d-flex align-items-center" *ngIf="staffData[0]">
+                                    <img [src]="staffData[0]?.profile_img" imageLoad [alt]="staffData[0]?.name"
+                                        class="w35 h35 rounded">
+                                    <div class="ml-3">
+                                        <a href="javascript:void(0)">{{staffData[0]?.staff_fk_id}}</a>
+                                        <p class="mb-0">{{staffData[0]?.name}}</p>
+                                    </div>
+                                </div>
+                                <small *ngIf="!staffData[0]">Search and pick to dedicate Staff</small>
+                                <span class="error" *ngIf="dataForm.get('staff_fk_id')?.errors?.required">
+                                    Dedication Staff is Required </span>
+
+                            </label>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="list-group cursor-pointer" style="flex-direction: row;"
+                        (click)="openModalSearch('STAFF')">
+                        <div
+                            class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                            <label class="cursor-pointer">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Select Accompany Staff</h5>
+                                </div>
+                                <div class="d-flex align-items-center" *ngIf="staffData[1]">
+                                    <img [src]="staffData[1]?.profile_img" imageLoad [alt]="staffData[1]?.name"
+                                        class="w35 h35 rounded">
+                                    <div class="ml-3">
+                                        <a href="javascript:void(0)">{{staffData[1]?.staff_fk_id}}</a>
+                                        <p class="mb-0">{{staffData[1]?.name}}</p>
+                                    </div>
+                                </div>
+                                <small *ngIf="!staffData[1]">Search and pick to dedicate Staff</small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <span class="title">Missionary Request</span>
+            </div>
+
+            <div class="form-group">
+                <div class="row clearfix">
+                    <div class="col-md-6 col-lg-6 form-group">
+                        <label>Arrival Date Time </label>
+                        <p-calendar [showTime]="true" hourFormat="12" [dateFormat]="dateFormat" [monthNavigator]="true"
+                            [yearRange]="dateRange" [yearNavigator]="true"
+                            [class.error]="submitted && dataForm.get('m_arrival_date_time')?.errors"
+                            inputStyleClass="form-control" placeholder="Date of Dedication Arrival"
+                            formControlName="m_arrival_date_time">
+                        </p-calendar>
+                        <span class="error" *ngIf="dataForm.get('m_arrival_date_time')?.errors?.required">
+                            Dedication Arrival Date is Required </span>
+                    </div>
+                    <div class="col-md-6 col-lg-6 form-group">
+                        <label>Staff Leaving Date Time </label>
+                        <p-calendar [showTime]="true" hourFormat="12" [dateFormat]="dateFormat" [monthNavigator]="true"
+                            [yearRange]="dateRange" [yearNavigator]="true"
+                            [class.error]="submitted && dataForm.get('m_dept_date_time')?.errors"
+                            inputStyleClass="form-control" placeholder="Date of Departure time"
+                            formControlName="m_dept_date_time">
+                        </p-calendar>
+                        <span class="error" *ngIf="dataForm.get('m_dept_date_time')?.errors?.required">
+                            Dedication Date is Required </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="row clearfix">
+                    <div class="col-md-6 col-lg-6">
+                        <label>Remarks </label>
+                        <input class="form-control" [class.error]="submitted && dataForm.get('remarks')?.errors"
+                            formControlName="remarks" type="text">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row clearfix align-center mt-2" [hidden]="dataLoading">
+                <div class="col-12" *ngIf="infoText">
+                    <div class="alert alert-primary">{{infoText}}</div>
+                </div>
+                <div class="col-md-12 mb-2 text-center" *ngIf="textInfo">
+                    <span class="text-info" *ngIf="textInfo">{{textInfo}}</span>
+                </div>
+                <div class="col-md-12 text-center">
+                    <div class="btn-group btn-group-lg">
+                        <button noDoubleClick *ngIf="btnText" [disabled]="loading || save_disabled || sendingEmail"
+                            type="button" (click)="onSubmit()" class="btn btn-primary mr-1">
+                            <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                            {{ loading ? 'Saving...' : btnText}}
+                        </button>
+                        <button [disabled]="loadingPreview || sendingEmail" (click)="showPreview()" type="button"
+                            class="btn btn-primary">Preview</button>
+                        <button [disabled]="loadingPreview || sendingEmail" *ngIf="!btnText" (click)="showPreview(true)" type="button" class="btn bg-pink ml-2">Send Email</button>
+                        <button [disabled]="loading || sendingEmail" (click)="close()" type="button"
+                            class="btn btn-outline-danger ml-1">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-page-loader *ngIf="dataLoading"></app-page-loader>
+</div>

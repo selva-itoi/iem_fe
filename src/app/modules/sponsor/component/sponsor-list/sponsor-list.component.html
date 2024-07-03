@@ -1,0 +1,27 @@
+<div class="block-header">
+    <div class="row clearfix">
+        <div class="col-md-6 col-sm-12">
+            <h1>Manage Donor</h1>
+        </div>
+        <div class="col-md-6 col-sm-12 text-right hidden-xs" *ngIf="showAddBtn">
+            <a [routerLink]="[urlService.SPONSOR.ADD.URL]" class="btn btn-sm btn-primary" title="Add New Sponsor"><i
+                    class="pi pi-plus"></i>
+                New Donor</a>
+        </div>
+    </div>
+</div>
+<tab-head [segment]="segement" [initial]="segement.LIST"
+    (onSelect)="segmentVisited = $event.visited; currentSegment =$event.key"></tab-head>
+<div class="tab-content mt-0">
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.LIST">
+        <app-table-list *ngIf="segmentVisited.LIST" [viewAction]="viewInfoHandler" [tableConfig]="tableConfig"
+            [parenttblAction]="tblAction" [parentGetList]="getListData">
+        </app-table-list>
+    </div>
+
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.OUTBOX">
+        <app-table-list *ngIf="segmentVisited.OUTBOX" [viewAction]="viewInfoHandler" [tableConfig]="inActiveTblConfig"
+            [parenttblAction]="tblAction" [parentGetList]="getListInactiveData">
+        </app-table-list>
+    </div>
+</div>

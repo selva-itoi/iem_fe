@@ -1,0 +1,37 @@
+<div class="row clearfix">
+    <div class="col-md-10 col-sm-10">
+        <h1 style="font-size: 18px;" class="text-muted">Church Document Details</h1>
+    </div>
+
+</div>
+<div class="row clearfix" [formGroup]="dataForm" *ngIf="mode=='EDIT'">
+    <div class="col-md-6 col-lg-6">
+        <label>Document Name</label>
+        <input class="form-control" formControlName="remarks" placeholder="Document Name" type="text">
+        <span class="error ml-2" *ngIf="dataForm.get('remarks')?.errors?.required">
+            Remarks Should not be Empty</span>
+    </div>
+    <div class="col-md-6 col-sm-12 text-right hidden-xs">
+        <app-image-upload [disabled]="!validForm" class="align-right" #imageUploader
+            (uploadedFileInfo)="didUpload($event)"></app-image-upload>
+    </div>
+</div>
+
+<div class="card">
+    <div class="body border-0">
+        <div class="row clearfix">
+            <div class="col-md-3 col-lg-3" *ngFor="let img of imageData; let i=index">
+                <ng-container *ngIf="img?.action !='3'; else removeImage">
+                    <image-doc-grid [src]="img.document_path" [showDelete]="mode=='EDIT' ? true : false"
+                        [primaryKey]="i" (onDelete)="deleteImage($event,img?.action? 'NEW' : 'OLD')"
+                        [remarks]="img?.remarks">
+                    </image-doc-grid>
+                </ng-container>
+                <ng-template #removeImage>
+                    <span class="text-muted">File Removed</span>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>

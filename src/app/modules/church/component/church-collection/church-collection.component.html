@@ -1,0 +1,14 @@
+<app-page-breadcrumb [pageInfo]="pageInfo"></app-page-breadcrumb>
+<tab-head [segment]="segement" [initial]="segement.LIST" (onSelect)="segmentVisited = $event.visited; currentSegment =$event.key" ></tab-head>
+<div class="tab-content mt-0">
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.LIST" >
+        <donation-list-ref [type]="'COLLECTION'" ></donation-list-ref>
+    </div>
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.PENDING" >
+        <donation-list-ref [type]="'COLLECTION'" [globalWhere]="globalWherePending"></donation-list-ref>
+    </div>
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.MODIFYREQUEST" >
+        <app-modify-list  [whereStatus]="[2]" [module]="modifyModule">
+        </app-modify-list>
+    </div>
+</div>

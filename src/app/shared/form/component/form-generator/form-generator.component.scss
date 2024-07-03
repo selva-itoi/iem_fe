@@ -1,0 +1,11 @@
+:host ::ng-deep .p-multiselect-label{
+    padding: 0 !important;
+    max-width: 250px;
+}
+:host ::ng-deep .p-chips{
+    height: auto;
+}
+:host ::ng-deep .p-chips-multiple-container{
+    padding: 0% !important;
+    border: none;
+}

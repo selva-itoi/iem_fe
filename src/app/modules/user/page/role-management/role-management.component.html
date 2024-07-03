@@ -1,0 +1,91 @@
+<div class="tab-pane show active">
+    <div class="card">
+        <br>
+        <div class="body pt-0">
+            <div class="row clearfix">
+            </div>
+            <div class="table-responsive">
+                <p-table #d1 [value]="data" [paginator]="true" [rows]="10" [autoLayout]="true"
+                    [totalRecords]="data?.length" [globalFilterFields]="cols" [resizableColumns]="true"
+                    columnResizeMode="expand" [globalFilterFields]="['roleName','status']" [responsive]="true"
+                    tableStyleClass="table  width-full">
+                    <ng-template pTemplate="caption">
+                        <div class="d-flex flex-row justify-content-end">
+                            <div class="form-group p-1 flex-grow-1 mt-1">
+                                <button class="btn btn-primary " title="Add Role" (click)="edit()"><i
+                                        class="pi pi-plus"></i> Add New</button>
+                            </div>
+                            <div class="form-group p-2 flex-grow-">
+                                <input class="form-control" placeholder="Search.." pInputText type="text"
+                                    (input)="d1.filterGlobal($any($event.target).value, 'contains')">
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>S/No.</th>
+                            <ng-container *ngFor="let col of cols; let i = index">
+                                <th [pSortableColumn]="col.field">
+                                    {{col.header}}
+                                    <p-sortIcon [field]="col.field" ariaLabel="Activate to sort"
+                                        ariaLabelDesc="Activate to sort in descending order"
+                                        ariaLabelAsc="Activate to sort in ascending order">
+                                    </p-sortIcon>
+                                </th>
+                            </ng-container>
+                            <th>Actions
+                                <button type="button" (click)="getData()" class="ml-1 btn btn-sm btn-default"
+                                    title="Reload Table" [disabled]="tableLoader">
+                                    <i class="pi pi-refresh"
+                                        [ngClass]="{'pi-spin pi-spinner': tableLoader}"></i></button>
+                            </th>
+                        </tr>
+                        <tr *ngIf="tableLoader">
+                            <td colspan="6" class="text-center">
+                                <i class="pi pi-spin pi-spinner"></i>
+                                Please wait data fetching...
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr class="text-center">
+                            <td colspan="5">No data found.</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-request let-i="rowIndex">
+                        <tr>
+                            <td>{{i + 1}}</td>
+                            <ng-container *ngFor="let col of cols; let i = index">
+                                <td *ngIf="1 > i">
+                                    {{request[col.field] }}
+                                </td>
+                                <td *ngIf="i==1">
+                                    <span class="badge"
+                                        [ngClass]="{'badge-success' : request[col.field]=='1' , 'badge-danger' :request[col.field] =='0' }">{{statusArray[request[col.field]]}}</span>
+                                </td>
+                            </ng-container>
+                            <td>
+                                <button class="btn btn-sm btn-default" title="Edit" (click)="edit(request.id)"><i
+                                        class="icon-pencil text-info"></i></button>
+                                <a [routerLink]="['/user/permission']" [queryParams]="{'id': request?.id}"
+                                    class="btn btn-sm btn-default" title="Manage Permission">
+                                    <i class="icon-users text-success"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-default ml-1" title="Make Inactive"
+                                    (click)="delete(request.id)" data-type="confirm"><i
+                                        class="icon-trash text-danger"></i></button>
+
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="paginatorleft" let-state>
+                        Total Request {{ state.first ? state.first+1 :1}} -
+                        {{ (state.first+state.rows) > state.totalRecords ?
+                        state.totalRecords : state.rows+state.first }}
+                        of {{state.totalRecords}}
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+<app-page-breadcrumb *ngIf="isModal" [pageInfo]="{title : mode + ' Info'}" [isModal]="isModal"></app-page-breadcrumb>
+<div class="row m-2" *ngIf="showTab">
+    <ul class="nav nav-tabs1 table-nav" >
+        <ng-container *ngFor="let s of segement | keyvalue:returnZero">
+            <li class="nav-item">
+                <a class="nav-link" [ngClass]="{'show active': currentSegment==s.value}"
+                    (click)="changeSegment(s.value)" href="javascript:void(0)">{{s.value |
+                    titlecase}}</a>
+            </li>
+        </ng-container>
+    </ul>
+</div>
+
+<div class="tab-pane show active" [hidden]="currentSegment != segement.ALLOTMENT">
+    <div class="card">
+        <div class="body">
+            <span class="text-primary m-2" *ngIf="staffData?.id"> {{staffData?.name}} Sponsor Details</span>
+            <app-sponsorship-allotment-ref-list *ngIf="segmentVisited.ALLOTMENT && staffData?.id"
+                [ref_id]="staffData?.id" show="ACTIVE"></app-sponsorship-allotment-ref-list>
+            <span class="text-primary m-2" *ngIf="spouseDetail?.id"> {{spouseDetail?.name}} Sponsor Details</span>
+
+            <app-sponsorship-allotment-ref-list *ngIf="segmentVisited.ALLOTMENT && spouseDetail?.id"
+                [ref_id]="spouseDetail?.id" show="ACTIVE"></app-sponsorship-allotment-ref-list>
+        </div>
+    </div>
+</div>
+<div class="tab-pane show active" [hidden]="currentSegment != segement.BASIC">
+    <div class="row text-center">
+        <!-- <ng-container *ngFor="let s of arrayStaff"> -->
+        <div class="col-lg-4 col-md-12 col-xl-4" *ngIf="!loadingData">
+            <profile-widget [profileData]="staffData"></profile-widget>
+        </div>
+        <div class="col-lg-8 col-md-8 col-xl-8" *ngIf="!loadingData && !isDeleted">
+            <div class="row pt-5 ">
+                <info-view [sourceData]="staffData" [mapData]="showData"></info-view>
+            </div>
+
+            <div class="row pt-5 " *ngIf="spouseDetail.staff_emp_id && !isDeleted">
+                <info-view [sourceData]="spouseDetail" [mapData]="spouseInfoView"></info-view>
+            </div>
+        </div>
+        <!-- </ng-container> -->
+
+    </div>
+</div>
+<app-page-loader [loading]="loadingData"></app-page-loader>

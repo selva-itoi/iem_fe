@@ -1,0 +1,19 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="isModal"></app-page-breadcrumb>
+<div class="row" [hidden]="dataLoading">
+    <div class="card">
+        <div class="body">
+            <info-view [sourceData]="homeData" [formData]="basicFormData"></info-view>
+            <info-view [sourceData]="homeData" [mapData]="formOfficeField"></info-view>
+            <div class="row">
+                <div class="col-md-8 col-lg-8 mt-2 form-group p-2" style="border: 1px solid rgb(77, 77, 77);">
+                    <label class="col-sm-6 col-md-5 col-lg-5">In charge </label>
+                    <profile-widget [refId]="homeData?.staff_incharge_fk_id" widgetType="SMALL" ></profile-widget>
+                </div>
+                <div class="col-12">
+                    <info-view [sourceData]="homeData" [formData]="officeModify"></info-view>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-page-loader [loading]="dataLoading"></app-page-loader>

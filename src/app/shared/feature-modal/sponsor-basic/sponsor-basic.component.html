@@ -1,0 +1,19 @@
+<div class="modal-header" *ngIf="isModal">
+    <h4 class="modal-title pull-left">Sponsor Info</h4>
+    <button type="button" (click)="close()" class="btn-close close pull-right" aria-label="Close">
+        <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+</div>
+
+<div class="row text-center">
+    <div class="col-lg-4 col-md-12 col-xl-4" *ngIf="!loadingData">
+        <profile-widget [profileData]="sponsorData"></profile-widget>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-xl-8" *ngIf="!loadingData ">
+        <div class="row pt-5 about-list">
+            <info-view [sourceData]="sponsorData" [mapData]="showData"></info-view>
+        </div>
+    </div>
+    <app-page-loader [loading]="loadingData"></app-page-loader>
+</div>

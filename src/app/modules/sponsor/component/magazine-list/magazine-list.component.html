@@ -1,0 +1,28 @@
+<app-page-breadcrumb [pageInfo]="pageInfo"></app-page-breadcrumb>
+<tab-head [segment]="segement" [initial]="segement.ACTIVE" (onSelect)="onTabChange($event)"></tab-head>
+<div class="tab-content mt-0">
+    <div class="tab-pane show active" [hidden]="[segement.PRINT].includes(currentSegment)">
+        <app-table-list #tableList *ngIf="currentSegment == 'Active'" [tableConfig]="tableConfig"
+            [parenttblAction]="tblAction" [parentGetList]="getListData">
+        </app-table-list>
+        <app-table-list #tableList *ngIf="currentSegment == 'Inactive'" [tableConfig]="tableConfig"
+        [parenttblAction]="tblAction" [parentGetList]="getListData">
+    </app-table-list>
+    </div>
+    <div class="tab-pane show active" [hidden]="![segement.PRINT].includes(currentSegment)">
+        <div class="card">
+            <div class="body">
+                <app-form-generator #printForm [formData]="printFormData" [dynamicValidator]="dynamicFormData"></app-form-generator>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <div class="btn-group btn-group-lg">
+                            <button noDoubleClick type="button" (click)="print()" class="btn btn-primary mr-1"><i
+                                    class="pi {{printLoader ?'pi-spin pi-spinner': 'pi-print'}}"></i> Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

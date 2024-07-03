@@ -1,0 +1,53 @@
+<div class="row clearfix" *ngIf="info_message">
+    <div class="col-lg-12 col-md-12 col-sm-12 card">
+        <div class="alert alert-{{text_type}}" role="alert"><span class="text-center">{{info_message}}</span>
+        </div>
+    </div>
+</div>
+
+<ng-template pTemplate="modifyAlert" #modifyAlert>
+    <div class="row clearfix" *ngIf="+data?.modify_request">
+        <div class="col-lg-12 col-md-12 col-sm-12 card">
+            <div class="alert alert-{{text_type}}" role="alert"><span class="text-center">Modification Request is Pending you can'nt Raise New Request!.</span>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<ng-template pTemplate="modifyStatus" #modifyStatus>
+    <ng-container>
+        <div class="row clearfix text-center mb-1">
+            <div class="col-12" [ngSwitch]="+modifyData?.status">
+                <span class="text-success" *ngSwitchCase="'1'">Request Has been Approved</span>
+                <span class="text-info" *ngSwitchCase="'2'">Request waiting to approve</span>
+                <span class="text-danger" *ngSwitchDefault>Request Has been rejected</span>
+            </div>
+        </div>
+    </ng-container>
+</ng-template>
+
+<ng-template pTemplate="modifyFooter" #modifyInfo>
+    <info-view [sourceData]="modifyData" [direction]="'VERTICAL'" [mapData]="modifyMapData"></info-view>
+</ng-template>
+
+<ng-template pTemplate="modifyFooter" #modifyFooter>
+    <div class="col-md-12 text-center" [ngTemplateOutlet]="modifyStatus"></div>
+    <div class="col-md-12 text-center">
+        <div class="btn-group btn-group-lg">
+            <ng-container *ngIf="+modifyData?.status == 2 && hasPermissionApprove">
+                <button [disabled]="loading" (click)="approve()" class="btn btn-round btn-success">
+                    <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                    {{loading ? 'Approving..' :'Approve'}}
+                </button>
+                <!-- <button [disabled]="loading" (click)="approve()" class="btn ml-1 mr-1 btn-round btn-warning">
+                    <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                    {{loading ? 'Reviewing..' :'Ask Review'}}
+                </button> -->
+                <button [disabled]="loading" (click)="reject()" class="btn ml-1 btn-round btn-danger">
+                    <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                    {{loading ? 'Rejecting..' : 'Reject'}}
+                </button>
+            </ng-container>
+            <div class="col-md-12 text-center" *ngIf="!hasPermissionApprove">You Have'nt Permission to Approve/Reject the request</div>
+        </div>
+    </div>
+</ng-template>

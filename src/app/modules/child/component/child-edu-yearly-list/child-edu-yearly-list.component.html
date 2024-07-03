@@ -1,0 +1,35 @@
+<app-page-breadcrumb [isModal]="false" [pageInfo]="pageInfo"></app-page-breadcrumb>
+
+<ul class="nav nav-tabs1 table-nav">
+    <ng-container *ngFor="let s of segement | keyvalue:returnZero">
+        <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'show active': currentSegment==s.value}" (click)="changeSegment(s.value)"
+                href="javascript:void(0)">{{s.value |
+                titlecase}}</a>
+        </li>
+    </ng-container>
+</ul>
+<div class="tab-content mt-0">
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.LIST">
+        <app-table-list *ngIf="segmentVisited.LIST" [tableConfig]="tableConfig" [parenttblAction]="tblAction"
+            [parentGetList]="getListPendingData">
+        </app-table-list>
+    </div>
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.MODIFYREQUEST">
+        <app-modify-list *ngIf="segmentVisited.MODIFYREQUEST" [whereStatus]="[2]" [module]="modifyModule">
+        </app-modify-list>
+    </div>
+    
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.UPCOMING">
+        <app-form-generator #basicForm [formData]="basicFormData"></app-form-generator>
+        <div class="row">
+            <div class="col-12 text-center pb-2">
+                <button (click)="search()" class="btn btn-primary text-center" >Search</button>
+            </div>
+        </div>
+        <app-table-list *ngIf="segmentVisited.UPCOMING" #upcomingTbl [tableConfig]="tableConfig" [parenttblAction]="tblAction"
+            [parentGetList]="pendingUpcoming">
+        </app-table-list>
+    </div>
+
+</div>

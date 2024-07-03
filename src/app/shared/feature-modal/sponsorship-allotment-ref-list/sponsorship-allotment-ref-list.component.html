@@ -1,0 +1,36 @@
+<div class="row clearfix">
+    <div class="col-md-12 col-lg-12">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            #
+                        </th>
+                        <th>Donor Name</th>
+                        <th>Donor Id</th>
+                        <th>Church Ministry Area</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let e of allotmentList; let i = index">
+                        <tr>
+                            <td>{{i + 1}}</td>
+                            <td>{{e?.name}}</td>
+                            <td><a href="javascript:void(0);" (click)="viewSponsor(e?.sponsor_id)"
+                                    [title]="e?.name">{{e?.sponsor_id}}</a></td>
+                            <td>{{e?.promotionalName}}</td>
+                            <td>
+                                <span *ngIf="e?.deleted_at" class="badge badge-success">Completed</span>
+                                <span *ngIf="!e?.deleted_at" class="badge badge-info">Active</span>
+                            </td>
+                            <td>{{e?.created_at | date:'dd-MM-yyyy' }}</td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

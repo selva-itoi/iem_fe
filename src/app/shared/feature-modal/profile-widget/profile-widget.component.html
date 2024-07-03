@@ -1,0 +1,28 @@
+<a class="card" href="javascript:void(0)" *ngIf="widgetType == 'CARD' else mediaType">
+    <div class="body text-center">
+        <img class="img-thumbnail rounded-circle" [src]="data?.profile_img_path" imageLoad [alt]="data?.name">
+        <h6 class="mt-3">{{data?.name}}</h6>
+        <div class="text-center text-muted">{{data?.description}}</div>
+    </div>
+    <div class="card-footer text-center">
+        <div class="row clearfix">
+            <div class="col-6">
+                <i class="fa fa-tag font-22"></i>
+                <div><span>{{data?.colLText}}</span></div>
+            </div>
+            <div class="col-6">
+                <div><span>{{data?.colRText}} </span></div>
+            </div>
+        </div>
+    </div>
+</a>
+<ng-template #mediaType>
+    <div class="media">
+        <img class="rounded mr-3 img-thumbnail" style="width: 70px;" [src]="data?.profile_img_path" imageLoad
+            [alt]="data?.name">
+        <div class="media-body">
+            <h5 class="m-0">{{data?.name}}</h5>
+            <info-view [sourceData]="data?.result" [mapData]="data?.col"></info-view>
+        </div>
+    </div>
+</ng-template>

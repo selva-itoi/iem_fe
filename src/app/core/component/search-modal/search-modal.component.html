@@ -1,0 +1,62 @@
+<div class="search_div open">
+    <div class="card">
+        <div class="body">
+            <div id="navbar-search" class="navbar-form search-form">
+                <div class="input-group mb-0">
+                    <input type="text" [formControl]="searchControl" class="form-control" placeholder="Search...">
+                    <div class="input-group-append">
+                        <!-- <span class="input-group-text"><i class="icon-magnifier"></i></span> -->
+                        <a (click)="onCancel()" href="javascript:void(0);" class="search_toggle btn btn-danger"><i
+                                class="icon-close"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group" [formGroup]="filterForm">
+        <div class="row clearfix">
+            <div class="col-md-3 col-lg-3" *ngFor="let a of filterCol">
+                <select (change)="searchChange(searchControl)" class="custom-select" [formControlName]="a.tblName">
+                    <option   value="">{{a.tblName | titlecase}}</option>
+                    <option *ngFor="let b of FORM_SUPPORT_DATA[a.tblName]" [value]="b.id" >{{b[a.colName ||  a.tblName+'Name']}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <span class="mb-1 text-muted ">Search Result <small class="float-right text-muted"> <i *ngIf="loading"
+                class="pi pi-spin pi-spinner"></i>
+        </small></span>
+    <div class="search_container">
+        <div *ngIf="!resultData?.length" class="text-center" style="margin-top: 50%">
+            No Result Found
+        </div>
+        <ul class="right_chat list-unstyled mb-0">
+            <ng-container *ngFor="let t of resultData;let i = index">
+                <li [ngClass]="{'offline': t?.active , 'online' : !t?.active}" (click)="onConfirm(t)">
+                    <a href="javascript:void(0);">
+                        <div class="media">
+                            <div class="media-object">
+                                <img [src]="t?.avatarPic" imageLoad [alt]="t?.detail" class="w35 h35 rounded">
+                            </div>
+                            <div class="media-body">
+                                <span class="name" [innerHTML]="t?.detail"></span>
+                                <span class="message" [innerHTML]="t?.mutedText"></span>
+                                <span class="badge badge-outline status"></span>
+                            </div>
+                            <div style="flex: 0;" class="text-muted">
+                                <span *ngIf="t?.topEndText" class="float-right">
+                                    {{t?.topEndText}}
+                                </span>
+                                <span *ngIf="t?.bottomEndText" class="float-right">
+                                    {{t?.bottomEndText}}
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            </ng-container>
+        </ul>
+
+    </div>
+</div>

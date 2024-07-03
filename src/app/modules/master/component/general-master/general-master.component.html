@@ -1,0 +1,22 @@
+<app-page-breadcrumb
+    [pageInfo]="{title : 'General ',buttonShowBtn : true,button :{title : 'Add New', url :'',icon : 'pi pi-plus'}}"
+    (btnClickEvent)="addNew($event)"></app-page-breadcrumb>
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <tab-head #tab [segment]="segment" (onSelect)="currentSegment = $event.key">
+            <ng-template #tabBody let-active="active">
+                <div class="tab-content mt-0">
+                    <ng-container *ngFor="let a of allKeys">
+                        <app-master #masterPage [addBtn]="false"
+                            *ngIf="active == segment[a] && active!=$any(segment)?.FIELD" [title]="a | titlecase"
+                            [tblCol]="COL[a]" [tbl]="a | lowercase"></app-master>
+                        <app-master #masterPage *ngIf="active==$any(segment)?.FIELD && active == segment[a]"
+                            save="saveField" [hideBasic]="true" getApi="getFieldByid" getListApi="getField"
+                            saveApi="saveField" [title]="'Field'" [tblCol]="COL[a]" [tbl]="'field'"
+                            [isAddress]="true" (onTblAction)="tblAction($event)"></app-master>
+                    </ng-container>
+                </div>
+            </ng-template>
+        </tab-head>
+    </div>
+</div>

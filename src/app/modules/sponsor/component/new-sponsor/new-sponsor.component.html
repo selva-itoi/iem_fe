@@ -1,0 +1,346 @@
+<!-- <div class="modal-header" *ngIf="isModal">
+    <h6 class="mb-0 modal-title">Sponsor Details</h6>
+    <button type="button" class="close" (click)="close()"><span>X</span></button>
+</div>
+
+<div class="block-header" *ngIf="!isModal">
+    <div class="row clearfix">
+        <div class="col-md-6 col-sm-12">
+            <h1>{{sponsorId ? 'Update ' : 'New '}} Sponsor</h1>
+        </div>
+        <div class="col-md-6 col-sm-12 text-right hidden-xs">
+            <a *ngIf="showBtnList; else btnBack" [routerLink]="[urlService.SPONSOR.LIST.URL]"
+                class="btn btn-sm btn-success" title="Sponsor List">
+                <i class="icon-list"></i> Sponsor List</a>
+            <ng-template #btnBack>
+                <a href="javascript:void(0)" (click)="close()" class="btn btn-sm btn-primary" title="Back"><i
+                        class="pi pi-arrow-left"></i> Back</a>
+            </ng-template>
+            <span class="text-muted text-right lead" *ngIf="sponsorId"
+                style="padding-left: 73vw;">{{sponsorId}}</span>
+        </div>
+    </div>
+</div> -->
+
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="isModal"></app-page-breadcrumb>
+<div class="modal-body  pt-4 mb-4">
+    <div class="clearfix">
+        <div class="card">
+            <ul class="nav nav-tabs1 table-nav">
+                <ng-container *ngFor="let s of segement | keyvalue:returnZero">
+                    <li class="nav-item">
+                        <a class="nav-link"
+                            [ngClass]="{'show active': currentSegment==s.value, 'error-segment' : segementError[s.key] == true}"
+                            (click)="changeSegment(s.value)" href="javascript:void(0)">{{s.value}}</a>
+                    </li>
+                </ng-container>
+            </ul>
+            <div class="tab-content mt-0">
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.BASIC">
+                    <div class="body" [formGroup]="sponsor_Form" (keyup.enter)="onSubmit()">
+                        <div class="form-group">
+                            <div class="row clearfix">
+                                <div class="col-md-2 col-lg-2">
+                                    <label>Title</label>
+                                    <select class="custom-select" formControlName="title">
+                                        <option value="">{{masterLoading['title'] ? 'loading...' : 'Select Title'}}
+                                        </option>
+                                        <ng-container *ngFor="let m of MASTER_DATA.title | keyvalue">
+                                            <option [value]="m?.value?.id">{{m?.value?.titleName}}</option>
+                                        </ng-container>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 col-lg-4">
+                                    <label>Donor / Group Name * </label>
+                                    <input class="form-control"
+                                        [class.error]="submitted && sponsor_Form.get('name')?.errors"
+                                        formControlName="name" type="text">
+                                    <span class="error" *ngIf="sponsor_Form.get('name')?.errors?.required">
+                                        Donor Name Required</span>
+                                    <span class="error"
+                                        *ngIf=" sponsor_Form.get('name').dirty  && sponsor_Form.get('name')?.errors?.pattern">
+                                        Donor should be Valid</span>
+                                </div>
+                                <div class="col-md-6 col-lg-6 form-group">
+                                    <label>Email Id * </label>
+                                    <input class="form-control"
+                                        [class.error]="submitted && sponsor_Form.get('email_id')?.errors"
+                                        formControlName="email_id" type="text">
+                                    <span class="error" *ngIf="sponsor_Form.get('email_id')?.errors?.required">
+                                        Email Id is Required</span>
+                                    <span class="error" *ngIf="sponsor_Form.get('email_id')?.errors?.pattern">
+                                        Email Should be valid</span>
+                                    <span class="error" *ngIf="sponsor_Form.get('email_id')?.errors?.isNotUnique">
+                                        Email Exists</span>
+                                    <span *ngIf="emailCheckingloading"> <i
+                                            class="fa fa-refresh fa-spin"></i>Checking.....</span>
+                                </div>
+                                <div class="col-md-12 col-lg-12 form-group">
+
+                                    <app-form-generator #basicForm [formData]="basicFormData"></app-form-generator>
+                                </div>
+                                <!-- <div class="col-md-6 col-lg-6 form-group">
+                                    <label>Region Name </label>
+                                    <select (change)="regionzone()" [class.error]="submitted && sponsor_Form.get('region')?.errors"
+                                        class="custom-select" formControlName="region">
+                                        <option value="">
+                                            Select Region Name
+                                        </option>
+                                        <option *ngFor="let agency of regiondata" [value]="agency?.id">{{agency?.regionName}} </option>
+                                    </select>
+                                    <span class="error"
+                                        *ngIf="sponsor_Form.get('region')?.errors?.required">
+                                        Region Name is Required</span>
+                                </div>
+                                <div class="col-md-6 col-lg-6 form-group">
+                                    <label>zone</label>
+                                    <select (change)="zonepromotional()" [class.error]="submitted && sponsor_Form.get('zone')?.errors"
+                                        class="custom-select" formControlName="zone">
+                                        <option value="">
+                                            Select Zone Name
+                                        </option>
+                                        <option *ngFor="let zone of zonedata" [value]="zone?.id">{{zone?.zoneName}} </option>
+                                    </select>
+                                    <span class="error"
+                                        *ngIf="sponsor_Form.get('zone')?.errors?.required">
+                                        Zone is Required</span>
+                                </div>
+
+                                <div class="col-md-6 col-lg-6 form-group">
+                                    <label>Church minstry office</label>
+                                    <select [class.error]="submitted && sponsor_Form.get('promotional_office')?.errors"
+                                        class="custom-select" formControlName="promotional_office">
+                                        <option value="">
+                                            Select Church minstry office
+                                        </option>
+                                        <option *ngFor="let zone of promotionaldata" [value]="zone?.id">{{zone?.promotionalName}} </option>
+                                    </select>
+                                    <span class="error"
+                                        *ngIf="sponsor_Form.get('promotional_office')?.errors?.required">
+                                        Church minstry office is Required</span>
+                                </div> -->
+
+                                <!-- <div class="col-md-6 col-lg-6 form-group">
+                                    <label>Promotional Office </label>
+                                    <select [class.error]="submitted && sponsor_Form.get('promotional_office')?.errors"
+                                        class="custom-select" formControlName="promotional_office">
+                                        <option value="">
+                                            {{masterLoading['promotional_office'] ? 'loading...' :
+                                            'Select Promotional Office'}}
+                                        </option>
+                                        <ng-container *ngFor="let m of MASTER_DATA.promotional_office | keyvalue">
+                                            <option [value]="m?.value?.id">{{m?.value?.promotionalName}}</option>
+                                        </ng-container>
+                                    </select>
+                                    <span class="error"
+                                        *ngIf="sponsor_Form.get('promotional_office')?.errors?.required">
+                                        Promotional Office Required</span>
+                                </div> -->
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row clearfix">
+                                <!-- <div class="col-md-6 col-lg-6">
+                                    <label>Email Id * </label>
+                                    <input class="form-control"
+                                        [class.error]="submitted && sponsor_Form.get('email_id')?.errors"
+                                        formControlName="email_id" type="text">
+                                    <span class="error" *ngIf="sponsor_Form.get('email_id')?.errors?.required">
+                                        Email Id is Required</span>
+                                    <span class="error" *ngIf="sponsor_Form.get('email_id')?.errors?.pattern">
+                                        Email Should be valid</span>
+                                    <span class="error" *ngIf="sponsor_Form.get('email_id')?.errors?.isNotUnique">
+                                        Email Exists</span>
+                                    <span *ngIf="emailCheckingloading"> <i
+                                            class="fa fa-refresh fa-spin"></i>Checking.....</span>
+                                </div> -->
+                                <div class="col-md-3 col-lg-3">
+                                    <label>Code*</label>
+                                    <select [class.error]="submitted && sponsor_Form.get('country_code')?.errors"
+                                        class="custom-select" formControlName="country_code">
+                                        <option value="">{{masterLoading['country'] ? 'loading...' :
+                                            'Select Code'}}
+                                        </option>
+                                        <ng-container *ngFor="let m of MASTER_DATA.country | keyvalue">
+                                            <option [value]="m?.value?.countryPhoneCode">{{m?.value?.countryName}} -
+                                                +{{m?.value.countryPhoneCode}}</option>
+                                        </ng-container>
+                                    </select>
+                                    <span class="error" *ngIf="sponsor_Form.get('country_code')?.errors?.required">
+                                        Country Code Required</span>
+                                </div>
+                                <div class="col-md-3 col-lg-3">
+                                    <label>Mobile No *</label>
+                                    <input class="form-control"
+                                        [class.error]="submitted && sponsor_Form.get('mobile_no')?.errors"
+                                        formControlName="mobile_no" type="text">
+                                    <span class="error" *ngIf="sponsor_Form.get('mobile_no')?.errors?.required">
+                                        Mobile Number Required</span>
+                                    <span class="error"
+                                        *ngIf=" sponsor_Form.get('mobile_no').dirty  && sponsor_Form.get('mobile_no')?.errors?.pattern">
+                                        Mobile should be Valid</span>
+                                    <span class="error" *ngIf="sponsor_Form.get('mobile_no')?.errors?.isNotUnique">
+                                        Mobile Exists</span>
+                                    <span *ngIf="mobileCheckingloading"> <i
+                                            class="fa fa-refresh fa-spin"></i>Checking.....</span>
+                                </div>
+                                <div class="col-md-3 col-lg-3">
+                                    <label>Alt Mobile No *</label>
+                                    <input class="form-control"
+                                        [class.error]="submitted && sponsor_Form.get('alt_mobile_no')?.errors"
+                                        formControlName="alt_mobile_no" type="text">
+                                    <span class="error" *ngIf="sponsor_Form.get('alt_mobile_no')?.errors?.required">
+                                        Alt Mobile Number Required</span>
+                                    <span class="error"
+                                        *ngIf=" sponsor_Form.get('alt_mobile_no').dirty  && sponsor_Form.get('alt_mobile_no')?.errors?.pattern">
+                                        Alt Mobile should be Valid</span>
+                                    <span class="error" *ngIf="sponsor_Form.get('alt_mobile_no')?.errors?.isNotUnique">
+                                        Alt Mobile Exists</span>
+                                    <span *ngIf="mobileCheckingloading"> <i
+                                            class="fa fa-refresh fa-spin"></i>Checking.....</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row clearfix">
+                            <div class="form-group">
+                                <div class="col-md-12 col-lg-12">
+                                    <label>Is it same whatsApp Number?</label>
+                                    <label class="control-inline fancy-checkbox ml-4">
+                                        <input formControlName="is_whats_app" type="checkbox">
+                                        <span>Yes</span>
+                                    </label>
+                                    <!-- </div> -->
+                                    <!-- <div class="col-md-12 col-lg-12"> -->
+                                    <label style="margin-left:120px;">Is HE/SHE New Donor ?</label>
+                                    <label class="control-inline fancy-checkbox ml-4">
+                                        <input formControlName="is_new_sponsor" type="checkbox">
+                                        <span>Yes</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row clearfix">
+                            <div class="form-group">
+                                <div class="col-md-12 col-lg-12">
+                                    <label>Report Language</label>
+                                    <select [class.error]="submitted && sponsor_Form.get('lang_id')?.errors"
+                                        class="custom-select" formControlName="lang_id">
+                                        <option value="">{{masterLoading['lang'] ? 'loading...' :
+                                            'Select Language'}}
+                                        </option>
+                                        <ng-container *ngFor="let m of MASTER_DATA.lang | keyvalue">
+                                            <option [value]="m?.value?.id">{{m?.value?.langName}}</option>
+                                        </ng-container>
+                                    </select>
+                                    <span class="error" *ngIf="sponsor_Form.get('lang_id')?.errors?.required">
+                                        Report Language Required</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row clearfix">
+                                <div class="col-md-6 col-lg-6">
+                                    <label>Date of Birth </label>
+                                    <br>
+                                    <p-calendar [dateFormat]="dateFormat" [monthNavigator]="true"
+                                        [yearRange]="dateRange" [yearNavigator]="true"
+                                        [class.error]="submitted && sponsor_Form.get('dob')?.errors"
+                                        inputStyleClass="form-control" placeholder="Date of Birth"
+                                        formControlName="dob">
+                                    </p-calendar>
+                                    <span class="error" *ngIf="sponsor_Form.get('dob')?.errors?.required">
+                                        Date of Birth is Required</span>
+                                </div>
+
+                                <div class="col-md-6 col-lg-6">
+                                    <label>Date Of Marriage </label>
+                                    <br>
+                                    <p-calendar [dateFormat]="dateFormat" [monthNavigator]="true"
+                                        [yearRange]="dateRange" [yearNavigator]="true"
+                                        [class.error]="submitted && sponsor_Form.get('do_marraige')?.errors"
+                                        inputStyleClass="{{submitted && sponsor_Form.get('do_marraige')?.errors ? 'error form-control' : 'form-control'}}"
+                                        placeholder="Date of Marriage" formControlName="do_marraige">
+                                    </p-calendar>
+                                    <span class="error" *ngIf="sponsor_Form.get('do_marraige')?.errors?.required">
+                                        Date of Marriage Required</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Address -->
+                        <app-form-generator #address [formData]="addressFormData"></app-form-generator>
+                        <!-- pan card and tally code -->
+                        <div class="form-group">
+                            <div class="row clearfix">
+                                <div class="col-md-6 col-lg-6">
+                                    <label>Pan Card</label>
+                                    <br>
+                                    <input class="form-control" placeholder="Pan Card"
+                                        [class.error]="submitted && sponsor_Form.get('pan_card')?.errors"
+                                        formControlName="pan_card" type="text">
+                                    <span class="error" *ngIf="sponsor_Form.get('pan_card')?.errors?.required">
+                                        Pan Card is Required</span>
+                                </div>
+                                <div class="col-md-6 col-lg-6">
+                                    <label>Tally Code</label>
+                                    <br>
+                                    <input class="form-control" placeholder="Tally Code"
+                                        [class.error]="submitted && sponsor_Form.get('tally_code')?.errors"
+                                        formControlName="tally_code" type="text">
+                                    <span class="error" *ngIf="sponsor_Form.get('tally_code')?.errors?.required">
+                                        Tally Code is Required</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-md-4 col-lg-4">
+                                <label>Remarks </label>
+                                <input class="form-control"
+                                    [class.error]="submitted && sponsor_Form.get('comment')?.errors"
+                                    formControlName="comment" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group mt-1">
+                            <div class="row clearfix">
+                                <div class="help-text small text-info">Username is Primary Mobile No and Default
+                                    password is
+                                    2022@sponsor
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.MAGAZINE">
+                    <dynamic-table-form #dynTbl [formData]="dynFormData"
+                        [defaultBtn]="dynTblButton"></dynamic-table-form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row clearfix align-center" [hidden]="dataLoading">
+            <!-- <div class="col-12" *ngIf="isModifyRequest">
+                    <div class="alert alert-primary" role="alert">
+                        Modification Request is Pending you can'nt Raise New Request!.
+                    </div>
+                </div> -->
+
+            <div class="col-md-12 text-center">
+                <div class="btn-group btn-group-lg">
+
+                    <button noDoubleClick *ngIf="!isModifyRequest" [disabled]="loading || disabled_save" type="button"
+                        (click)="onSubmit()" class="btn btn-primary mr-1">
+                        <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                        {{ loading ? 'Saving...' : 'Submit'}}
+                    </button>
+                    <button [disabled]="loading" (click)="close()" type="button"
+                        class="btn btn-outline-danger ml-1">Cancel</button>
+
+                </div>
+            </div>
+        </div>
+        <app-page-loader [loading]="dataLoading"></app-page-loader>
+    </div>
+</div>

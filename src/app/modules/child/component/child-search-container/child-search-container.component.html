@@ -1,0 +1,31 @@
+<div class="row clearfix">
+    <div class="col-5">
+        <div class="list-group cursor-pointer" style="flex-direction: row;" (click)="openStaffModal()">
+            <div class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                <label class="cursor-pointer">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Search Staff</h5>
+                    </div>
+                    <small>To select the Staff to allotment</small>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="profileType == 'HOME'" class="col-7 d-flex flex-direction-row">
+        <div class="or-divider">
+            <b>OR</b>
+        </div>
+        <div class="form-group w-100">
+            <label>Parent Aadhar</label>
+            <div class="input-group">
+                <input type="number" [class.error]="searchControl?.errors" [disabled]="loading" class="form-control" style="width: 85%;" [formControl]="searchControl">
+                <div class="input-group-append" *ngIf="loading"><span class="btn btn-outline-secondary">loading...</span></div>
+            </div>
+        </div>
+    </div>
+    <ng-container *ngIf="showResult">
+        <div class="col-6" *ngFor="let a of searchResult">
+            <profile-widget [profileData]="a" type="PARENTS" widgetType="SMALL"></profile-widget>
+           </div>
+    </ng-container>
+</div>

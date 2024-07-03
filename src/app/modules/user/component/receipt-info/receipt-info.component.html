@@ -1,0 +1,41 @@
+<app-page-breadcrumb [pageInfo]="pageInfo"></app-page-breadcrumb>
+<div class="card">
+    <div class="body">
+        <div class="row">
+            <div class="col-6">
+                <small class="text-muted"> <b>Volunteer Name:</b> {{receiptdata?.volunteerName}} </small>
+                <!-- <p>{{volunterData?.volunteer_id}}</p> -->
+                <hr>
+                <small class="text-muted"> <b>Volunteer Id:</b>  {{receiptdata?.volunteer_id}} </small>
+                <!-- <p>{{volunterData?.volunteer_id}}</p> -->
+                <hr>
+                <small class="text-muted"><b>Mobile:</b>  {{receiptdata?.mobile_no}} </small>
+                <!-- <p>{{volunterData?.mobile_no}}</p> -->
+                <hr>
+                <small class="text-muted"><b>Birth Date:</b>  {{receiptdata?.date_of_birth}} </small>
+                <hr>
+                <small class="text-muted"><b>Receipt Prefix:</b>  {{receiptdata?.prefix}} </small>
+                <!-- <p class="m-b-0">{{volunterData?.date_of_join | dateFormat}}</p> -->
+                <hr>
+                <small class="text-muted"><b>Receipt Start:</b>  {{receiptdata?.start_from}} </small>
+            </div>
+            <div class="col-6">
+
+                <small class="text-muted"><b>Receipt End:</b>  {{receiptdata?.end_no}} </small>
+                <hr>
+                <small class="text-muted"><b>Created By:</b>  {{receiptdata?.created_by}} </small>
+                <hr>
+                <small class="text-muted"><b>Last Updated:</b>  {{receiptdata?.last_updated_by}} </small>
+                <hr>
+                <small class="text-muted"><b>Status:</b> {{receiptdata?.status}} </small>
+            </div>
+
+        </div>  
+        <br><br>
+        <div class="row clearfix text-center">
+            <div class="col-12">
+            <button  (click)="close()" class="btn ml-1 btn-round btn-warning" >Back</button>
+        </div>
+        </div>
+    </div>
+</div>

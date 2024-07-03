@@ -1,0 +1,19 @@
+<div class="input-group" [formGroup]="imageForm" enctype="multipart/form-data" contentType="false">
+    <div class="custom-file">
+        <input [attr.disabled]="disabled ? '' : null" (change)="handleFileInput($event)" [accept]="fileAccessType[data.fileType].accessType" type="file"
+            formControlName="pimage" class="custom-file-input"/>
+        <label for="redirect_link" class="custom-file-label">{{data?.label | titlecase}}</label>
+        <span class="error" *ngIf="!fileInfos.progress && fileStatusMessage">{{fileStatusMessage}}</span>
+    </div>
+</div>
+<div class="pt-2">
+    <img imageLoad *ngIf="!fileInfos.progress && !doctype" [src]="fileInfos.filePath" class="img-thumbnail w100 h100">
+    <!-- <img imageLoad *ngIf="!fileInfos.progress" [src]="fileInfos.filePath" class="img-thumbnail w100 h100"> -->
+
+    <img imageLoad *ngIf="!fileInfos.progress && doctype" src="assets/images/Document.jpg" class="img-thumbnail w100 h100">
+   
+</div>
+<div *ngIf="fileInfos.progress" class="progress">
+    <div class="progress-bar" [style.width.%]="fileInfos.progress">
+        {{fileInfos.progress}}%</div>
+</div>

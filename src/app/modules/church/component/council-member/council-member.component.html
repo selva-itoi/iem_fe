@@ -1,0 +1,40 @@
+<div class="row clearfix">
+    <div class="col-md-12 col-lg-12">
+        <label><b>{{title}}</b>
+        </label>
+    </div>
+</div>
+
+<!-- form start -->
+<div class="card">
+    <div class="">
+        <div class="row clearfix" *ngIf="mode =='EDIT'">
+            <div style="flex-direction: row;" class="col-6 mb-4" (click)="searchModal()">
+                <div class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                    <label class="cursor-pointer">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Select Member</h5>
+                        </div>
+                        <small>Search Member to add</small>
+                    </label>
+                </div>
+            </div>
+            <div style="flex-direction: row;" class="col-6 mb-4" (click)="searchModal('STAFF')">
+                <div class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                    <label class="cursor-pointer">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Select Staff</h5>
+                        </div>
+                        <small>Search Staff to add as member</small>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="mb-2 mt-2" *ngIf="memberInfo?.name">
+            <info-view [sourceData]="memberInfo" [direction]="'HORIZONTAL'" [mapData]="memberShowData"></info-view>
+        </div>
+        <dynamic-table-form *ngIf="basicFormData.length" #dyTbl [formData]="basicFormData" [mode]="mode"
+            (onAction)="onAction($event)" [dynamicValidator]="dynamicValidator"></dynamic-table-form>
+    </div>
+    <!--body -->
+</div> <!-- card-->

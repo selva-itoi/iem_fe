@@ -1,0 +1,45 @@
+<div class="row clearfix">
+    <ng-container *ngFor="let a of mapData">
+        <ng-container *ngIf="result">
+            <div [hidden]="a?.invisible"
+                class="col-{{a.col? a.col : '6'}} text-left {{direction=='HORIZONTAL' ? 'horiz' : 'vertical'}}">
+                <label class="text-muted text-nowrap">{{a.title}} :</label>
+                <ng-container [ngSwitch]="a.type" *ngIf="checkModify(a.name,a.type) as val">
+                    <p *ngSwitchCase="'DATE'">
+                        <span [class]="val?.newValue ? 'line-through' : ''"
+                            [innerHTML]="val.oldValue | date:'dd/MM/yyyy'"></span>
+                        <mark *ngIf="val.newValue"> {{val.newValue | date:'dd/MM/yyyy'}}</mark>
+                    </p>
+                    <!-- date:'MM/dd/yyyy hh:mm:ss a' -->
+                    <p *ngSwitchCase="'CURRENCY'">
+                        <span [class]="val?.newValue ? 'line-through' : ''"
+                            [innerHTML]="+val.oldValue | currencyFormat"></span>
+                        <mark *ngIf="val.newValue">{{+val.newValue | currencyFormat}}</mark>
+                    </p>
+                    <p *ngSwitchCase="'BOOLEAN'">
+                        <span [class]="val?.newValue ? 'line-through' : ''"
+                            [innerHTML]="+val.oldValue ? 'YES' : 'NO'"></span>
+                        <mark *ngIf="val.newValue">{{+val.newValue ? 'YES' : 'NO'}}</mark>
+                    </p>
+                    <div class="imagediv" *ngSwitchCase="'FILE'">
+                        <image-doc-grid [src]="val?.newValue  || result[a.name + '_path']"
+                            [showDelete]="false"></image-doc-grid>
+                        <mark class="text-small" *ngIf="val.newValue">New Image</mark>
+                    </div>
+                    <ng-container *ngSwitchDefault>
+                        <p *ngIf="a.isClickable">
+                            <strong><a title="Info" (click)="openInfo(a.viewType,result[a.name])"
+                                    href="javascript:void(0)">{{result[a.name] }}</a></strong>
+                        </p>
+                        <ng-container *ngIf="!a.isClickable">
+                            <p>
+                                <span [class]="val?.newValue ? 'line-through' : ''" [innerHTML]="val.oldValue"></span>
+                                <mark *ngIf="val.newValue">{{val.newValue}}</mark>
+                            </p>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </ng-container>
+    </ng-container>
+</div>

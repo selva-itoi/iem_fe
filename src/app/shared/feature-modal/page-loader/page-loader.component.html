@@ -1,0 +1,8 @@
+<div [class.card]="card" *ngIf="loading">
+    <div [class.body]="card">
+        <div  class="fetching mt20 mb20 col-lg-12 col-md-12 col-sm-12" style="text-align: center">
+            <i class="pi pi-spin pi-spinner"></i>
+            {{loadingText}}
+        </div>
+    </div>
+</div>

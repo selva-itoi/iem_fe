@@ -1,0 +1,28 @@
+<app-page-breadcrumb [pageInfo]="pageInfo"></app-page-breadcrumb>
+<div class="card">
+    <div class="body" (keyup.enter)="onSubmit()">
+        <div>
+            <div class="row clearfix" *ngIf="basicFormData.length && loadForm">
+                <app-form-generator  #basicForm (onChangeEvent)="onChange($event)" [formData]="basicFormData">
+                </app-form-generator>
+            </div>
+
+            <div class="col-md-12 mb-2 text-center">
+                <span class="error" *ngIf="!isValid"> Please Make sure all are Valid</span>
+            </div>
+            <div class="col-md-12 text-center">
+                <div class="btn-group btn-group-lg">
+                    <button noDoubleClick [disabled]="loading" type="button" (click)="onSubmit()"
+                        class="btn btn-primary mr-1">
+                        <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                        {{ loading ? 'Exporting...' : 'Export'}}
+                    </button>
+                    <button [disabled]="loading" (click)="close()" type="button"
+                        class="btn btn-danger mr-1">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <!-- loader -->
+    </div>
+    <!--end body -->
+</div>

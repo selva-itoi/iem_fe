@@ -1,0 +1,77 @@
+<div class="card body">
+    <!-- <div class="p-2">
+        <label>{{ type == 'BIRTHDAY' ? 'Birthday' : 'Wedding Anniversary'}} Notification</label>
+    </div> -->
+    <button class="btn btn-outline-info float-right" (click)="exportDoc()"><i class="pi pi-download"></i></button>
+    <ul class="nav nav-tabs3">
+        <ng-container *ngFor="let s of segement | keyvalue:returnZero">
+            <li class="nav-item">
+                <a class="nav-link" [ngClass]="{'show active': currentSegment==s.value}"
+                    (click)="changeSegment(s.value)" href="javascript:void(0)">
+                    {{s.value | titlecase}}</a>
+            </li>
+        </ng-container>
+    </ul>
+    <div class="tab-pane active overflow-auto p-2" style="height: calc(1.2 * 35vh);" [hidden]="dataLoading">
+        <span>TOTAL {{type == 'BIRTHDAY' ? 'BIRTHDAY' : 'ANNIVERSARY'}}</span>
+        <div class="big-text p-0">
+            <h2>{{DATA_MEMBER_REMEMBER[currentSegment]?.totalRecord || 0}}</h2>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <tbody>
+                    <tr *ngFor="let a of DATA_MEMBER_REMEMBER[currentSegment]?.data" (click)="showProfile(a)">
+                        <td class="w40">
+                            <img [src]="a?.profile_img_path || ''" imageLoad class="w35 rounded-circle">
+                        </td>
+                        <td>
+                            <small>{{a?.name}}</small>
+                            <h5 class="mb-0">{{a?.staff_emp_id || a?.sponsor_id}}</h5>
+                        </td>
+                        <td class="text-right d-flex">
+                            <p class="text dob_text w-100">{{ type == 'BIRTHDAY'? a?.dob : a?.do_marraige | date}}</p>
+                            <div class="btn-cake">
+                                <!-- <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user" role="img"
+                                    viewBox="0 0 448 512" class="svg-inline--fa fa-user fa-w-14 fa-fw fa-lg">
+                                    <path fill="currentColor"
+                                        d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"
+                                        class="">
+                                    </path>
+                                </svg> -->
+
+                                <!-- <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="64" height="64"
+                                    viewBox="0 0 172 172" style=" fill:#26e07f;">
+                                    <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1"
+                                        stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"
+                                        stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none"
+                                        font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+                                        <path d="M0,172v-172h172v172z" fill="none"></path>
+                                        <g fill="#1fb141">
+                                            <path
+                                                d="M21.5,21.5v129h64.5v-32.25v-64.5v-32.25zM86,53.75c0,17.7805 14.4695,32.25 32.25,32.25c17.7805,0 32.25,-14.4695 32.25,-32.25c0,-17.7805 -14.4695,-32.25 -32.25,-32.25c-17.7805,0 -32.25,14.4695 -32.25,32.25zM118.25,86c-17.7805,0 -32.25,14.4695 -32.25,32.25c0,17.7805 14.4695,32.25 32.25,32.25c17.7805,0 32.25,-14.4695 32.25,-32.25c0,-17.7805 -14.4695,-32.25 -32.25,-32.25z">
+                                            </path>
+                                        </g>
+                                    </g>
+                                </svg> -->
+
+
+                                <img width="30px" class="img-responsive" src="assets/images/cake_icon.svg">
+                                <span class="notification-dot bg-pink">
+                                    {{type == 'BIRTHDAY'? a?.age:a?.yearAniversary}}
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div [class.card]="false" *ngIf="dataLoading" style="margin-top: 20px; margin-bottom: 20px;">
+        <div class="pt-2">
+            <div class="fetching  mt-20 mb-20 col-lg-12 col-md-12 col-sm-12" style="text-align: center">
+                <i class="pi pi-spin pi-spinner"></i>
+                please wait...
+            </div>
+        </div>
+    </div>
+</div>

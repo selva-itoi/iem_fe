@@ -1,0 +1,90 @@
+<app-page-breadcrumb [pageInfo]="pageInfo"></app-page-breadcrumb>
+<div class="modal-body  pt-4 mb-4">
+    <div>
+        <div class="row clearfix">
+            <div class="col-lg-3 col-md-3 col-xl-3">
+                <div class="card">
+                    <div class="body">
+                        <br>
+                        <b> Name: </b> {{receiptdata?.volunteerName}}<br><br>
+                        <b> Email Id:</b> {{receiptdata?.email_id}} <br><br>
+                        <b> mobile no:</b> {{receiptdata?.mobile_no}} <br><br>
+                        <b> Created By:</b> {{receiptdata?.created_by}}<br><br>
+                        <b> Last Updated:</b> {{receiptdata?.last_updated_by}} <br><br>
+                        <b>Status:</b> {{receiptdata?.status}} <br><br>
+                        <!-- <ng-container *ngFor="let a of officeKeys">
+                            <small class="text-muted">{{a?.title}}: </small>
+                            <p *ngIf="accountData?.id">{{accountData[a?.colName || ''] || ''}}</p>
+                            <hr class="mt-2">
+                        </ng-container> -->
+                    </div>
+                </div>
+                <!-- <div class="m-3" *ngIf="accountData">
+                    <info-view [sourceData]="accountData" [direction]="'VERTICAL'" [mapData]="updateInfo">
+                    </info-view>
+                </div> -->
+            </div>
+            <div class="col-lg-9 col-md-9 col-xl-9">
+                <div class="row">
+                    <div class="col-4"><b>Prefix:</b> {{receiptdata?.prefix}}</div>
+                    <div class="col-4"><b>Serial start No:</b> {{receiptdata?.start_from}}</div>
+                    <div class="col-4"><b>Serial End No:</b> {{receiptdata?.end_no}}</div>
+                </div>
+                <br>
+
+                <!-- <app-table-list [tableConfig]="tableConfig" [parentGetList]="getListData">
+            </app-table-list> -->
+                <p-table [value]="receiptbookdata" dataKey="id" editMode="row" [paginator]="true" [rows]="10"
+                    [tableStyle]="{'min-width': '50rem'}" [totalRecords]="data.length">
+                    <!-- 
+                    <p-table #arDT class="table table-hover mb-0" [value]="requestList" [paginator]="true" [rows]="10"
+                    [globalFilterFields]="cols" [tableStyle]="{ 'min-width': '120rem' }"
+                    [totalRecords]="requestList?.length"> -->
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width:8%">S.No</th>
+                            <th style="width:12%">Receipt Id</th>
+                            <th style="width:16%">Donation Id</th>
+                            <th style="width:16%">Remarks</th>
+                            <th style="width:16%">Status</th>
+                            <th style="width:10%">Action</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-product let-editing="editing" let-i="rowIndex">
+                        <tr [pEditableRow]="product">
+                            <td>{{i+1}}</td>
+                            <td> {{ product.receipt_id }}</td>
+                            <td>{{ product.donation_id }}</td>
+                            <td>{{ product.remarks }}</td>
+                            <td>
+                                <div class="success" *ngIf="product.status == 1">Paid</div>
+                                <div class="primary" *ngIf="product.status == 2">Pending</div>
+                                <div class="danger" *ngIf="product.status == 3">Blocked</div>
+                            </td>
+                            <td>
+                                <div class="flex align-items-center justify-content-center gap-2">
+                                    <button *ngIf="!product.donation_id" type="button"
+                                        class="btn btn-info btn-sm ml-1 ng-star-inserted" (click)="blockreceipt(i)">Block
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="paginatorleft" let-state>
+                        Total Request {{ state.first ? state.first+1 :1}} -
+                        {{ (state.first+state.rows) > state.totalRecords ? state.totalRecords : state.rows+state.first
+                        }}
+                        of {{state.totalRecords}}
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+        <br><br>
+        <div class="row clearfix text-center">
+            <div class="col-12">
+                <button (click)="close()" class="btn ml-1 btn-round btn-warning">Back</button>
+                <button *ngIf="!pendingstatus" (click)="complete()" class="btn ml-1 btn-round btn-danger">Complete</button>
+            </div>
+        </div>
+    </div>
+</div>

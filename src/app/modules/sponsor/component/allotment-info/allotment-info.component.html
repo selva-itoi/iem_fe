@@ -1,0 +1,144 @@
+<app-page-breadcrumb [pageInfo]="{title : modifyMode? 'Update Request' :'Sponsorship Details'}"
+    [isModal]="true"></app-page-breadcrumb>
+<tab-head #tab [type]="type =='MODIFICATION' ? 'MODIFICATION_APPROVE' : 'VIEW'" [segment]="segment"
+    [initial]="segment.BASIC" [loading]="dataLoading" [modifyData]="modifyData" [bsModalRef]="_bsModalRef"
+    module="SPONSORSHIP" [getApiApprove]="approveRequest">
+    <ng-template #tabBody let-active="active" let-visited="visited">
+        <div class="body" [hidden]="active != segment.DONATION">
+            <sponsorship-donation-ref *ngIf="visited.DONATION" [type]="'SPONSORSHIP'"
+                [ref_id]="sponsorshipId"></sponsorship-donation-ref>
+        </div>
+        <div class="row text-center w-100 m-1" [hidden]="dataLoading || active != segment.BASIC">
+            <div class="col-lg-4 col-md-12 col-xl-4">
+                <profile-widget type="SPONSOR" [profileData]="sponsorData"></profile-widget>
+            </div>
+            <div class="col-lg-8 col-md-8 col-xl-8">
+                <div class="title text-left ml-0">Sponsorship</div>
+                <info-view [sourceData]="sponsorshipData" [mode]="type" [modifyData]="modifyData?.request_data"
+                    [mapData]="mapInfo"></info-view>
+                <div class="col-md-12 mt-2 text-center text-muted" *ngIf="modifyInfoTitleText">
+                    {{modifyInfoTitleText}}
+                </div>
+            </div>
+            <div class="col-md-12" *ngIf="sponsorshipData.allotment?.length || modifyData?.request_data?.allotmentData">
+                <div class="card">
+                    <div class="body p-2 border-0">
+                        <ng-container *ngIf="sponsorshipData.allotment?.length">
+                            <div class="title text-left m-1">Allotment Details</div>
+                            <div class="table-responsive" *ngIf="sponsorshipData.allotment">
+                                <table class="table table-hover table-custom table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Ref ID</th>
+                                            <th>Name</th>
+                                            <th>Zone/Home</th>
+                                            <th *ngIf="sponsorshipData.moduleName == 'Child'">Child Type</th>
+                                            <th>status</th>
+                                            <th>Allotment As On</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let a of sponsorshipData.allotment">
+                                            <tr>
+                                                <td>
+                                                    <a (click)="showBasicInfo(a.ref_id, a.sponsorship_module)"
+                                                        href="javascript:void(0);" [title]="a?.name">{{a?.ref_code}}</a>
+                                                </td>
+                                                <td>
+                                                    <span>{{a?.name}}</span>
+                                                </td>
+                                                <td><span>{{a?.homeName || a?.zoneName}}</span>
+                                                </td>
+                                                <td *ngIf="sponsorshipData.moduleName == 'Child'">
+                                                    <span>{{a.child_type == 1 ? 'Home Child' :'MK Child'}}</span>
+                                                </td>
+                                                <td><span *ngIf="a?.deleted_at"
+                                                        class="badge badge-success">Completed</span>
+                                                    <span *ngIf="!a?.deleted_at" class="badge badge-info">Active</span>
+                                                </td>
+                                                <td>{{a?.created_at | date:'dd-MM-yyyy' }}</td>
+                                            </tr>
+
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="modifyData?.request_data?.allotmentData?.length">
+                            <span class="title text-danger">Allotment to Approvals</span>
+                            <div class="table-responsive" [formGroup]="dataForm">
+                                <table class="table table-hover table-custom table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Ref ID</th>
+                                            <th>Name</th>
+                                            <th>status</th>
+                                            <th>created</th>
+                                            <th>Process</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody formArrayName="email">
+                                        <ng-container
+                                            *ngFor="let a of modifyData?.request_data?.allotmentData;let i = index">
+                                            <tr [formGroup]="emailDataForm">
+                                                <td>
+                                                    <a (click)="showBasicInfo(a.ref_id, a.sponsorship_module)"
+                                                        href="javascript:void(0);" [title]="a?.name">{{a?.church_id
+                                                        || a.staff_emp_id || a.child_id || a?.ref_code}}</a>
+                                                </td>
+                                                <td>
+                                                    <span>{{a?.name || a?.church_name}}</span>
+                                                </td>
+                                                <td><span *ngIf="a?.deleted_at"
+                                                        class="badge badge-success">Completed</span>
+                                                    <span *ngIf="!a?.deleted_at" class="badge badge-info">Active</span>
+                                                </td>
+                                                <td>{{a?.created_at | date:'dd-MM-yyyy' }}</td>
+                                                <td>{{+a?.action == 3 ? 'To Delete' : +a.action == 2 ? 'To Update' : 'To Add'}}</td>
+                                                <td>
+                                                    <select class="form-control action_control"
+                                                        (change)="onChangeEmail($event,a,i)">
+                                                        <ng-container *ngFor="let b of EMAIL_CATEGORY">
+                                                            <ng-container
+                                                                *ngIf="+(a?.action == 3 )? [0,3].includes(+b['id']):[0,1,2].includes(+b['id'])">
+                                                                <option class="text-capitalized" [value]="b.id">{{b.name
+                                                                    | titlecase}}</option>
+                                                            </ng-container>
+                                                        </ng-container>
+                                                    </select>
+
+                                                    <select *ngIf="reAllotDropDownShow[i]"
+                                                        class="form-control action_control"
+                                                        (change)="onChangeReAllot($event,a,i)">
+                                                        <option value="">Select Old Staff</option>
+                                                        <ng-container *ngFor="let a of sponsorshipData.allotment">
+                                                            <option class="text-capitalized" [value]="a.ref_id">
+                                                                {{a.name | titlecase}}</option>
+                                                        </ng-container>
+                                                    </select>
+                                                    <button type="button" (click)="showPreview(i)"
+                                                        class="btn btn-default mb-2 btn-primary mr-2"
+                                                        title="Preview Email"><span class="sr-only">Email</span> <i
+                                                            class="icon-envelope"></i></button>
+                                                    <button type="button" (click)="showPreview(i,true)"
+                                                        class="btn btn-default mb-2 btn-warning"
+                                                        title="Preview Pdf"><span class="sr-only">Pdf</span> <i
+                                                            class="icon-book-open"></i></button>
+                                                </td>
+                                            </tr>
+
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+            <ng-container [ngTemplateOutlet]="tab?.tabFooter"></ng-container>
+            <!-- end of page content -->
+        </div>
+    </ng-template>
+</tab-head>
+<app-page-loader [loading]="dataLoading"></app-page-loader>

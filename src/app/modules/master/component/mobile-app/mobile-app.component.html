@@ -1,0 +1,9 @@
+<app-page-breadcrumb [pageInfo]="{title : 'Manage Mobile App'}" [isModal]="false"></app-page-breadcrumb>
+<div class="tab-content mt-0">
+    <div class="tab-pane show active">
+        <!-- <app-table-list [tableConfig]="tableConfig" [parenttblAction]="tblAction"
+            [parentGetList]="getListData">
+        </app-table-list> -->
+        <app-master #masterPage  getListApi="getMobileApp"   [title]="'Mobile App' | titlecase" [tblCol]="LIST_COL" ></app-master>
+    </div>
+</div>

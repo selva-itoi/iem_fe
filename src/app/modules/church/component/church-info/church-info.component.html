@@ -1,0 +1,70 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="isModal"></app-page-breadcrumb>
+<div class="modal-body mb-4">
+    <!-- <div class="body"> -->
+    <div class=" clearfix" [hidden]="dataLoading">
+        <div class="col-lg-12 col-md-12 col-xl-12">
+            <tab-head #tab [type]="type =='MODIFICATION' ? 'MODIFICATION_APPROVE' : 'VIEW'" [segment]="segment"
+                [initial]="segment.BASIC" [loading]="dataLoading" [modifyData]="modifyData" [bsModalRef]="_bsModalRef"
+                module="CHURCH" [getApiApprove]="approveRequest">
+                <ng-template #tabBody let-active="active" let-visited="visited">
+                    <div class="tab-pane show active body" [hidden]="active != segment.BASIC">
+                        <h4 class="text-muted title">Basic Info</h4>
+                        <info-view [mode]="type" [sourceData]="churchData" [modifyData]="modifyData?.request_data"
+                            [formData]="showData"></info-view>
+                        <h4 class="text-muted title">Address Info</h4>
+                        <info-view [mode]="type" [sourceData]="churchData" [modifyData]="modifyData?.request_data"
+                            [mapData]="showAdders"></info-view>
+                        <h4 class="text-muted title">Info</h4>
+                        <info-view [mode]="type" [sourceData]="churchData" [modifyData]="modifyData?.request_data"
+                            [mapData]="showBasicEnd">
+                        </info-view>
+                    </div>
+                    <div class="tab-pane show active body" [hidden]="active != segment.BUILDING">
+                        <h4 class="text-muted title">Building Info</h4>
+                        <info-view [mode]="type" [sourceData]="churchData?.others"
+                            [modifyData]="modifyData?.request_data?.others" [formData]="churchBuildingForm">
+                        </info-view>
+                    </div>
+                    <div class="tab-pane show active body" [hidden]="active != segment.DEMOGRAPHIC">
+                        <h4 class="text-muted title">Demographic Info</h4>
+                        <info-view [mode]="type" [sourceData]="churchData?.demographic"
+                            [modifyData]="modifyData?.request_data?.demographic" [formData]="churchDemoGraphic">
+                        </info-view>
+                    </div>
+                    <div class="tab-pane show active body" [hidden]="active != segment.SUMMARY">
+                        <h4 class="text-muted title">Program Summary</h4>
+                        <info-view [mode]="type" [sourceData]="churchData?.program"
+                            [modifyData]="modifyData?.request_data?.program" [formData]="churchProgramForm">
+                        </info-view>
+
+                        <h4 class="text-muted title">Training Summary</h4>
+                        <info-view [mode]="type" [sourceData]="churchData?.training"
+                            [modifyData]="modifyData?.request_data?.training" [formData]="CHURCH_TRAINING_FORM">
+                        </info-view>
+                    </div>
+
+                    <div class="tab-pane show active body" [hidden]="active != segment.OTHERS">
+                        <h4 class="text-muted title">Account Info</h4>
+                        <info-view [mode]="type" [sourceData]="churchData?.others"
+                            [modifyData]="modifyData?.request_data?.others" [formData]="CHURCH_OTHERS_FORM">
+                        </info-view>
+                        <app-church-doc #churchDoc mode="VIEW"></app-church-doc>
+                    </div>
+                    <div class="tab-pane show active" [hidden]="active != segment.COUNCIL">
+                        <app-council-member #councilView mode="VIEW"
+                            [church_id]="type == 'MODIFY' ? '': church_id"></app-council-member>
+                    </div>
+
+                    <div class="tab-pane show active body" [hidden]="active != segment.SPONSORSHIP">
+                        <app-sponsorship-allotment-ref-list *ngIf="visited.SPONSORSHIP && churchData?.id"
+                            [ref_id]="churchData?.id" module_id="3"></app-sponsorship-allotment-ref-list>
+                    </div>
+                </ng-template>
+            </tab-head>
+        </div>
+        <ng-container [ngTemplateOutlet]="tab?.tabFooter"></ng-container>
+        <!-- end tab -->
+    </div>
+</div>
+<app-page-loader [loading]="dataLoading"></app-page-loader>
+<!-- end of page content -->

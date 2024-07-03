@@ -1,0 +1,126 @@
+<div class="block-header">
+    <div class="row clearfix">
+        <div class="col-md-6 col-sm-12">
+            <h1>{{email_id ? 'Update ' : 'New '}} Email Templates</h1>
+        </div>
+        <div class="col-md-6 col-sm-12 text-right hidden-xs">
+            <a *ngIf="showBtnList; else btnBack" [routerLink]="[urlService.MASTER.EMAIL.URL]"
+                class="btn btn-sm btn-success" title="Home/Project List">
+                <i class="icon-list"></i> Email List</a>
+            <ng-template #btnBack>
+                <a href="javascript:void(0)" (click)="close()" class="btn btn-sm btn-primary" title="Back"><i
+                        class="pi pi-arrow-left"></i> Back</a>
+            </ng-template>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card">
+        <div class="body" [formGroup]="dataForm">
+            <div class="form-group">
+                <div class="row clearfix">
+                    <div class="col-md-6 col-lg-6">
+                        <label>Event Name * </label>
+                        <input class="form-control" readonly
+                            [class.error]="submitted && dataForm.get('event_name')?.errors" formControlName="event_name"
+                            type="text">
+                        <span class="error" *ngIf="dataForm.get('event_name')?.errors?.required">
+                            Event Name Required</span>
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                        <!-- <label>Email Keys </label> -->
+                        <ng-container *ngFor="let a of emailKeys">
+                            <div class="chip mb-0 mt-2">{{a}}</div>
+                        </ng-container>
+                    </div>
+                    <div class="col-md-12 col-lg-12">
+                        <label>Subject * </label>
+                        <input class="form-control" [class.error]="submitted && dataForm.get('subject')?.errors"
+                            formControlName="subject" type="text">
+                        <span class="error" *ngIf="dataForm.get('subject')?.errors?.required">
+                            Subject Required</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row clearfix">
+                    <div class="col-md-12 col-lg-12 form-group">
+                        <label>Body * </label>
+                        <!-- <app-editor *ngIf="con" [content]="contentBody" (onChangeData)="onDescriptionChange($event)"></app-editor> -->
+                        <div contenteditable="true" style="border: solid 2px #4c7ef1;
+                        padding: 5px;" #bodyDiv [innerHTML]="contentBody"> </div>
+                        <span class="error" *ngIf="dataForm.get('body')?.errors?.required">
+                            Body is Required</span>
+                    </div>
+                    <div class="col-md-6 col-lg-6 form-group">
+                        <label>CC </label>
+                        <p-chips separator="," (onAdd)="onAddChips($event,'cc')" [allowDuplicate]="false"
+                            styleClass="form-control" formControlName="cc"></p-chips>
+                        <span class="error" *ngIf="dataForm.get('cc')?.errors?.required">
+                            CC Required</span>
+                    </div>
+
+                    <div class="col-md-6 col-lg-6 form-group">
+                        <label>Bcc </label>
+                        <p-chips separator="," (onAdd)="onAddChips($event, 'bcc')" [allowDuplicate]="false"
+                            styleClass="form-control" formControlName="bcc"></p-chips>
+                        <span class="error" *ngIf="dataForm.get('bcc')?.errors?.required">
+                            Bcc is Required</span>
+                    </div>
+                    <div class="col-md-6 col-lg-6 form-group">
+                        <label>Allow Email to Send </label>
+                        <label class="control-inline fancy-checkbox">
+                            <input formControlName="allow_to_send_email" type="checkbox">
+                            <span>yes</span>
+                        </label>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="body">
+            <div class="row clearfix align-center" [hidden]="dataLoading">
+                <div class="col-md-12 text-center">
+                    <div class="btn-group btn-group-lg">
+
+                        <button noDoubleClick [disabled]="loading" type="button" (click)="onSubmit()"
+                            class="btn btn-primary mr-1">
+                            <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                            {{ loading ? 'Saving...' : 'Submit'}}
+                        </button>
+                        <button [disabled]="loading" (click)="close()" type="button"
+                            class="btn btn-outline-danger ml-1">Cancel</button>
+                        <button [disabled]="loading" (click)="openPreview(viewPreview)" type="button"
+                            class="btn btn-outline-danger ml-1">Preview</button>
+
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="dataLoading" class="fetching mt20 mb20 col-lg-12 col-md-12 col-sm-12"
+                style="text-align: center">
+                <i class="pi pi-spin pi-spinner"></i>
+                please wait.. fetching data...
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<ng-template #viewPreview>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Preview Email</h4>
+        <button type="button" (click)="closeModal()" class="btn-close close pull-right" aria-label="Close">
+            <span aria-hidden="true" class="visually-hidden">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <iframe [srcdoc]="contentBody" style="width: 100%;
+        height: 500px;"></iframe>
+        <!-- <div [innerHTML]="contentBody"></div> -->
+    </div>
+</ng-template>
