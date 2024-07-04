@@ -92,9 +92,9 @@ export class AccountSettlementListComponent implements OnInit {
 
   ngOnInit(): void {
 
-  
-    console.log(  this.authService.getUser(),'  this.authService.user');
-    
+
+    console.log(this.authService.getUser(), '  this.authService.user');
+
 
 
     this.pageInfo = {
@@ -123,10 +123,10 @@ export class AccountSettlementListComponent implements OnInit {
 
   getListData = async (e: tblFilterQuery): Promise<any> => {
 
-    if( this.authService.getUser().role?.length){
-     if( this.authService.getUser().role[0].roleName == "ADMIN"){
-      e.whereField = [{colName:'to_account_fk_id',value:1}]
-     }
+    if (this.authService.getUser().role?.length) {
+      if (this.authService.getUser().role[0].roleName == "ADMIN") {
+        e.whereField = [{ colName: 'to_account_fk_id', value: 1 }]
+      }
 
     }
 
@@ -230,7 +230,7 @@ export class AccountSettlementListComponent implements OnInit {
         this.router.navigate([this.urlService.ACCOUNT.SETTLEMENT_VIEW.URL], { queryParams: { id: id, type: 'APPROVE' } })
         break;
       case 'VIEW':
-        this.router.navigate([this.urlService.ACCOUNT.SETTLEMENT_VIEW.URL], { queryParams: { id: id } })
+        this.router.navigate([this.urlService.ACCOUNT.SETTLEMENT_VIEW.URL], { queryParams: { id: id, type: 'PREVIEW' } })
         break;
     }
     return Promise.resolve(true);

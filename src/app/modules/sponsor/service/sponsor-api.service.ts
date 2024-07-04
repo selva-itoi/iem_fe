@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { lastValueFrom } from 'rxjs';
+import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { AppConstant, RESPONSE_CODE } from 'src/app/helper/class/app-constant';
 import { downloadHelper } from 'src/app/helper/class/downloadHelper';
 import { isEmptyObj } from 'src/app/helper/class/utilityHelper';
@@ -13,6 +13,15 @@ import { environment } from 'src/environments/environment';
 export class SponsorApiService {
 
   constructor(private http: HttpClient, private downloadHelper: downloadHelper) { }
+
+
+  private dataSubject = new BehaviorSubject<string>('Initial Value');
+  currentData = this.dataSubject.asObservable();
+
+
+  changeData(data: string) {
+    this.dataSubject.next(data);
+  }
 
   saveSponsorDetails(data: any) {
     return lastValueFrom(this.http.post(`${environment.apiUrl}/sponsor/save`, data));
@@ -151,7 +160,7 @@ export class SponsorApiService {
     const lasyP = isEmptyObj(ev) ? '' : '/' + JSON.stringify(ev);
     return lastValueFrom(this.http.get(`${environment.apiUrl}/donation/getSponsorship${lasyP}`));
   }
-  updateDonationRequest(id:any,data:any){
+  updateDonationRequest(id: any, data: any) {
     return lastValueFrom(this.http.post(`${environment.apiUrl}/donation/updateDonation/${id}`, data));
   }
   //donation allotment assign info 
@@ -162,12 +171,12 @@ export class SponsorApiService {
     const lasyP = isEmptyObj(ev) ? '' : '/' + JSON.stringify(ev);
     return lastValueFrom(this.http.get(`${environment.apiUrl}/donation/allotment/getList${lasyP}`));
   }
-  sponsorshipGetListbyid(id:any) {
+  sponsorshipGetListbyid(id: any) {
     // const lasyP = isEmptyObj(ev) ? '' : '/' + JSON.stringify(ev);
     return this.http.get(`${environment.apiUrl}/sponsorship/sponsorshipPending/${id}`).toPromise();
   }
-  
-  updateDonationdata(id:any,data: any) {
+
+  updateDonationdata(id: any, data: any) {
     return this.http.post(`${environment.apiUrl}/donation/paymentUpdate/${id}`, data).toPromise();
   }
   activateMagazine(id: any, data: any) {
@@ -193,43 +202,48 @@ export class SponsorApiService {
   saveMagazine(data: any) {
     return this.http.post(`${environment.apiUrl}/magazine/saveMagazine`, data).toPromise();
   }
-  ZoneData(id:any) {
+  ZoneData(id: any) {
     return this.http.get(`${environment.apiUrl}/get/zone/${id}`).toPromise();
   }
-  PromotionalData(id:any) {
+  PromotionalData(id: any) {
     return this.http.get(`${environment.apiUrl}/promotional/findPromoByZone/${id}`).toPromise();
   }
   RegionData(id: any) {
     return this.http.get(`${environment.apiUrl}/get/region/${id}`).toPromise();
   }
+
+  verifydonationbyid(id: any) {
+    return this.http.get(`${environment.apiUrl}/donation/verifyDonation/${id}`).toPromise();
+  }
   // printMagazine(id: any,count:any,state:any) {
   //   return this.http.get(`${environment.apiUrl}/magazine/print/${id}/${count}/${state}`,{responseType: 'blob'}).toPromise();
   // }
   printMagazine(data: any) {
-    return this.http.post(`${environment.apiUrl}/magazine/print`, data,{responseType: 'blob'}).toPromise();
+    return this.http.post(`${environment.apiUrl}/magazine/print`, data, { responseType: 'blob' }).toPromise();
   }
-  printsponserreceipt(id:any){
-    return this.http.get(`${environment.apiUrl}/donation/donationRecepit/${id}`,{
-      responseType: 'blob'}).toPromise();
+  printsponserreceipt(id: any) {
+    return this.http.get(`${environment.apiUrl}/donation/donationRecepit/${id}`, {
+      responseType: 'blob'
+    }).toPromise();
   }
-  getTopList(ev: any,type:any) {
+  getTopList(ev: any, type: any) {
     const lasyP = isEmptyObj(ev) ? '' : '/' + JSON.stringify(ev);
     return lastValueFrom(this.http.get(`${environment.apiUrl}/volunteer/topList/${type}/${lasyP}`));
   }
-  topListExport(ev: any,type:any) {
+  topListExport(ev: any, type: any) {
     const lasyP = isEmptyObj(ev) ? '' : '/' + JSON.stringify(ev);
-    return lastValueFrom(this.http.get(`${environment.apiUrl}/volunteer/topListExcel/${type}/${lasyP}`,{
+    return lastValueFrom(this.http.get(`${environment.apiUrl}/volunteer/topListExcel/${type}/${lasyP}`, {
       responseType: 'blob',
     }));
   }
 
-  genReport(type: string, data: any,cond:any = []) {
+  genReport(type: string, data: any, cond: any = []) {
     const lasyP = '/' + JSON.stringify(cond);
-    return lastValueFrom(this.http.post(`${environment.apiUrl}/report/getReport/${type}${lasyP}`, data,{
+    return lastValueFrom(this.http.post(`${environment.apiUrl}/report/getReport/${type}${lasyP}`, data, {
       responseType: 'blob',
     }));
   }
-  
+
   exportBirthday(ev: any, type: any, cat: any) {
     const lasyP = isEmptyObj(ev) ? '' : '/' + JSON.stringify(ev);
     const url = `${environment.apiUrl}/sponsor/exportRemember${lasyP}/${type}/${cat}`;

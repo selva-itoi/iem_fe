@@ -55,13 +55,20 @@
                             class="btn ml-1 btn-round btn-danger">Reject</button>
                         <button [disabled]="loadingData" (click)="download()"
                             class="btn ml-1 btn-round btn-info">Download</button>
-
                     </div>
                 </div>
                 <div class="row clearfix text-center">
-                    <div *ngIf="datatype != 'APPROVE'" class="col-12">
+                    <div *ngIf="datatype != 'APPROVE' && datatype != 'verify' " class="col-12">
                         <button [disabled]="loadingData" (click)="download()"
                             class="btn ml-1 btn-round btn-success">Download</button>
+                        <button [disabled]="loadingData" (click)="close()"
+                            class="btn ml-1 btn-round btn-warning">Close</button>
+                    </div>
+                </div>
+                <div class="row clearfix text-center">
+                    <div *ngIf="datatype == 'verify'" class="col-12">
+                        <button [disabled]="loadingData" (click)="verify()"
+                            class="btn ml-1 btn-round btn-success">Verify</button>
                         <button [disabled]="loadingData" (click)="close()"
                             class="btn ml-1 btn-round btn-warning">Close</button>
                     </div>

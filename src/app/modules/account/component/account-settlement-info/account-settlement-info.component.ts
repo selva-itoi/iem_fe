@@ -15,6 +15,7 @@ import { SETTLEMENT_LIST_TABLE, TOP_LIST_TABLE } from 'src/app/modules/sponsor/h
 import { downloadHelper } from 'src/app/helper/class/downloadHelper';
 import { ProfileWidgetComponent } from 'src/app/shared/feature-modal/profile-widget/profile-widget.component';
 import { DonationInfoComponent } from 'src/app/modules/sponsor/component/donation-info/donation-info.component';
+import { SponsorApiService } from 'src/app/modules/sponsor/service/sponsor-api.service';
 
 
 @Component({
@@ -39,7 +40,7 @@ export class AccountSettlementInfoComponent implements OnInit {
   // toaccountkeys:any=[{ colName: 'to_account_name', title: 'Acount Name' },{ colName: 'bank_name', title: 'Bank Name' },{ colName: 'bank_ifc_code', title: 'Bank Ifsc Code' }]
   customers: any;
   settlementData: any;
-  type: 'VIEW' | 'APPROVE' = 'VIEW';
+  type: 'VIEW' | 'APPROVE' | 'PREVIEW' = 'VIEW';
   // LIST_COL: tableColum[] = cloneData(SETTLEMENT_VIEW_TBL)
   LIST_COL: tableColum[] = cloneData(SETTLEMENT_LIST_TABLE)
   basicFormData: formBuilderData[] = cloneData(SETTLEMENT_VIEW_TBL)
@@ -49,18 +50,20 @@ export class AccountSettlementInfoComponent implements OnInit {
     column: this.LIST_COL,
     isLazy: true
   }
+  preview: any
   settlementId: any;
   loading: boolean = false;
   @ViewChild('tableList') tableList: TableListComponent | undefined;
   @ViewChild('profileWidget') profileWidget: ProfileWidgetComponent | undefined;
 
   constructor(private activatedRouted: ActivatedRoute, private downloadHelper: downloadHelper, private accountApi: AccountApiService, private router: Router,
-    private alertService: AlertService, private modalService: ModalService, private navigation: NavigationService) { }
+    private alertService: AlertService, private sponsorApi: SponsorApiService, private modalService: ModalService, private navigation: NavigationService) { }
 
   ngOnInit(): void {
     this.settlementId = this.activatedRouted.snapshot.queryParams['id'] || '';
     console.log(this.settlementId, ' this.settlementId')
     this.type = this.activatedRouted.snapshot.queryParams['type'] || 'VIEW';
+
     this.pageInfo = {
       title: 'Settlement Info', buttonShowBtn: true,
       button: {
@@ -68,8 +71,13 @@ export class AccountSettlementInfoComponent implements OnInit {
         url: UrlServices.PAGE_URL.ACCOUNT.LIST.URL,
       }
     }
-    this.getData()
+    this.sponsorApi.currentData.subscribe(data => {
+
+      this.getData()
+    });
   }
+  statusdata: any;
+  statuspayment: any;
   getData() {
     if (this.settlementId) {
       this.accountApi.getAllSettlementDetails(this.settlementId).then((res: any) => {
@@ -77,6 +85,16 @@ export class AccountSettlementInfoComponent implements OnInit {
           this.settlementData = res?.result;
           this.customers = this.settlementData?.donationList || []
           this.profileWidget?.setData(this.settlementData)
+
+
+          // this.data1 = this.customers.map(item => item.statusName)
+          //   .includes(['Verified', 'Paid']);
+          this.statusdata = this.customers.some(item => ['Deposited', 'Pending'].includes(item.statusName));
+          this.statuspayment = this.customers.some(item => ['DD', 'cheque', 'UPI'].includes(item.payment_modeName));
+
+          // this.customers.includes({ statusName: 'Verified' })
+
+
         }
       }).catch(() => this.alertService.showToast('Unable to get Data', 'error'))
       this.accountApi.getSettlementDetailsbyId(this.settlementId).then((res: any) => {
@@ -117,7 +135,12 @@ export class AccountSettlementInfoComponent implements OnInit {
 
 
   makeApproveReject(type: 'APPROVE' | 'REJECT') {
-    const form: formBuilder[] = [{ colName: 'remarks', title: 'Remarks', validator: [{ name: 'required' }] }]
+
+    if (this.statusdata && type == 'APPROVE') {
+      this.alertService.showToast('Please verify donations and make settlement', 'warn');
+      return
+    }
+    const form: formBuilder[] = [{ colName: 'remarks', title: 'Remarks', }]
     this.modalService.openConfirmDialog({ formField: form, isFormField: true, title: type == 'APPROVE' ? 'Approve' : 'Reject' }).then((res: any) => {
       if (res && type == 'APPROVE') {
         this.update(res)
@@ -128,15 +151,26 @@ export class AccountSettlementInfoComponent implements OnInit {
     })
   }
   update(payload: any) {
+    this.loading = true
+
     payload.id = this.settlementId, payload.status = 1;
+    if (this.statuspayment) {
+      payload.verifyAll = true
+    } else {
+      payload.verifyAll = false
+    }
+
     this.accountApi.savesettlement(payload).then((res: any) => {
       if (res?.statusCode == RESPONSE_CODE.SUCCESS) {
         this.alertService.showToast('Successfully Approved', 'success');
         this.router.navigate([this.urlService.ACCOUNT.LIST.URL])
       }
-    }).catch(() => this.alertService.showToast('Unable to save changes', 'error'))
+    }).catch(() => this.alertService.showToast('Unable to save changes', 'error')).finally(() => {
+      this.loading = false;
+    })
   }
   updatereject(payload: any) {
+    this.loading = true
     payload.id = this.settlementId, payload.status = 3;
     this.accountApi.savesettlement(payload).then((res: any) => {
       if (res?.statusCode == RESPONSE_CODE.SUCCESS) {
@@ -144,7 +178,9 @@ export class AccountSettlementInfoComponent implements OnInit {
         // this.close()
         this.router.navigate([this.urlService.ACCOUNT.LIST.URL])
       }
-    }).catch(() => this.alertService.showToast('Unable to save changes', 'error'))
+    }).catch(() => this.alertService.showToast('Unable to save changes', 'error')).finally(() => {
+      this.loading = false;
+    })
   }
   close() {
     if (!this.isModal) {
@@ -156,11 +192,11 @@ export class AccountSettlementInfoComponent implements OnInit {
     this.modalService.openModal(DonationInfoComponent, { ref_id: a.donation_fk_id }, 'modal-lg');
   }
   approve(a: any) {
+    this.modalService.openModal(DonationInfoComponent, { ref_id: a.donation_fk_id, type: 'verify' }, 'modal-lg');
   }
   export() {
     this.accountApi.exportSettlementDetailsbyId(this.settlementId).then((res: any) => {
       this.downloadHelper.downloadFile(res);
-
     })
   }
 

@@ -239,5 +239,16 @@ export class DonationInfoComponent implements OnInit {
     })
       .catch(err => this.alertService.showToast('Unable to download Receipt', 'info'))
   }
+  verify() {
+    this.loadingData = true;
+    this.sponsorApi.verifydonationbyid(this.donationId).then((a: any) => {
+      if (a.statusCode == RESPONSE_CODE.SUCCESS) {
+        this.sponsorApi.changeData('a');
+        this.close()
+      }
+    }).finally(() => {
+      this.loadingData = false;
+    })
 
+  }
 }

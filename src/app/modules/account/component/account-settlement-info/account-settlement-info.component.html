@@ -175,7 +175,7 @@
         <!-- <app-table-list #tableList [tableConfig]="tableConfig" [parentGetList]="getListData">
         </app-table-list> -->
         <div class="card">
-            <p-table [value]="customers" rowGroupMode="rowspan" groupRowsBy="sponsorName" sortField="sponsorName"
+            <p-table [value]="customers" rowGroupMode="rowspan" groupRowsBy="donation_id" sortField="donation_id"
                 sortMode="single" [tableStyle]="{'min-width': '50rem'}">
                 <ng-template pTemplate="header">
                     <tr>
@@ -226,16 +226,33 @@
 
                         </td>
                         <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
-                            &nbsp;
-                            <a style="cursor:pointer;" tooltip="View Request Details" placement="right" show-delay="500"
+                            <!-- &nbsp; -->
+                            <button class="btn btn-sm ml-1 btn-warning" (click)="viewDetails(customer)"><i
+                                    class="text-default icon-eye"></i></button>
+
+                            <!-- <a style="cursor:pointer;" tooltip="View Request Details" placement="right" show-delay="500"
                                 (click)="viewDetails(customer)" type="button">
-                                <i class="pi pi-eye" style="color:orange;"></i>
-                            </a>&nbsp; &nbsp;
-                            <a style="cursor:pointer;" tooltip="View Request Details" placement="right" show-delay="500"
-                                (click)="approve(customer)" type="button">
-                                <i class="icon-paper-plane" style="color:blue;"></i>
-                            </a>
-                            &nbsp;
+                                <i class="pi pi-eye" style="color:white;background-color: orange;"></i>
+                            </a> -->
+                            <!-- &nbsp; &nbsp; -->
+                            <button
+                                *ngIf="customer.statusName == 'Deposited' && type !='PREVIEW' && customer.payment_modeName != 'cash' "
+                                class="btn btn-sm ml-1 btn-info" (click)="approve(customer)"><i
+                                    class="text-default icon-paper-plane"></i></button>
+
+                            <!-- <a *ngIf="customer.statusName == 'Deposited' && type !='PREVIEW' && (customer.payment_modeName == 'DD' || customer.payment_modeName == 'cheque')"
+                                style="cursor:pointer;" tooltip="View Request Details" placement="right"
+                                show-delay="500" (click)="approve(customer)" type="button">
+                                <i class="icon-paper-plane" style="color:white;background-color: blue;"></i>
+                            </a> -->
+                            <!-- &nbsp; -->
+
+
+
+
+
+                            <!-- { name: '', class: 'btn-danger', icon: 'icon-trash', title: 'Staff Relieve', type: 'DELETE', permission: { moduleName: 'STAFF', actionName: 'RELIVE' } } -->
+
                             <!-- { name: '', type: 'APPROVE', class: 'btn-info', icon: 'icon-paper-plane', condition: [{ key: 'status', operation: '==', value: 4 }] } -->
 
                         </td>
@@ -244,7 +261,7 @@
             </p-table>
         </div>
         <div class="row clearfix align-center">
-            <ng-container *ngIf="settlementData?.status == 2 && type != 'VIEW'">
+            <ng-container *ngIf="settlementData?.status == 2 && type != 'PREVIEW'">
                 <button [disabled]="loading" (click)="makeApproveReject('APPROVE')" class="btn btn-round btn-success">
                     <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
                     {{loading ? 'Approving..' :'Approve'}}

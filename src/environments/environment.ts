@@ -4,16 +4,16 @@
 
 export const environment = {
   production: false,
-  // apiUrl :'https://api-iem-dev.ssamt.org/api/v1',
+  apiUrl: 'http://localhost/iem/iemAdmin_be/api/v1/',
+
+  // apiUrl: 'https://api-iem-dev.ssamt.org/api/v1',
   emailApiUrl: 'https://dev-iem-mail.ssamt.org/api/v1/',
   apiPayrollUrl: '',
   // apiUrl: 'http://192.168.29.188/IEM_new_module/iemAdmin_be/api/v1/',
-  apiUrl: 'https://api-iem-dev.ssamt.org/api/v1',
+  // apiUrl: 'https://api-iem-dev.ssamt.org/api/v1',
   // apiUrl :'http://192.168.29.188/IEM/iemAdmin_be/api/v1',//old selva 
   // apiUrl :'http://192.168.86.21/IEM_new/api/v1',
   // apiUrl :'http://192.168.86.14/IEM_new/iem_dev/api/v1',
-
-
 
   // apiPayrollUrl:'',
   // emailApiUrl: 'https://dev-iem-mail.ssamt.org/api/v1/',

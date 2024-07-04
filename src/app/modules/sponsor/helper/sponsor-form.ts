@@ -1214,6 +1214,36 @@ export const TOP_LIST_TABLE: formBuilderData[] = [
 
 
     },
+    // {
+    //     colName: 'amount1',
+    //     title: 'Tally Code',
+
+    // },
+    // {
+    //     colName: 'amount1',
+    //     title: 'Title',
+
+    // },
+    // {
+    //     colName: 'amount1',
+    //     title: 'Mobile Number',
+
+    // },
+    // {
+    //     colName: 'amount1',
+    //     title: 'Missionary/Child Name',
+
+    // },
+    // {
+    //     colName: 'amount1',
+    //     title: 'Mode of payment',
+
+    // },
+    // {
+    //     colName: 'amount1',
+    //     title: 'Cheque/DD/Transaction ID',
+
+    // },
     {
         colName: 'sponsorship_moduleName',
         title: 'purpose',
