@@ -1,0 +1,63 @@
+<div class="block-header">
+    <div class="row clearfix">
+        <div class="col-md-6 col-sm-12">
+            <!-- <h1>{{currentSegement + ' Monthly Report Stats' |titlecase}}</h1> -->
+            <h1>{{' Monthly Report Stats' |titlecase}}</h1>
+
+        </div>
+        <div class="col-md-6 col-sm-12 text-right hidden-xs" *ngIf="showAddBtn">
+            <a href="javascript:void(0)" (click)="close()" class="btn btn-sm btn-primary" title="Back"><i
+                    class="pi pi-arrow-left"></i> Back</a>
+        </div>
+    </div>
+</div>
+<div class="row d-flex">
+    <div class="" style="width: 50%;">
+        <app-form-generator #basicForm [formData]="month_year_col" style="width: 100%;"></app-form-generator>
+    </div>
+    <div class="pl-4 pt-4 mt-2">
+        <button type="button" class="btn btn-primary" (click)="search()">Search</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h6><span class="text-info"> {{report_month | date :'MMM y'}} of Reports Status </span></h6>
+    </div>
+    <div class="col-md-6 align-right " style="font-size: small;">
+        <i class="pi pi-circle-on text-success"></i> Sent
+        <i class="pi pi-circle-on text-warning"></i> Submitted
+        <i class="pi pi-circle-on text-info"></i> Processed
+        <i class="pi pi-circle-on text-primary"></i> Draft
+        <i class="pi pi-circle-on text-default"></i> Not Typed
+    </div>
+    <!-- <div  (click)="data()">search</div> -->
+</div>
+<tab-head #tab [segment]="segment" (onSelect)="currentSegement = $event.key" [initial]="segment.STAFF">
+    <ng-template #tabBody let-active="active" let-visited="visited">
+        <div [hidden]="active != segment.STAFF" class="tab-content mt-0">
+            <app-table-list #table [tableConfig]="tableConfig" [parentGetList]="getListData"
+                [tagInfoAction]="tagInfoAction">
+            </app-table-list>
+        </div>
+        <div [hidden]="active != segment.SPONSOR" class="tab-content mt-0">
+            <app-table-list [tableConfig]="sponsorTableConfig" [parentGetList]="sponsorgetListData">
+            </app-table-list>
+        </div>
+        <div [hidden]="active != segment.STATISTICS" class="tab-content mt-0">
+            <app-table-list [tableConfig]="staticTableConfig" [parentGetList]="sponsorgetListData">
+            </app-table-list>
+        </div>
+    </ng-template>
+</tab-head>
+
+<ng-template #viewPreview>
+    <div class="modal-body">
+        <div class="row pt-5">
+            <div class="text-center">
+                <i class="pi pi-spin pi-spinner"></i>
+                please wait.. fetching data...
+            </div>
+        </div>
+    </div>
+</ng-template>

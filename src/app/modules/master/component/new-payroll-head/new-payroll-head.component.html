@@ -1,0 +1,46 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="isModal"></app-page-breadcrumb>
+<div class="card">
+    <div class="body" (keyup.enter)="onSubmit()">
+        <div [hidden]="dataLoading">
+            <div class="row clearfix ">
+                <div class="col-md-12 col-lg-12 mb-3">
+                    <label class="d-block">Calculation Keys </label>
+                    <div class="tooltip-message" *ngIf="showTooltip">
+                        Text copied to clipboard!
+                    </div>
+                    <ng-container *ngFor="let a of calKeys;let i=index">
+                        <div (click)="copyToClipboard(i)" class="chip mb-0 mt-2">{{a}}</div>
+                    </ng-container>
+                </div>
+            </div>
+
+            <div class="row clearfix" *ngIf="basicFormData?.length">
+                <app-form-generator #basicForm [dynamicValidator]="payRollDynamicValidator"
+                    (onChangeEvent)="onChange($event)" [formData]="basicFormData">
+                </app-form-generator>
+            </div>
+            <dynamic-table-form #dynTbl [formData]="tblFormData"
+                [dynamicValidator]="dynamicValiTbl"></dynamic-table-form>
+            <div class="col-md-12 mb-2 text-center">
+                <span class="error" *ngIf="!isValid && submitted"> Please Make sure all are Valid</span>
+            </div>
+            <div class="col-md-12 text-center">
+                <div class="btn-group btn-group-lg">
+                    <button noDoubleClick [disabled]="disabled_save || loading" type="button" (click)="onSubmit()"
+                        class="btn btn-primary mr-1">
+                        <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                        {{ loading ? 'Saving...' : 'Submit'}}
+                    </button>
+                    <button [disabled]="loading" (click)="close()" type="button"
+                        class="btn btn-danger mr-1">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- loader -->
+        <app-page-loader [loading]="dataLoading"></app-page-loader>
+    </div>
+    <!--end body -->
+</div>
+<!--end card-->

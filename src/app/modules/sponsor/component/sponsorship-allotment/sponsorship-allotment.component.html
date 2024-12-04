@@ -1,0 +1,388 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="isModal"></app-page-breadcrumb>
+
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="card">
+            <div class="body">
+                <div class="m-1" [hidden]="dataLoading">
+                    <ul class="nav nav-tabs1 table-nav">
+                        <ng-container *ngFor="let s of segement | keyvalue:returnZero">
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                    [ngClass]="{'show active': currentSegment==s.value, 'error-segment' : segementError[s.key] == true}"
+                                    href="javascript:void(0)">{{s.value}}</a>
+                            </li>
+                        </ng-container>
+                    </ul>
+                    <!-- [formGroup]="dataForm" -->
+                    <div class="tab-content mt-0" [formGroup]="dataForm">
+                        <div class="tab-pane show active" [hidden]="currentSegment != segement.SPONSOR">
+                            <div class="card">
+                                <div class="body">
+                                    <div class="list-group cursor-pointer" style="flex-direction: row;"
+                                        (click)="openSponsorModal()">
+                                        <div
+                                            class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                                            <label class="cursor-pointer">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <h5 class="mb-1">Select Donor</h5>
+                                                </div>
+                                                <small>To select the Sponsor to allotment</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="media" *ngIf="sponsorData?.name">
+                                        <img class="rounded mr-3 img-thumbnail" style="width: 70px;"
+                                            [src]="sponsorData?.profile_img_path" imageLoad>
+                                        <div class="media-body">
+                                            <h5 class="m-0">{{sponsorData?.name}}</h5>
+                                            <p class="text-muted mb-0">{{sponsorData?.promotionalName}}</p>
+                                            <p class="text-muted mb-0">{{sponsorData?.sponsor_id}}</p>
+                                            <p *ngIf="+sponsorData?.status==2" class="text-muted mb-0 text-warning">
+                                                Pending verification</p>
+                                        </div>
+                                    </div>
+
+                                    <table class="table table-hover table-custom spacing8 table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Amount</th>
+                                                <th>Category</th>
+                                                <th>status</th>
+                                                <th>Remarks</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <ng-container *ngFor="let a of sponsorshipList">
+                                                <tr [ngClass]="{'bg-blue' : +a?.id==+sponsorshipData?.id}">
+                                                    <td> <input [hidden]="+a?.modify_request"
+                                                            (change)="selectSponsorship()"
+                                                            formControlName="sponsorship_id" [value]="a?.id"
+                                                            type="radio">
+                                                    </td>
+                                                    <td>
+                                                        <a href="javascript:void(0);" title="">{{a?.amount |
+                                                            currencyFormat}}</a>
+                                                        <!-- <p class="mb-0">Scott Ortega</p> -->
+                                                    </td>
+                                                    <td>
+                                                        <span>{{a?.moduleName}}</span>
+                                                    </td>
+                                                    <td>
+                                                        <ng-container *ngFor="let m of statusData">
+                                                            <span *ngIf="m?.key == a.status"
+                                                                class="badge badge-{{m?.color || 'info'}}">{{
+                                                                m?.label}}</span>
+                                                        </ng-container>
+                                                    </td>
+                                                    <td>{{+(a?.modify_request) ? 'Modification Req Pending' : '' }}</td>
+                                                </tr>
+
+                                            </ng-container>
+                                        </tbody>
+                                    </table>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane show active" [hidden]="currentSegment != segement.ALLOTMENT">
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="header">
+                                        <span class="title">SponsorShip Info</span>
+                                    </div>
+                                    <div class="body">
+                                        <div class="row col-12">
+                                            <profile-widget *ngIf="sponsorData?.name" [profileData]="sponsorData"
+                                                widgetType="SMALL" type="SPONSOR"></profile-widget>
+                                        </div>
+
+                                        <!-- <p></p> -->
+                                        <div class="row clearfix mb-2 amount_info">
+                                            <div class="col-6 row clearfix pb-2">
+                                                <div class="col-6 text-primary">Amount :</div>
+                                                <div class="col-6">
+                                                    <span *ngIf="!show_amt"> {{dataForm.get('amount')?.value |
+                                                        currencyFormat}}</span>
+                                                    <span *ngIf="show_amt">
+                                                        <input type="text" formControlName="amount" class="form-control"
+                                                            placeholder="Amount">
+                                                        <span class="error"
+                                                            *ngIf="dataForm.get('amount')?.errors?.required">
+                                                            Amount is Required</span>
+                                                        <span class="error"
+                                                            *ngIf="dataForm.get('amount')?.errors?.pattern">
+                                                            Amount should Valid</span>
+                                                    </span>
+                                                    <i *ngIf="!show_amt" class="icon-pencil ml-2 text-primary"
+                                                        (click)="show_amt = !show_amt"></i>
+                                                    <i *ngIf="show_amt && !dataForm.get('amount')?.errors"
+                                                        class="icon-check text-success"
+                                                        (click)="show_amt = !show_amt"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 row clearfix">
+                                                <div class="col-6 text-primary">No of Support :</div>
+                                                <div class="col-6">
+                                                    <span *ngIf="!show_total_support">
+                                                        {{dataForm.get('total_support')?.value}}
+                                                    </span>
+                                                    <span *ngIf="show_total_support" class="support_span">
+                                                        <input (keyup.enter)="calMaxSelection()" type="text"
+                                                            (change)="calMaxSelection()" formControlName="total_support"
+                                                            class="form-control" placeholder="Total Support">
+                                                        <span class="error"
+                                                            *ngIf="dataForm.get('total_support')?.errors?.required">
+                                                            Total Support is Required</span>
+                                                        <span class="error"
+                                                            *ngIf="dataForm.get('total_support')?.errors?.pattern">
+                                                            Total Support should Valid</span>
+                                                        <i *ngIf="show_total_support && !dataForm.get('total_support')?.errors"
+                                                            class="icon-check text-success"
+                                                            (click)="show_total_support = !show_total_support"></i>
+                                                    </span>
+                                                    <i *ngIf="!show_total_support"
+                                                        class="icon-pencil ml-2 text-primary cursor-pointer"
+                                                        (click)="show_total_support = !show_total_support"></i>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-6 row clearfix">
+                                                <div class="col-6 text-primary">Remarks :</div>
+                                                <div class="col-6">
+                                                    <span *ngIf="!showRemarks">
+                                                        {{dataForm.get('remarks')?.value}}
+                                                    </span>
+                                                    <span *ngIf="showRemarks" class="support_span">
+                                                        <input type="text" formControlName="remarks"
+                                                            class="form-control" placeholder="Remarks">
+                                                        <i *ngIf="showRemarks && !dataForm.get('remarks')?.errors"
+                                                            class="icon-check text-success"
+                                                            (click)="showRemarks = !showRemarks"></i>
+                                                    </span>
+                                                    <i *ngIf="!showRemarks"
+                                                        class="icon-pencil ml-2 text-primary cursor-pointer"
+                                                        (click)="showRemarks = !showRemarks"></i>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <info-view [sourceData]="sponsorshipData" [mapData]="showData"></info-view>
+
+                                        <div class="row clearfix" [hidden]="!isChangedAmount">
+                                            <div class="col-md-6 col-lg-6">
+                                                <label>Sponsorship comes effect from * </label>
+                                                <p-calendar dateFormat="mm/yy" view="month"
+                                                    [class.error]="submitted && dataForm.get('changes_effect_from')?.errors"
+                                                    inputStyleClass="form-control" [maxDate]="maxDate"
+                                                    [minDate]="minDate" placeholder="Month & Year"
+                                                    formControlName="changes_effect_from">
+                                                </p-calendar>
+                                                <span class="error"
+                                                    *ngIf="dataForm.get('changes_effect_from')?.errors?.required">
+                                                    Month of Changes is Required</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="table-responsive" *ngIf="sponsorshipData?.allotment?.length">
+                                            <table class="table table-hover table-custom table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Ref ID</th>
+                                                        <th>Name</th>
+                                                        <th>{{+this.sponsorshipData?.sponsorship_module ==1 ? 'Zone' :
+                                                            this.sponsorshipData?.sponsorship_module ==2 ? 'Home'
+                                                            :'Church'}} Name</th>
+                                                        <th>status</th>
+                                                        <th>Allotment As On</th>
+                                                        <th>Alloted Amount</th>
+                                                        <th>CC Email</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <ng-container
+                                                        *ngFor="let a of sponsorshipData.allotment;let i = index">
+                                                        <tr>
+                                                            <td>
+                                                                <a href="javascript:void(0);" (click)="showProfile(a)"
+                                                                    [title]="a?.name">{{a?.ref_code}}</a>
+                                                            </td>
+                                                            <td>
+                                                                <span>{{a?.name}}</span>
+                                                            </td>
+                                                            <td>
+                                                                <span>{{a?.zoneName || a?.churchName || a?.homeName ||
+                                                                    '' }}</span>
+                                                            </td>
+                                                            <td>
+                                                                <span *ngIf="a?.deleted_at"
+                                                                    class="badge badge-success">Completed</span>
+                                                                <span *ngIf="!a?.deleted_at"
+                                                                    class="badge badge-info">Active</span>
+                                                            </td>
+                                                            <td>{{a?.created_at | date:'dd-MM-yyyy' }}</td>
+                                                            <td>{{a?.alloted_amount || ''}}</td>
+                                                            <td>{{a?.cc_email || ''}}</td>
+                                                            <td>
+                                                                <button type="button" *ngIf="!a?.deleted_at"
+                                                                    class="btn btn-sm btn-default  ml-1" title="Edit"
+                                                                    (click)="editTableData(i)"><i
+                                                                        class="icon-pencil text-danger"></i>
+                                                                </button>
+                                                                <ng-container
+                                                                    *ngIf="a?.action !== 3 && !a?.deleted_at; else noData">
+                                                                    <button type="button"
+                                                                        class="btn btn-sm btn-default  ml-1"
+                                                                        title="Delete itemI"
+                                                                        (click)="deleteTableData(i)"><i
+                                                                            class="icon-trash text-danger"></i></button>
+
+                                                                </ng-container>
+
+                                                                <ng-template #noData>
+                                                                    <ng-container *ngIf="a?.deleted_at;else toDel">
+                                                                        Relived
+                                                                    </ng-container>
+                                                                </ng-template>
+                                                                <ng-template #toDel>
+                                                                    To delete
+                                                                </ng-template>
+
+                                                            </td>
+                                                        </tr>
+
+                                                    </ng-container>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-12">
+                                    <ng-container *ngIf="selectedData.length > 0">
+                                        <table class="table table-striped table-bordered">
+                                            <thead>
+                                                <!-- Define your table header here -->
+                                                <th>Name</th>
+                                                <th>Emp Id</th>
+                                                <th>Dep</th>
+                                                <th>Amount</th>
+                                                <th>Action</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let a of selectedData;let i=index">
+                                                    <td>{{ a.name || a.church_name }}</td>
+                                                    <td>{{ a.staff_emp_id || '' }}</td>
+                                                    <td>{{ a.department || '' }}</td>
+                                                    <td>
+                                                        <form [formGroup]="amountForm">
+                                                            <input type="number" formControlName="alloted_amount"
+                                                                class="form-control" (keyup)="calculateAmount(i)" />
+                                                            <span class="error">
+                                                                Total alloted amount should equal to Total Sponsor
+                                                                Amount</span>
+                                                        </form>
+                                                    </td>
+                                                    <!-- <td>
+                                                        <form [formGroup]="dataForm">
+                                                            <input type="number" formControlName="alloted_amount"
+                                                                class="form-control" (keyup)="calculateAmount(i)" />
+                                                            <span class="error">
+                                                                Total alloted amount should equal to Total Sponsor
+                                                                Amount</span>
+                                                        </form>
+                                                    </td> -->
+                                                    <td>
+                                                        <button class="btn btn-danger btn-sm"
+                                                            (click)="onRemove(a)">Remove</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </ng-container>
+                                    <div *ngIf="selectedData.length === 0" class="text-center">No data selected</div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix" *ngIf="selectedData.length === 10">
+                                <ng-container *ngFor="let a of selectedData;let i =index">
+                                    <div class="col-lg-3 col-md-4">
+                                        <div class="card c_grid c_pink"
+                                            [ngClass]="{'bg-primary text-light' : a.dedication_status}">
+                                            <div class="body text-center">
+                                                <i class="icon-envelope-open ml-2 cursor-pointer text-primary float-right font-17"
+                                                    (click)="editTableData(i,'NEW')"></i>
+                                                <div class="circle">
+                                                    <img class="img-thumbnail rounded-circle" imageLoad
+                                                        [src]="a?.profile_img_path" [alt]="a?.name">
+                                                </div>
+                                                <h6 class="mt-3 mb-1">{{a?.name || a?.church_name}}</h6>
+                                                <h6 class="mt-3 mb-3 text-muted font-11 ">{{a?.cc_email || ''}}</h6>
+                                                <button class="btn btn-danger btn-sm"
+                                                    (click)="onRemove(a)">Remove</button>
+                                                <button *ngIf="+sponsorshipData?.dedication_request"
+                                                    class="btn btn-info btn-sm" (click)="markAsDedication(a)">Mark
+                                                    Dedication</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+
+                            <div [hidden]="!maxSelection || sponsorshipData?.status == 1">
+                                <span> *maximum {{maxSelection}} members only can select </span>
+                                <app-table-list [silentMode]="true" #tableList
+                                    *ngIf="currentSegment == segement.ALLOTMENT && sponsorshipData?.sponsorship_module && showTable"
+                                    selectable="MULTI" [skipId]="skipId" (onSelect)="onSelectData($event)"
+                                    [maxSelection]="maxSelection" [tableConfig]="tableConfig"
+                                    [parenttblAction]="tblAction" [parentGetList]="getListData">
+                                </app-table-list>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <!--End tab-->
+
+
+                    <div class="row clearfix align-center">
+                        <div class="col-md-12 mb-3 text-center">
+                            <span class="error" *ngIf="errorText && submitted">{{errorText}}</span>
+                            <span class="alert alert-primary" *ngIf="+sponsorshipData?.modify_request">SponsorShip has
+                                submitted for Verification You can'nt make any changes</span>
+                            <span class="alert alert-primary" *ngIf="+sponsorshipData?.status ==1">Sponsorship are
+                                Completed</span>
+                        </div>
+
+                        <div class="col-md-12 text-center">
+                            <div class="btn-group btn-group-lg">
+                                <button [disabled]="loading" *ngIf="pSegment" (click)="changeSegment(pSegment)"
+                                    type="button" class="btn btn-primary mr-1">Prev</button>
+                                <button noDoubleClick
+                                    *ngIf="!+sponsorshipData?.modify_request && currentSegment == segement.ALLOTMENT && sponsorshipData?.status != 1"
+                                    [disabled]="disabled_save || loading" type="button" (click)="onSubmit()"
+                                    class="btn btn-primary mr-1">
+                                    <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                                    {{ loading ? 'Saving...' : 'Submit'}}
+                                </button>
+                                <button [disabled]="loading " *ngIf="nSegment" (click)="changeSegment(nSegment)"
+                                    type="button" class="btn btn-primary">Save & Next</button>
+                                <button [disabled]="loading" (click)="close()" type="button"
+                                    class="btn btn-outline-danger ml-1">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <app-page-loader [loading]="dataLoading"></app-page-loader>
+            </div>
+        </div> <!-- End Card-->
+    </div>
+</div>
+<!--End row-->

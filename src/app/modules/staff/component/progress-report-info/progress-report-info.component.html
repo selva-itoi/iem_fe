@@ -1,0 +1,78 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="false"></app-page-breadcrumb>
+<div class="modal-body  pt-4 mb-4">
+    <!-- <div class="row clearfix" *ngIf="info_message">
+        <div class="col-lg-12 col-md-12 col-sm-12 card">
+            <div class="body text-center">
+                {{info_message}}
+            </div>
+        </div>
+    </div> -->
+    <div [hidden]="dataLoading || info_message">
+        <div class="row clearfix">
+            <div class="col-12 text-right">
+                <!-- <a href="javascript:void(0)" class="btn bg-pink"><i ></i>Edit</a> -->
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-3 col-md-3 col-xl-3">
+                <profile-widget [profileData]="staffData"></profile-widget>
+                <div class="card">
+                    <div class="body">
+                        <small class="text-muted">Email Address: </small>
+                        <p>{{staffData?.email_id}}</p>
+                        <hr>
+                        <small class="text-muted">Mobile: </small>
+                        <p>{{staffData?.mobile_no}}</p>
+                        <hr>
+                        <small class="text-muted">Birth Date: </small>
+                        <p class="m-b-0">{{staffData?.dob | dateFormat}}</p>
+                        <hr>
+                        <!-- <div style="height: 300px; width:100%">
+                            <app-map type="LOCATION_POINTER" [locationPointer]="[staffData?.lat,staffData?.lng]">
+                            </app-map>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-9 col-md-9 col-xl-9">
+                <info-view [sourceData]="reportData" [formData]="basicFormData"></info-view>
+            </div>
+            <!-- end tab -->
+        </div>
+        <!-- <span class="text-muted helper-text m-b-10" *ngIf="type=='RELIVE'">* All the designation and sponsorship will be
+            In active</span>
+        <div class="row clearfix text-center mb-1">
+            <div class="col-12">
+                <ng-container [ngSwitch]="+modifyData?.status">
+                    <span class="text-success" *ngSwitchCase="'1'">Request Has been Approved</span>
+                    <span class="text-info" *ngSwitchCase="'2'">Request waiting to approve</span>
+                    <span class="text-danger" *ngSwitchCase="'0'">Request Has been rejected</span>
+                </ng-container>
+                <span class="text-danger" *ngIf="staffData?.deleted_at && !modifyData.status">Staff is not active
+                    now</span>
+            </div>
+        </div> -->
+        <div class="row clearfix text-center">
+            <div class="col-12">
+                <!-- <ng-container *ngIf="+modifyData?.status == 2 && hasPermissionApprove">
+                    <button [disabled]="loading || sendingEmail" (click)="approve()" class="btn btn-round btn-success">
+                        <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                        {{loading ? 'Approving..' : +modifyData.action_id == 5 ? 'Rejoin' : type == 'RELIVE'? 'Relieve'
+                        :
+                        'Approve'}}
+                    </button>
+                    <button [disabled]="loading" (click)="reject()" class="btn ml-1 btn-round btn-danger">
+                        <i *ngIf="loading || sendingEmail" class="pi pi-spin pi-spinner"></i>
+                        {{loading ? 'Rejecting..' : 'Reject'}}
+                    </button>
+                </ng-container> -->
+                <button  [disabled]="loading" (click)="close()"
+                    class="btn ml-1 btn-round btn-warning">{{ isModal ?
+                    'Close' : 'Back' }}</button>
+            </div>
+        </div>
+    </div>
+    <!-- end of page content -->
+</div>
+<app-page-loader [loading]="dataLoading"></app-page-loader>

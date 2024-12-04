@@ -1,0 +1,44 @@
+<div class="block-header">
+    <div class="row clearfix">
+        <div class="col-md-6 col-sm-12">
+            <h1>Manage User</h1>
+        </div>
+        <div class="col-md-6 col-sm-12 text-right hidden-xs" *ngIf="showAddBtn">
+            <a [routerLink]="[urlService.USER.ADD.URL]" class="btn btn-sm btn-primary"
+                title="Add New Sponsor"><i class="pi pi-plus"></i>
+                New User</a>
+        </div>
+    </div>
+</div>
+
+<ul class="nav nav-tabs1 table-nav">
+    <ng-container *ngFor="let s of segement | keyvalue:returnZero">
+        <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'show active': currentSegment==s.value}" (click)="changeSegment(s.value)"
+                href="javascript:void(0)">{{s.value |
+                titlecase}}</a>
+        </li>
+    </ng-container>
+</ul>
+<div class="tab-content mt-0">
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.LIST">
+        <app-table-list *ngIf="segmentVisited.LIST" #tableList [tableConfig]="tableConfig" [parenttblAction]="tblAction"
+            [parentGetList]="getListData">
+        </app-table-list>
+    </div>
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.STAFF">
+        <app-table-list *ngIf="segmentVisited.STAFF" #tableList [tableConfig]="tableConfig" [parenttblAction]="tblAction"
+            [parentGetList]="getListData">
+        </app-table-list>
+    </div>
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.SPONSOR">
+        <app-table-list *ngIf="segmentVisited.SPONSOR" [viewAction]="viewInfoHandler" #tableList [tableConfig]="tableConfig" [parenttblAction]="tblAction"
+            [parentGetList]="getListData">
+        </app-table-list>
+    </div>
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.INACTIVE">
+        <app-table-list *ngIf="segmentVisited.INACTIVE" #tableInActiveList [tableConfig]="inActiveTableConfig" [parenttblAction]="tblAction"
+            [parentGetList]="getListInActiveData">
+        </app-table-list>
+    </div>
+</div>

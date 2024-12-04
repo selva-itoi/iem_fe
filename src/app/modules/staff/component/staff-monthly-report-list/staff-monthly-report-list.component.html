@@ -1,0 +1,37 @@
+<div class="block-header">
+    <div class="row clearfix">
+        <div class="col-md-6 col-sm-12">
+            <h1>{{queryParams  ? 'My' : 'Manage Staff'}} Monthly Report</h1>
+        </div>
+        <div class="col-md-6 col-sm-12 text-right hidden-xs" *ngIf="showAddBtn">
+            <a [routerLink]="[urlService.STAFF.REPORT_ADD.URL]" [queryParams]="queryParams" class="btn btn-sm btn-primary" title="New Report"><i
+                    class="pi pi-plus"></i>
+                New Report</a>
+            <ng-template #btnBack>
+                <a href="javascript:void(0)" (click)="close()" class="btn btn-sm btn-primary" title="Back"><i
+                        class="pi pi-arrow-left"></i> Back</a>
+            </ng-template>
+        </div>
+    </div>
+</div>
+
+<tab-head [segment]="segement" [initial]="segement.LIST" (onSelect)="segmentVisited = $event.visited; currentSegment =$event.key"></tab-head>
+<div class="tab-content mt-0">
+    <div class="tab-pane active" [hidden]="currentSegment != segement.LIST">
+        <app-table-list  *ngIf="segmentVisited.LIST" [tableConfig]="inActiveTblConfig" [parenttblAction]="tblAction"
+            [parentGetList]="getListData">
+        </app-table-list>
+    </div>
+
+    <div class="tab-pane active" [hidden]="currentSegment != segement.PENDING">
+        <app-table-list *ngIf="segmentVisited.PENDING" [tableConfig]="inActiveTblConfig" [parenttblAction]="tblAction"
+            [parentGetList]="getListPendingData">
+        </app-table-list>
+    </div>
+
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.DRAFT">
+        <app-table-list *ngIf="segmentVisited.DRAFT" [tableConfig]="inActiveTblConfig" [parenttblAction]="tblAction"
+            [parentGetList]="getMyDraftData">
+        </app-table-list>
+    </div>
+</div>

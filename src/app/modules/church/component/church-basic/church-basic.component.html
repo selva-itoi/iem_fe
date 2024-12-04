@@ -1,0 +1,16 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="isModal"></app-page-breadcrumb>
+
+<div [hidden]="loading">
+    <div class="modal-body">
+        <info-view [sourceData]="churchData" [direction]="'HORIZONTAL'" [mapData]="showData">
+        </info-view>
+    </div>
+    <div class="row clearfix text-center m-2">
+        <div class="col-12">
+            <button [disabled]="loading" (click)="close()" class="btn ml-1 btn-round btn-danger">{{ isModal ?
+                'Close' : 'Back' }}</button>
+        </div>
+    </div>
+</div>
+
+<app-page-loader *ngIf="loading"></app-page-loader>

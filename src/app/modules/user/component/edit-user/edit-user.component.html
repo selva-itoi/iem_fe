@@ -1,0 +1,129 @@
+<app-page-breadcrumb [pageInfo]="pageInfo"></app-page-breadcrumb>
+<div class="modal-body pt-4 mb-4" (keyup.enter)="saveData()">
+    <div class="card" [formGroup]="userForm">
+        <div class="body border-0 row">
+            <div class="col-md-6">
+                <div class="row clearfix form-group">
+                    <div class="col-md-6 col-lg-6">
+                        <label>UserName *</label>
+                        <input [readonly]="userId" placeholder="User Name"
+                            [class.error]="submitted && userForm.get('user_name')?.errors" class="form-control"
+                            formControlName="user_name" type="text">
+                        <span lass="error" *ngIf="submitted && userForm.get('user_name')?.errors?.required">
+                            User Name should not be Blank
+                        </span>
+                        <span lass="error" *ngIf="submitted && userForm.get('user_name')?.errors?.isNotUnique">
+                            User Name Already Exists
+                        </span>
+                        <span lass="error" *ngIf="submitted && userForm.get('user_name')?.errors?.email">
+                            Email Not Valid
+                        </span>
+                    </div>
+
+                    <div class="col-md-6 col-lg-6">
+                        <label>Password *</label>
+                        <input placeholder="Password" [class.error]="submitted && userForm.get('password')?.errors"
+                            class="form-control" formControlName="password" type="text">
+                        <span lass="error" *ngIf="submitted && userForm.get('password')?.errors?.required">
+                            Password should not be blank
+                        </span>
+                    </div>
+
+                </div>
+                <!-- <div class="row clearfix" *ngIf="!userData?.staff_emp_code && !userData?.sponsor_id"> -->
+                <div class="row clearfix" *ngIf="!userData?.staff_emp_code && !userData?.sponsor_id">
+                    <div class="col-md-6 col-lg-6">
+                        <label>First Name *</label>
+                        <input placeholder="First Name" [class.error]="submitted && userForm.get('fname')?.errors"
+                            class="form-control" formControlName="fname" type="text">
+                        <span lass="error" *ngIf="submitted && userForm.get('fname')?.errors?.required">
+                            Name should'nt be blank
+                        </span>
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                        <label>Last Name</label>
+                        <input placeholder="Last Name" [class.error]="submitted && userForm.get('lname')?.errors"
+                            class="form-control" formControlName="lname" type="text">
+                        <span lass="error" *ngIf="submitted && userForm.get('lname')?.errors?.required">
+                            Name should'nt be blank
+                        </span>
+                    </div>
+                </div>
+                <br>
+                <div class="row clearfix">
+                    <div class="col-md-12 col-lg-12">
+                        <label>
+                            <b> Role Management</b>
+                        </label>
+                    </div>
+
+                </div>
+                <br>
+                <app-form-generator #basicForm (onChangeEvent)="onChange($event)" [formData]="roleFormData">
+                </app-form-generator>
+                <div class="col-md-6 col-lg-6 align-center mt-2">
+                    <button noDoubleClick (click)="addRole()" class="btn btn-success"> <i class="pi pi-plus"></i>
+                        Add </button>
+                </div>
+                <div class="row clearfix mt-1">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom spacing8">
+                            <thead>
+                                <tr>
+                                    <ng-container *ngFor="let col of cols;">
+                                        <th>{{col.title}}</th>
+                                    </ng-container>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let t of tblRole; let i = index">
+                                    <ng-container *ngFor="let col of cols;">
+                                        <td>{{t[col.colName]}}</td>
+                                    </ng-container>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-default  ml-1" title="View"
+                                            (click)="showView(t)"><i class="icon-eye text-warning"></i></button>
+                                        <button type="button" class="btn btn-sm btn-default  ml-1" title="Make Inactive"
+                                            (click)="deleteRow(i,true)" data-type="confirm"><i
+                                                class="icon-trash text-danger"></i></button>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <ng-container *ngFor="let m of module | keyvalue">
+                    <div class="body pt-0">
+                        <div class="header mt-1">
+                            <h2>{{m?.key}} Module</h2>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="form-group" *ngFor="let a of m.value">
+                                <div class="fancy-checkbox">
+                                    <label class=" control-inline element-left">
+                                        <input disabled type="checkbox" [checked]="a.checked || false">
+                                        <span>{{a.actionDes}}</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal-footer">
+    <button type="button" (click)="close()" [disabled]="loading"
+        class="btn btn-round btn-default pull-left">Close</button>
+    <button type="button" [disabled]="loading" (click)="saveData()" class="btn btn-round btn-primary">Save
+        {{userData?.id ? 'changes' :
+        ''}} <i *ngIf="loading" class="pi pi-spin pi-spinner"></i> </button>
+</div>

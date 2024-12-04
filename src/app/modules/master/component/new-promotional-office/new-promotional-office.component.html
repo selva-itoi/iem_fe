@@ -1,0 +1,62 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="false"></app-page-breadcrumb>
+<div class="row">
+    <div class="card">
+        <div class="body">
+            <div class="row clearfix">
+                <div class="col-md-12 col-lg-12">
+                    <label>
+                        <b>In charge Details</b>
+                    </label>
+                </div>
+            </div>
+            <div class="row clearfix ">
+                <div class="col-md-6 col-lg-6 form-group">
+                    <div class="list-group cursor-pointer" style="flex-direction: row;" (click)="openStaffModal()">
+                        <div
+                            class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                            <label class="cursor-pointer">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Select Staff</h5>
+                                </div>
+                                <small> </small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="col-md-6 col-lg-6 form-group">
+                    <profile-widget *ngIf="inChargeData" widgetType="SMALL" [profileData]="inChargeData"></profile-widget>
+                </div> -->
+            </div>
+            <!-- <app-form-generator #basicForm  [formData]="prFormData">
+            </app-form-generator>  -->
+            <app-form-generator #basicForm [formData]="basicFormData">
+            </app-form-generator>
+            <app-form-generator #addressForm [formData]="addressFormData">
+            </app-form-generator>
+            <app-form-generator #bankForm [formData]="BankData">
+            </app-form-generator>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="body">
+            <div class="row clearfix align-center">
+                <div class="col-md-12 text-center">
+                    <div class="btn-group btn-group-lg">
+
+                        <button noDoubleClick [disabled]="loading" type="button" (click)="onSubmit()"
+                            class="btn btn-primary mr-1">
+                            <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                            {{ loading ? 'Saving...' : 'Submit'}}
+                        </button>
+                        <button [disabled]="loading" (click)="close()" type="button"
+                            class="btn btn-outline-danger ml-1">Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+            <!-- <app-page-loader [loading]="dataLoading"></app-page-loader> -->
+        </div>
+    </div>
+
+</div>

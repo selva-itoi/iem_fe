@@ -1,0 +1,30 @@
+.horiz {
+    flex: 1 1 auto;
+    width: 100%;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    label {
+        flex: 0 0 35%;
+    }
+    p{
+        flex: 0 0 65%;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        hyphens: auto;
+        word-break: break-word;
+        margin-left: 10px;
+        display: contents;
+    }
+}
+.vertical{
+    border: 1px solid #79818812;
+    label{
+        margin-top :5px;
+    font-size: 12px;
+    }
+}
+.imagediv{
+    width:  150px;
+    height: 150px;
+}

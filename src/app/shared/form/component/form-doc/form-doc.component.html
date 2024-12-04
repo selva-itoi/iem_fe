@@ -1,0 +1,27 @@
+<div class="row clearfix">
+    <div class="col-md-10 col-sm-10">
+        <h1 style="font-size: 18px;" class="text-muted">{{config?.title}}</h1>
+    </div>
+</div>
+
+<app-form-generator #basicForm *ngIf="basicFormData && mode=='EDIT'" (onChangeEvent)="onChange($event)"
+    [formData]="basicFormData">
+</app-form-generator>
+
+<div class="card">
+    <div class="body border-0">
+        <div class="row clearfix">
+            <div class="col-md-3 col-lg-3" *ngFor="let img of imageData; let i=index">
+                <ng-container *ngIf="img?.action !='3'; else removeImage">
+                    <image-doc-grid [src]="img.document_path" [showDelete]="mode=='EDIT' ? true : false"
+                        [primaryKey]="i" (onDelete)="deleteImage($event,img?.action? 'NEW' : 'OLD')"
+                        [remarks]="img?.remarks">
+                    </image-doc-grid>
+                </ng-container>
+                <ng-template #removeImage>
+                    <span class="text-muted">File Removed</span>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>

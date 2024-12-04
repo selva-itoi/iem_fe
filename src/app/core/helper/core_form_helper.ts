@@ -1,0 +1,7 @@
+export const ADDRESS_MAP_INFO = [{ name: 'street', title: 'Street' }, { name: 'address', title: 'Address' }, { name: 'countryName', title: 'Country' }, { name: 'stateName', title: 'State' }, { name: 'districtName', title: 'District' },];
+
+export const MODIFY_COL = [{colName : 'created_byName',title : 'Created By'},{colName : 'created_at', title : 'Created On',type : 'DATETIME'},{ colName: 'updated_at', title: 'Last Modified', type: 'DATE' }, { colName: 'last_modify_byName', title: 'Last Modified By' }]
+export const RELIVE_COL = [{ colName: 'reason_relive', title: 'Reason Relive' },{ colName: 'effect_from', title: 'Relived On', type: 'DATE' }, { colName: 'died_on', type: 'DATE', title: 'Died On' }]
+export const APPROVE_COL =[...MODIFY_COL,...[{colName : 'last_approved_byName',title : 'Approved By'}]];
+export const COMMON_INFO_UPDATE_INFO = [{name : 'created_at',type : 'DATE',title : 'Applied On',col:'12'},{name:'updated_at',title : 'Updated On',type :'DATE',col:'12'},{col:'12', name : 'created_byName',title : 'created By'},{col:'12',name : 'last_modify_byName',title : 'last Modify By'}]
+export const MODIFY_INFO_UPDATE_INFO = [{name : 'description',title : 'Description',col:'12'},{name:'updated_at',title : 'Applied On',type :'DATE',col:'12'},{col:'12',name : 'created_name',title : 'Requested By'}]

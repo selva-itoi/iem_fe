@@ -1,0 +1,31 @@
+.p-chips {
+    ul {
+        padding: 0;
+        margin: -5px;
+        width: -webkit-fill-available;
+    }
+}
+.chip {
+    display: inline-block;
+    height: 32px;
+    padding: 0 12px;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 32px;
+    color: rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    background-color: #eceff1;
+    border-radius: 16px;
+    -webkit-transition: all 0.3s linear;
+    transition: all 0.3s linear;
+}
+
+:host ::ng-deep .p-chips{
+    height: auto;
+}
+:host ::ng-deep .p-chips-multiple-container{
+    padding: 0% !important;
+    border: none;
+}

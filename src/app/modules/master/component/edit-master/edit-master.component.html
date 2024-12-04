@@ -1,0 +1,26 @@
+<div class="modal-header">
+    <h6 class="mb-0 modal-title">{{branchData?.id? 'Update ' + data?.title + ' Details' : 'New ' +data?.title | titlecase}}
+    </h6>
+    <button type="button" class="close" (click)="close()"><span>×</span></button>
+</div>
+<div class="modal-body pt-4 mb-4" (keyup.enter)="saveData()">
+    <div class="card">
+        <div class="body border-0" [hidden]="dataLoading">
+            <app-form-generator *ngIf="data?.tblCol?.length" #basicForm (onChangeEvent)="onChange($event)"
+                [formData]="data?.tblCol"></app-form-generator>
+            <div class="row clearfix" [hidden]="!data?.isAddress">
+                <app-address #address [isPage]="true" title="Address Details" [submitted]="submitted">
+                </app-address>
+            </div>
+        </div>
+        <app-page-loader [loading]="dataLoading"></app-page-loader>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" (click)="close()" [disabled]="loading"
+        class="btn btn-round btn-default pull-left">Close</button>
+    <button type="button" [disabled]="loading" (click)="saveData()" class="btn btn-round btn-primary">
+        {{data?.id ? 'Update' :'Save'}}<i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+    </button>
+</div>

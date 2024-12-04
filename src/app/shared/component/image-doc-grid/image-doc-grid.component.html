@@ -1,0 +1,26 @@
+<!-- <div class="pt-2">
+    <img imageLoad *ngIf="progress" [src]="filePath" class="img-thumbnail w100 h100">
+</div> -->
+<!-- <div class="col-xs-12 col-sm-6 col-md-4" *ngFor="let a of file_data  [class.float-left]="""> -->
+<div class="modification-requst-view" *ngIf="doc_path">
+    <div class="thumbnail">
+        <img imageLoad class="rounded img-fluid" [src]="doc_path" alt="">
+        <div class="btn-group mr-2 thumb-btn">
+            <a [href]="doc_path" class="btn btn-primary btn-sm" target="_blank"><i class="icon-cloud-download"></i></a>
+            <button type="button" *ngIf="showDelete" class="btn btn-danger btn-sm" (click)="delete()"><i
+                    class="icon-trash"></i></button>
+        </div>
+        <div *ngIf="remarks" class="text-muted img-title">{{remarks}}</div>
+    </div>
+    <!-- <div class="container_progress">
+        <div #progressDiv class="progress mx-auto" data-value='25'>
+            <span class="progress-left">
+                <span class="progress-bar border-danger"></span>
+            </span>
+            <span class="progress-right">
+                <span class="progress-bar border-danger"></span>
+            </span>
+        </div>
+    </div> -->
+</div>
+<!-- </div> -->

@@ -1,0 +1,323 @@
+<div class="row clearfix" style="padding-top: 4rem;">
+    <div class="col-lg-3 col-md-6 pt-2">
+        <div class="card">
+            <div class="body">
+                <div class="d-flex align-items-center">
+                    <div class="icon-in-bg bg-indigo text-white rounded-circle"><i class="fa fa-briefcase"></i></div>
+                    <div class="ml-4">
+                        <span>Total staff</span>
+                        <h4 class="mb-0 font-weight-medium">{{data?.total_staff || '-'}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 pt-2">
+        <div class="card">
+            <div class="body">
+                <div class="d-flex align-items-center">
+                    <div class="icon-in-bg bg-indigo text-white rounded-circle"><i class="fa fa-briefcase"></i></div>
+                    <div class="ml-4">
+                        <span>No of Region</span>
+                        <h4 class="mb-0 font-weight-medium">{{data?.total_region || '-'}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 pt-2">
+        <div class="card">
+            <div class="body">
+                <div class="d-flex align-items-center">
+                    <div class="icon-in-bg bg-indigo text-white rounded-circle"><i class="fa fa-briefcase"></i></div>
+                    <div class="ml-4">
+                        <span>No of Zone</span>
+                        <h4 class="mb-0 font-weight-medium">{{data?.total_zone || '-'}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 pt-2">
+        <div class="card">
+            <div class="body">
+                <div class="d-flex align-items-center">
+                    <div class="icon-in-bg bg-indigo text-white rounded-circle"><i class="fa fa-briefcase"></i></div>
+                    <div class="ml-4">
+                        <span>No of Field</span>
+                        <h4 class="mb-0 font-weight-medium">{{data?.total_field || '-'}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="col-lg-3 col-md-6 col-sm-12">
+        <div class="card">
+            <div class="body">
+                <div class="row text-center">
+                    <div class="col-lg-12 col-md-5">
+
+                        <label class="mb-0 mt-2">This month New Missionary</label>
+                        <h4 class="h4 mb-0 font-weight-bold text-cyan">225</h4>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-12">
+                        <hr class="mt-4 mb-4">
+                    </div>
+                    <div class="col-lg-12 col-md-5">
+
+                        <label class="mb-0 mt-2">New Sponsor</label>
+                        <h4 class="h4 mb-0 font-weight-bold text-info">124</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <div class="col-lg-3 col-md-6 col-sm-12">
+        <div class="card">
+            <div class="body">
+                <div class="row text-center">
+                    <div class="col-lg-12 col-md-5">
+
+                        <label class="mb-0 mt-2">Total Donors</label>
+                        <h4 class="h4 mb-0 font-weight-bold text-cyan">{{data?.total_sponsor || '-'}}</h4>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-12">
+                        <hr class="mt-4 mb-4">
+                    </div>
+                    <div class="col-lg-12 col-md-5">
+
+                        <label class="mb-0 mt-2">This Month New Donors</label>
+                        <h4 class="h4 mb-0 font-weight-bold text-info">{{data?.total_new_sponsor || '-'}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 col-sm-12">
+        <div class="card">
+            <div class="body">
+                <div class="row text-center">
+                    <div class="col-lg-12 col-md-5">
+                        <label class="mb-0 mt-2">New Sponsorship</label>
+                        <h4 class="h4 mb-0 font-weight-bold text-cyan">225</h4>
+                    </div>
+                    <div class="col-12 col-md-2 col-lg-12">
+                        <hr class="mt-4 mb-4">
+                    </div>
+                    <div class="col-lg-12 col-md-5">
+                        <label class="mb-0 mt-2">Total Active Sponsorship</label>
+                        <h4 class="h4 mb-0 font-weight-bold text-info">124</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card">
+            <div class="body" style="width: fit-content;">
+                <app-clock></app-clock>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="col-lg-3 col-md-6">
+        <div class="card">
+            <ng-container *ngIf="locationData?.city">
+                <a class="weatherwidget-io" [href]="WHETHER_URL" [attr.data-label_1]="locationData?.city" data-label_2="WEATHER" data-mode="Current" data-days="3" data-theme="sky">{{locationData?.city}} WEATHER</a>
+            </ng-container>
+            <app-page-loader [loading]="!locationData?.city"></app-page-loader>
+        </div>
+    </div> -->
+
+
+    <!-- <div class="col-lg-3 col-md-6">
+        <div class="card">
+            <div class="body">
+                <div class="d-flex align-items-center">
+                    <div class="icon-in-bg bg-azura text-white rounded-circle"><i class="fa fa-credit-card"></i></div>
+                    <div class="ml-4">
+                        <span>Total</span>
+                        <h4 class="mb-0 font-weight-medium">$3,651</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card">
+            <div class="body">
+                <div class="d-flex align-items-center">
+                    <div class="icon-in-bg bg-orange text-white rounded-circle"><i class="fa fa-users"></i></div>
+                    <div class="ml-4">
+                        <span>Daily Visits</span>
+                        <h4 class="mb-0 font-weight-medium">5,805</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card">
+            <div class="body">
+                <div class="d-flex align-items-center">
+                    <div class="icon-in-bg bg-pink text-white rounded-circle"><i class="fa fa-life-ring"></i></div>
+                    <div class="ml-4">
+                        <span>Bounce rate</span>
+                        <h4 class="mb-0 font-weight-medium">$13,651</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+</div>
+
+<div *ngIf="!staff_id" class="row clearfix">
+    <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="card">
+            <div class="body">
+                <label class="title">Approval Request</label>
+                <app-modify-list [whereStatus]="[2]" [size]="'SMALL'" [module]="modifyModule"></app-modify-list>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 pt-1">
+        <div class="card">
+            <div class="body">
+                <ul class="nav nav-tabs1 table-nav">
+                    <ng-container *ngFor="let s of segement | keyvalue:returnZero">
+                        <li class="nav-item">
+                            <a class="nav-link" [ngClass]="{'show active': currentSegment==s.value}"
+                                (click)="changeSegment(s.value)" href="javascript:void(0)">
+                                <!-- <img src="assets/images/wedding_icon_white.png"> -->
+                                {{s.value | titlecase}}</a>
+                        </li>
+                    </ng-container>
+                </ul>
+                <div class="tab-content mt-0">
+                    <div class="tab-pane show active" [hidden]="currentSegment != segement.STAFF_BIRTHDAY">
+                        <birthday-widget mode="STAFF" [type]="'BIRTHDAY'"></birthday-widget>
+                    </div>
+                    <div class="tab-pane show active" [hidden]="currentSegment != segement.STAFF_ANNIVERSARY">
+                        <birthday-widget mode="STAFF" [type]="'ANNIVERSARY'"></birthday-widget>
+                    </div>
+                    <div class="tab-pane show active" [hidden]="currentSegment != segement.SPONSOR_ANNIVERSARY">
+                        <birthday-widget mode="SPONSOR" [type]="'ANNIVERSARY'"></birthday-widget>
+                    </div>
+                    <div class="tab-pane show active" [hidden]="currentSegment != segement.SPONSOR_BIRTHDAY">
+                        <birthday-widget mode="SPONSOR" [type]="'BIRTHDAY'"></birthday-widget>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="col-lg-6 col-md-6 col-sm-12 pt-1">
+        <birthday-widget [type]="'ANNIVERSARY'"></birthday-widget>
+    </div> -->
+
+
+    <!-- <div class="row clearfix">
+    <div class="card mt-2" style="width:35rem;min-height: 30rem;">
+        <div class="card-header text-center text-white" style="background-color: cadetblue; border:none ; ">
+            <h3>ToDo List</h3>
+        </div>
+        <div class="card-body" style="padding: 5rem;">
+            <div>
+                <div class="input-group input-group-merge ">
+                    <input placeholder="Add Task..." id="todo" style="width: 50%;" [(ngModel)]="Todotask"
+                        class="form-control" />
+                    <span class="input-group-text" (click)="add()"><i class="pi pi-plus-circle"></i></span>
+                </div>
+            </div>
+            <div>
+                <table style="margin-top: 3rem;">
+                    <tbody *ngFor=" let Todo of Todolist;let i = index">
+                        <tr >
+                            <td>
+                                <input type="checkbox" (click)="check(i)" />
+                            </td>
+                            <td style="padding-left: 1.5rem;">
+                                <p [style]="style" style="max-width: 18rem;margin-bottom:1rem;margin-top:1rem;">{{Todo}}</p>
+                            </td>
+                            <td><i class="pi pi-pencil" (click)="edit(i)"></i></td>
+                            <td><i class="pi pi-trash" (click)="delete(i)"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <button style="margin-left:30%;position: absolute;bottom: 1rem; " class="btn btn-danger"
+                (click)="clearAll()">Clear All</button>
+        </div>
+    </div>
+</div> -->
+    <!-- <div class="col-lg-6 col-md-6 col-sm-12 pt-1">
+        <div class="card">
+            <div class="header">
+                <h2>Todo List</h2>
+            </div>
+            <div class="body" style="min-height:30rem ;">
+                <div class="media mb-0">
+                    <img class="rounded mr-3" src="../assets/images/xs/avatar4.jpg" alt="">
+                    <div class="media-body">
+                        <h5 class="m-0">Deborah Cox</h5>
+                        <p class="text-muted mb-0">Professor</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row text-center">
+                    <div class="col-lg-6 border-right" (click)="showActive=true">
+                        <label class="mb-0">TASKS</label>
+                        <h4 class="font-30">{{Todolist.length}}</h4>
+                    </div>
+                    <div class="col-lg-6" (click)="showActive=false">
+                        <label class="mb-0">COMPLETED</label>
+                        <h4 class="font-30">{{Todocompleted.length}}</h4>
+                    </div>
+                </div>
+                <hr>
+                <div *ngIf="showActive">
+                    <div class="input-group input-group-merge ">
+                        <input placeholder="Add Task..." id="todo" style="width: 50%;" [(ngModel)]="Todotask"
+                            class="form-control" />
+                        <span class="input-group-text" (click)="add()"><i class="pi pi-plus-circle"></i></span>
+                    </div>
+                    <ul class="todo_list list-unstyled" *ngFor=" let Todo of Todolist;let i = index">
+                        <li>
+                            <label class="fancy-checkbox">
+                                <input type="checkbox" (click)="taskCompleted(i)" name="checkbox">
+                                <span (click)="taskCompleted(i)">{{Todo}}</span>
+                            </label>
+                            <a href="javascript:void(0);" (click)="delete(i)" class="todo-delete"><i
+                                    class="icon-trash"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                <div *ngIf="!showActive">
+                    <ul class="todo_list list-unstyled" *ngFor=" let comp of Todocompleted;let i = index">
+                        <li>
+                            <label class="fancy-checkbox">
+                                <input type="checkbox" name="checkbox" checked=""> 
+                                <span>{{comp}}</span>
+                            </label>
+                            <a href="javascript:void(0);" (click)="deleteComp(i)" class="todo-delete"><i
+                                    class="icon-trash"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+</div>
+<!-- <div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12 pt-1" style="height: 500px">
+      
+        <map-widget #map></map-widget>
+    
+    </div>
+</div> -->
+
+<!-- <a class="weatherwidget-io" href="https://forecast7.com/en/40d71n74d01/chennai/" data-label_1="NEW YORK" data-label_2="WEATHER" data-theme="original" >NEW YORK WEATHER</a> -->
+<!-- <noscript><style>table,div,span,p{display:none}</style><meta content="0;url=/search?q=whether+now&amp;sxsrf=ALiCzsZIP5nnpwHmQGf18H3nRxIsjeRgjA:1663080310295&amp;gbv=1&amp;sei=dpcgY_3VEdGs4-EPsfSO0Ao" http-equiv="refresh"><div style="display:block">Please click <a href="/search?q=whether+now&amp;sxsrf=ALiCzsZIP5nnpwHmQGf18H3nRxIsjeRgjA:1663080310295&amp;gbv=1&amp;sei=dpcgY_3VEdGs4-EPsfSO0Ao">here</a> if you are not redirected within a few seconds.</div></noscript> -->

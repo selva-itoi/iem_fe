@@ -1,0 +1,14 @@
+<div class="auth-main particles_js" [style]="theme">
+    <div class="auth_div vivify popIn">
+        <div class="auth_brand">
+            <a class="navbar-brand" href="javascript:void(0);"><img [src]="logo" width="30" height="30"
+                    class="d-inline-block align-top mr-2" alt="">{{title}}</a>
+        </div>
+        <div class="card">
+            <div class="body" style="background-color:#f3f3f3">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </div>
+    <div id="particles-js"></div>
+</div>

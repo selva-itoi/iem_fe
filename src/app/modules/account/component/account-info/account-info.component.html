@@ -1,0 +1,128 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="isModal"></app-page-breadcrumb>
+<div class="modal-body  pt-4 mb-4">
+    <div class="alert alert-warning" *ngIf="info_message">
+        <div class="text-center">
+            {{info_message}}
+        </div>
+    </div>
+    <div [hidden]="dataLoading">
+        <div class="row clearfix">
+            <div class="col-lg-3 col-md-3 col-xl-3">
+                <div class="card">
+                    <div class="body">
+                        <!-- {{officeData | json}} -->
+                        <ng-container *ngFor="let a of officeKeys">
+                            <small class="text-muted">{{a?.title}}: </small>
+                            <p *ngIf="accountData?.id">{{accountData[a?.colName || ''] || ''}}</p>
+                            <hr class="mt-2">
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="m-3" *ngIf="accountData">
+                    <info-view [sourceData]="accountData" [direction]="'VERTICAL'" [mapData]="updateInfo">
+                    </info-view>
+                </div>
+            </div>
+            <div class="col-lg-9 col-md-9 col-xl-9">
+                <ul class="nav nav-tabs1 table-nav">
+                    <ng-container *ngFor="let s of segement | keyvalue:returnZero">
+                        <li class="nav-item">
+                            <a class="nav-link" [ngClass]="{'show active': currentSegment==s.value}"
+                                (click)="changeSegement(s.value)" href="javascript:void(0)">{{s.value}}</a>
+                        </li>
+                    </ng-container>
+                </ul>
+                <div class="tab-content mt-0">
+                    <div class="tab-pane show active" [hidden]="currentSegment != segement.BASIC">
+                        <div class="card">
+                            <div class="body">
+                                <info-view [mode]="type" [sourceData]="accountData"
+                                    [modifyData]="modifyData?.request_data" [formData]="basicFormData"></info-view>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane show active" [hidden]="currentSegment != segement.SETTLEMENT">
+                        <div class="card">
+                            <div class="body">
+                                 <!-- <app-transaction-ref *ngIf="globalWhere.length"
+                                    [globalWhere]="globalWhere"></app-transaction-ref> -->
+                                <app-table-list #sTbl [tableConfig]="tableConfig" [parentGetList]="getListData"
+                                    [parenttblAction]="tblAction">
+                                </app-table-list>
+                                <!-- <app-form-doc #docForm [mode]="'VIEW'" ></app-form-doc> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane show active" [hidden]="currentSegment != segement.TRANSACTION">
+                        <div class="card">
+                            <div class="body">
+                                <app-transaction-ref *ngIf="globalWhere.length"
+                                    [globalWhere]="globalWhere"></app-transaction-ref>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="tab-pane show active" [hidden]="currentSegment != segement.LOG">
+                        <div class="card">
+                            <div class="body">
+                                <ng-container *ngIf="!logData?.length">
+                                    <div class="row">
+                                        <div class="col-12 text-center">
+                                            No Data Found
+                                        </div>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="logData?.length">
+                                    <div>
+                                        <ul class="timeline">
+                                            <ng-container *ngFor="let c of logData ; let i = index">
+                                                <li class="timeline-item">
+                                                    <div class="timeline-info">
+                                                        <span>{{ c?.created_at | date: 'mediumDate'}}</span>
+                                                    </div>
+                                                    <div class="timeline-marker"></div>
+                                                    <div class="timeline-content">
+                                                        <h4 class="timeline-title">
+                                                            <span
+                                                                class="badge font-12 badge-{{c.status == 1?'success':c.status == 2? 'info' :c.status == 3?'info' : c.status == 4? 'warning' : c.status == 5? 'success': c.status == 6? 'success':'danger' }}">
+                                                                {{c?.statusName}}</span>
+                                                        </h4>
+                                                        <span>By {{c?.created_byName}}</span>
+                                                        <p>{{c?.remarks}}</p>
+                                                    </div>
+                                                </li>
+                                            </ng-container>
+                                        </ul>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <div class="row clearfix align-center">
+            <ng-container *ngIf="type != 'MODIFICATION'">
+                <div>
+                    <button (click)="close()" class="btn ml-1 btn-round btn-warning">{{ isModal ? 'Close' : 'Back'
+                        }}</button>
+                </div>
+                <div
+                    *ngIf="(accountData?.category == 2 || accountData?.category == 3) && (accountData?.status == 1||accountData?.status == 2) ">
+                    <button (click)="closeAccount()" [disabled]="loading" class="btn ml-1 btn-round btn-danger">
+                        {{!loading? 'Close Account':'Closing...' }}</button>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="+modifyData?.status == 2 && hasPermissionApprove && type == 'MODIFICATION'">
+                <button [disabled]="loading" (click)="approve()" class="btn btn-round btn-success">
+                    <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                    {{loading ? 'Approving..' :'Approve'}}
+                </button>
+                <button [disabled]="loading" (click)="reject()" class="btn ml-1 btn-round btn-danger">
+                    <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                    {{loading ? 'Rejecting..' : 'Reject'}}
+                </button>
+            </ng-container>
+        </div>
+    </div>
+</div>
+<app-page-loader [loading]="dataLoading"></app-page-loader>

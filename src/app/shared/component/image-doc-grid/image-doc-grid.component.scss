@@ -1,0 +1,66 @@
+.modification-requst-view {
+   // margin: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 10px 0 rgb(0 0 0 / 20%);
+    padding: 6px;
+    text-align: center;
+    .thumbnail {
+        background: #ffffff;
+        //padding: 10px;
+        box-shadow: 0 0 22px #efefef;
+        border: solid 1px #e6e6e6;
+    }
+    img {
+        width: auto;
+        max-height: 150px;
+        height: auto;
+        max-width: 100%;
+    }
+    .thumb-btn {
+        display: inline-grid;
+        position: absolute;
+    }
+    .img-title{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.file-remove button.ui-button.ui-widget.ui-state-default {
+    background: transparent;
+    border: 0;
+}
+.modification-requst .file-remove .fa-close {
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #ff3030;
+    font-size: 25px;
+}
+.download-doc {
+    text-align: center;
+    margin-top: 5px;
+}
+.download-doc i.fa {
+    font-size: 22px;
+    color: #1b8cf9;
+}
+
+.group-btn {
+    text-align: center;
+    margin-top: 15px;
+}
+.group-btn a.btn-download {
+    color: #069606;
+    margin-right: 10px;
+}
+.group-btn a.btn-download:hover {
+    color: #069606;
+}
+.group-btn button.btn-del {
+    color: #ce0606;
+    background: transparent;
+}

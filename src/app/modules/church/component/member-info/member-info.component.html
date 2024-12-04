@@ -1,0 +1,15 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="isModal"></app-page-breadcrumb>
+<div [hidden]="dataLoading">
+    <div class="modal-body">
+        <info-view [sourceData]="memberData" [direction]="'HORIZONTAL'" [formData]="formData">
+        </info-view>
+    </div>
+    <div class="row clearfix text-center m-2">
+        <div class="col-12">
+            <button [disabled]="dataLoading" (click)="close()" class="btn ml-1 btn-round btn-danger">{{ isModal ?
+                'Close' : 'Back' }}</button>
+        </div>
+    </div>
+</div>
+
+<app-page-loader *ngIf="dataLoading"></app-page-loader>

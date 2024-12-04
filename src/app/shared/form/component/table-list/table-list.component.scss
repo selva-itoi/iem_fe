@@ -1,0 +1,36 @@
+:host ::ng-deep .p-datatable-header {
+    border: none !important
+}
+
+.selectedRow {
+    a:link {
+        color: #fff;
+    }
+
+    border: none !important;
+    padding: 0 !important;
+}
+
+.bg-green {
+    background: #5cb65f !important;
+    color: rgba(255, 255, 255, 0.966) !important;
+}
+
+.bg-orange {
+    background: #ffa117 !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.bg-red {
+    background: #e15858 !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+:host ::ng-deep .p-column-filter {
+    // .p-inputtext {
+    //     width: auto;
+    // }
+    .p-column-filter-clear-button{
+        display: none;
+    }
+}

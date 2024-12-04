@@ -1,0 +1,76 @@
+<div class="block-header">
+    <div class="row clearfix">
+        <div class="col-md-6 col-sm-12">
+            <h1>New Sponsor</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="javascript:void(0)">
+                            Sponsor
+                        </a>
+                    </li>
+                    <li aria-current="page" class="breadcrumb-item active">
+                        New/Edit Sponsor
+                    </li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-6 col-sm-12 text-right hidden-xs">
+            <a [routerLink]="[urlService.SPONSOR.LIST.URL]" class="btn btn-sm btn-success" title="Sponsor List"><i
+                    class="icon-list"></i>
+                Donor List</a>
+        </div>
+    </div>
+</div>
+
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="card">
+            <ul class="nav nav-tabs1 table-nav">
+                <ng-container *ngFor="let s of segement | keyvalue:returnZero">
+                    <li class="nav-item">
+                        <a class="nav-link"
+                            [ngClass]="{'show active': currentSegment==s.value, 'error-segment' : segementError[s.key] == true}"
+                            (click)="changeSegment(s.value)" href="javascript:void(0)">{{s.value}}</a>
+                    </li>
+                </ng-container>
+            </ul>
+            <div class="tab-content mt-0">
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.BASIC">
+                    <app-new-sponsor #sponsorComp></app-new-sponsor>
+                </div>
+                <div class="tab-pane show active" [hidden]="currentSegment != segement.SPONSORSHIP">
+                    <app-new-sponsorship #sponsorshipComp></app-new-sponsorship>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+
+<div class="row clearfix align-center">
+    <div class="col-12" *ngIf="isModifyRequest">
+        <div class="alert alert-primary" role="alert">
+            Modification Request is Pending you can'nt Raise New Request!.
+        </div>
+    </div>
+    <div class="col-md-12 text-center">
+        <span class="error" *ngIf="segementError.SPONSORSHIP || segementError.BASIC"> Some field not be valid</span>
+    </div>
+    <div class="col-md-12 text-center">
+        <div class="btn-group btn-group-lg">
+            <button [disabled]="loading" *ngIf="pSegment" (click)="changeSegment(pSegment)" type="button"
+                class="btn btn-primary mr-1">Prev</button>
+            <button noDoubleClick *ngIf="!isModifyRequest && currentSegment == segement.PAYMENT" [disabled]=" loading"
+                type="button" (click)="onSubmit()" class="btn btn-primary mr-1">
+                <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                {{ loading ? 'Saving...' : 'Submit'}}
+            </button>
+            <button [disabled]="loading || validSegemnet" *ngIf="nSegment" (click)="changeSegment(nSegment)"
+                type="button" class="btn btn-primary">Save & Next</button>
+        </div>
+    </div>
+</div>

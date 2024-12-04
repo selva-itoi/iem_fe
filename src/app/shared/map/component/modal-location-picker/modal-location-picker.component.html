@@ -1,0 +1,18 @@
+<div class="alert-box">
+    <div class="modal-header">
+        <h4 class="modal-title">{{'Location Picker'}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="onCancel(false)">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-12" style="height: 300px;">
+                <app-map  #mapComp (onMapEvent)="onMapEvent($event)"></app-map>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Okay</button>
+    </div>
+</div>

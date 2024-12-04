@@ -1,0 +1,79 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">{{formData?.subject || emailData?.subject || title}}</h4>
+    <button type="button" (click)="close()" class="btn-close close pull-right" aria-label="Close">
+        <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+</div>
+
+
+
+<div class="modal-body mail-inbox" [ngSwitch]="mode">
+    <div [hidden]="iframeLoad" style="width: 100%;" *ngSwitchCase="'PDF'">
+        <iframe *ngIf="formData?.config?.is_pdf && formData?.config?.is_preview && pdf_url"
+            [src]="pdf_url | safeHtml : 'URL'" style="width: 100%; height: 600px;"></iframe>
+    </div>
+
+    <div class="row">
+        <ng-container *ngSwitchDefault>
+            <div class="mail-detail-full" *ngIf="emailData">
+                <div class="detail-header">
+                    <div class="media">
+                        <div class="float-left">
+                            <div class="m-r-20"><img style="height: 60px;" src="../assets/images/sm/avatar1.jpg"
+                                    imageLoad class="rounded" alt="">
+                            </div>
+                        </div>
+                        <div class="media-body">
+                            <p class="mb-0"><strong class="text-muted m-r-5">From :</strong><a class="text-default"
+                                    href="javascript:void(0);">{{emailData?.email_to}}</a><span
+                                    class="text-muted text-sm float-right">{{emailData?.created_at | date}}</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mail-cnt" [innerHTML]="emailData?.body | safeHtml"></div>
+                <span *ngIf="emailData?.pdf_content" (click)="showPdfPreview()"
+                    class="text-info m-2 cursor-pointer">Attachment
+                    Preview </span>
+            </div>
+
+            <ng-container *ngIf="!emailData">
+                <ng-container *ngIf="type =='SEND'">
+                    <div class="col-12">
+                        <app-form-generator #basicForm (onChangeEvent)="onChange($event)"
+                            [formData]="BASIC_FORM_BUILDER">
+                        </app-form-generator>
+                    </div>
+                </ng-container>
+                <div class="col-12" [hidden]="formData?.config?.is_pdf && formData?.config?.is_preview">
+                    <label>Body</label>
+                </div>
+                <div class="col-12 mb-2">
+                    <div class="border" style="min-height: 5rem;" (blur)="onChangeContent($event)"
+                        [hidden]="formData?.config?.is_pdf && formData?.config?.is_preview"
+                        [innerHTML]="formData?.body | safeHtml" contenteditable="true"></div>
+                </div>
+                <div class="col-12">
+                    <app-form-doc #docForm [config]="{title : 'Attachment',hideRemark:true,fileTitle :'Attachment'}"
+                        [mode]="'EDIT'"></app-form-doc>
+                </div>
+            </ng-container>
+        </ng-container>
+
+        <div *ngIf="dataLoading || iframeLoad" class="fetching mt20 mb20 col-lg-12 col-md-12 col-sm-12"
+            style="text-align: center">
+            <i class="pi pi-spin pi-spinner"></i>
+            please wait.. getting data...
+        </div>
+    </div>
+
+</div>
+<div class="row clearfix text-center m-5">
+    <div class="col-12">
+        <ng-container *ngIf="type =='SEND'">
+            <button [disabled]="loading" (click)="send()" class="btn btn-round btn-success">
+                <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>Send</button>
+        </ng-container>
+        <button (click)="close()" class="btn ml-1 btn-round btn-warning">{{ isModal ?
+            'Close' : 'Back' }}</button>
+    </div>
+</div>

@@ -1,0 +1,314 @@
+<div class="modal-header" *ngIf="isModal">
+    <h6 class="mb-0 modal-title">Sponsorship Details</h6>
+    <button type="button" class="close" (click)="close()"><span>X</span></button>
+</div>
+
+<div class="block-header">
+    <div class="row clearfix">
+        <div class="col-md-6 col-sm-12">
+            <h1>{{sponsorshipId? 'Update' : 'New '}} Sponsorship</h1>
+        </div>
+        <div class="col-md-6 col-sm-12 text-right hidden-xs" *ngIf="showViewAll">
+            <a [routerLink]="[urlService.SPONSOR.SPONSORSHIP.URL]" class="btn btn-sm btn-success"
+                title="View All Sponsorship"><i class="icon-list"></i>
+                SponsorShip List</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="card">
+        <div class="body" [formGroup]="sponsor_Form">
+            <div class="list-group cursor-pointer" style="flex-direction: row;" (click)="openSearchModal()">
+                <div class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                    <label class="cursor-pointer">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Select Donor</h5>
+                        </div>
+                        <small>To select the Sponsor for sponsorship</small>
+                    </label>
+                </div>
+            </div>
+            <div class="media bg-info mt-2 p-2" style="    line-height: 24px; color :#fff"
+                *ngIf="sponsorData?.name && !dataLoading">
+                <img class="rounded mr-3 img-thumbnail" style="width: 70px;" [src]="sponsorData?.profile_img_path"
+                    imageLoad>
+                <div class="media-body">
+                    <h5 class="m-0">{{sponsorData?.name}}</h5>
+                    <p class=" mb-0">{{sponsorData?.promotionalName}}</p>
+                    <p class=" mb-0">{{sponsorData?.sponsor_id}}</p>
+                    <p *ngIf="+sponsorData?.status==2" class="text-primary mb-0 text-warning">Pending verification</p>
+                </div>
+            </div>
+            <hr>
+            <!-- Ministry -->
+            <ng-container *ngIf="sponsorData?.id">
+                <app-form-generator  #basicForm [formData]="basicFormData" (onChangeEvent)="onClickTab($event)"></app-form-generator>
+                <!-- <div class="list-group" style="flex-direction: row;">
+                    <div *ngFor="let c of MASTER_DATA.sponsorship_module; let i=index"
+                        class="list-group-item list-group-item-action flex-column align-items-start cursor-pointer"
+                        [class.active]="sponsor_Form?.value?.sponsorship_module == c?.id">
+                        <label [for]="'myCheck_'+c?.id">
+                            <input hidden [id]="'myCheck_'+c?.id" type="radio" (change)="onClickTab($event)"
+                                formControlName="sponsorship_module" [value]="c?.id">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{c?.name}}</h5>
+                            </div>
+                            <small *ngIf="c?.amount">{{c?.amount | currencyFormat}} min amount</small>
+                        </label>
+                    </div>
+                </div> -->
+                <div class="row clearfix" style="margin: 2rem;" [hidden]="dataLoading">
+                    <div class="card">
+                        <div class="body">
+                            <ng-container>
+                                <div class="form-group row">
+                                    <div class="col-md-6 col-lg-6" *ngIf="+(activeCategory?.isAllotment) ==1">
+                                        <label>Is Need for allotment ?</label>
+                                        <label class="control-inline fancy-checkbox ml-4">
+                                            <input (change)="updateValitityForm()" formControlName="is_monthly"
+                                                type="checkbox">
+                                            <span>Yes</span>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class="form-group">
+                                            <label style="color: #cc2b2b;">Promised Amount </label>
+                                            <input style="width: 100%;
+                                        background: #FFFFFF;
+                                        border: 1px solid #4caf50;
+                                        box-sizing: border-box;" class="form-control" formControlName="amount"
+                                                type="text">
+                                            <span class="error" *ngIf="sponsor_Form.get('amount')?.errors?.required">
+                                                Amount is Required</span>
+                                            <span class="error" *ngIf="sponsor_Form.get('amount')?.errors?.pattern">
+                                                Amount must be valid</span>
+                                            <span class="error" *ngIf="sponsor_Form.get('amount')?.errors?.min">
+                                                Amount should be greater than of 1 Rupee</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- </div>
+                                <div class="form-group">
+                                    <div class="row clearfix"> -->
+                                    <div class="col-md-6 col-lg-6" *ngIf="+activeCategory.id == 7">
+                                        <label>Sponsorship Program</label>
+                                        <select (change)="onChangeSponsorship()"
+                                            [class.error]="submitted && sponsor_Form.get('sponsorship_program_id')?.errors"
+                                            class="custom-select" formControlName="sponsorship_program_id">
+                                            <option value=''>{{masterLoading['sponsorship_program'] ? 'loading...' :
+                                                'Select '+'Sponsorship Program'}}
+                                            </option>
+                                            <ng-container *ngIf="MASTER_DATA['sponsorship_program']">
+                                                <ng-container *ngFor="let m of MASTER_DATA['sponsorship_program']">
+                                                    <option [value]="m?.id">
+                                                        {{m?.sponsorship_programName}}
+                                                    </option>
+                                                </ng-container>
+                                            </ng-container>
+                                        </select>
+                                        <span class="error"
+                                            *ngIf="sponsor_Form.get('sponsorship_program_id')?.errors?.required">
+                                            Sponsorship Program is Required </span>
+                                    </div>
+                                </div>
+                                <!-- </div> -->
+                                <div class="form-group" *ngIf="sponsor_Form?.value?.is_monthly">
+                                    <div class="row clearfix">
+                                        <div class="col-md-6 col-lg-6">
+                                            <label>No of {{ activeCategory?.name}}</label>
+                                            <input (change)="onChangeNumber()" class="form-control"
+                                                formControlName="total_support" type="number">
+                                            <span class="error"
+                                                *ngIf="sponsor_Form.get('total_support')?.errors?.required">
+                                                No of {{ activeCategory?.name}} is Required </span>
+                                            <span class="error"
+                                                *ngIf="sponsor_Form.get('total_support')?.errors?.pattern">
+                                                No of {{ activeCategory?.name}} must be valid </span>
+                                        </div>
+                                        <!-- </div> -->
+                                        <div class="col-md-6 col-lg-6">
+                                            <label>Preference</label>
+                                            <input class="form-control" formControlName="preference" type="text">
+                                        </div>
+                                        <div class="col-md-6 col-lg-6 mt-3" *ngIf=" activeCategory.id == 2">
+                                            <label class="mr-4"> Donate To </label>
+                                            <!-- <ng-container *ngIf="activeCategory.id == 3">
+                                                <label class="fancy-radio custom-color-green"><input value="1"
+                                                        formControlName="church_donation_to" type="radio"> <span><i></i>
+                                                        Building</span></label>
+                                                <label class="fancy-radio custom-color-green"><input value="2"
+                                                    formControlName="church_donation_to" type="radio"> <span><i></i> Church
+                                                    Program</span></label>
+
+                                            </ng-container> -->
+                                            <ng-container *ngIf="activeCategory.id == 2">
+                                                <label class="fancy-radio custom-color-green"><input value="2"
+                                                        formControlName="child_type" type="radio"> <span><i></i>
+                                                        Home Child</span></label>
+                                                <label class="fancy-radio custom-color-green"><input value="1"
+                                                        formControlName="child_type" type="radio"> <span><i></i>
+                                                        MK Child</span></label>
+                                            </ng-container>
+                                            <span class="error"
+                                                *ngIf=" sponsor_Form.get('child_type')?.errors?.required">
+                                                Donate To is required </span><br />
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-lg-12"
+                                    *ngIf="+(activeCategory?.id) == 1 && sponsor_Form?.value?.is_monthly && !sponsorshipId">
+                                    <div class="form-group">
+                                        <label>
+                                            Dedication service at sponsor's place ?
+                                        </label>
+                                        <label class="control-inline fancy-checkbox ml-4">
+                                            <input (change)="updateValitityForm()" formControlName="dedication_request"
+                                                type="checkbox">
+                                            <span>Yes</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <ng-container *ngIf="sponsor_Form?.value?.dedication_request && !sponsorshipId">
+                                    <div class="form-group">
+                                        <div class="row clearfix">
+                                            <div class="col-md-6 col-lg-6">
+                                                <label>
+                                                    Dedication Place *
+                                                </label>
+                                                <input formControlName="place" class="form-control" type="text">
+                                                <span class="error" *ngIf="sponsor_Form.get('place')?.errors?.required">
+                                                    Place is Required </span>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <label>
+                                                    Date and time *
+                                                </label>
+                                                <p-calendar [showTime]="true" hourFormat="12" [dateFormat]="dateFormat"
+                                                    [monthNavigator]="true" [yearRange]="dateRange"
+                                                    [yearNavigator]="true"
+                                                    [class.error]="submitted && sponsor_Form.get('date_time')?.errors"
+                                                    inputStyleClass="form-control" placeholder="Date of Dedication"
+                                                    formControlName="date_time">
+                                                </p-calendar>
+                                                <span class="error"
+                                                    *ngIf="sponsor_Form.get('date_time')?.errors?.required">
+                                                    Dedication Date is Required </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-lg-12 mr-4">
+                                        <h2 class="title" style="color: brown"><b> Travel request</b></h2>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="row clearfix">
+                                            <div class="col-md-6 col-lg-6">
+                                                <label>
+                                                    Arrival Date*
+                                                </label>
+                                                <p-calendar [dateFormat]="dateFormat" [monthNavigator]="true"
+                                                    [yearRange]="dateRange" [yearNavigator]="true"
+                                                    [class.error]="submitted && sponsor_Form.get('dob')?.errors"
+                                                    inputStyleClass="form-control" placeholder="Date of Arrival"
+                                                    formControlName="arrival_date_time">
+                                                </p-calendar>
+                                                <span class="error"
+                                                    *ngIf="sponsor_Form.get('arrival_date_time')?.errors?.required">
+                                                    Arrival Date is Required </span>
+                                            </div>
+                                            <div class="col-md-6 col-lg-6">
+                                                <label>
+                                                    Departure Date *
+                                                </label>
+                                                <p-calendar [dateFormat]="dateFormat" [monthNavigator]="true"
+                                                    [yearRange]="dateRange" [yearNavigator]="true"
+                                                    [class.error]="submitted && sponsor_Form.get('dob')?.errors"
+                                                    inputStyleClass="form-control" placeholder="Date of Departure"
+                                                    formControlName="dept_date_time">
+                                                </p-calendar>
+                                                <span class="error"
+                                                    *ngIf="sponsor_Form.get('dept_date_time')?.errors?.required">
+                                                    Departure Date is Required </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-container>
+
+
+                                <div class="form-group">
+                                    <div class="row clearfix">
+                                        <!-- <div class="col-md-6 col-lg-6" *ngIf="+(activeCategory?.isRecuring) ==1">
+                                            <label>Frequency</label>
+                                            <select
+                                                [class.error]="submitted && sponsor_Form.get('freq_payment_id')?.errors"
+                                                class="custom-select" formControlName="freq_payment_id">
+                                                <option value=''> Select Frequency</option>
+                                                <option *ngIf="activeCategory.id == 3" value="1">One Time</option>
+                                                <option *ngIf="activeCategory.id != 3" value="2">Monthly</option>
+                                                <option *ngIf="activeCategory.id == 3" value="3">Installment
+                                                </option>
+                                            </select>
+                                            <span class="error"
+                                                *ngIf="sponsor_Form.get('freq_payment_id')?.errors?.required">
+                                                Frequency is required </span>
+                                        </div> -->
+                                        <div class="col-md-6 col-lg-6" *ngIf="+(activeCategory?.isAllotment) ==1">
+                                            <app-form-generator #freqForm [formData]="freqFormData"></app-form-generator>
+
+
+                                        </div>
+                                        
+                                        <div class="col-md-6 col-lg-6">
+                                            <label>
+                                                Remarks
+                                            </label>
+                                            <input formControlName="remarks" class="form-control" type="text">
+                                            <span class="error" *ngIf="sponsor_Form.get('remarks')?.errors?.required">
+                                                Remarks is Required </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </ng-container>
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </ng-container>
+
+            <div class="row clearfix align-center" [hidden]="dataLoading">
+                <div class="col-12" *ngIf="isModifyRequest">
+                    <div class="alert alert-primary" role="alert">
+                        Modification Request is Pending you can'nt update / Raise New Request!.
+                    </div>
+                </div>
+
+                <div class="col-md-12 text-center">
+                    <div class="btn-group btn-group-lg">
+                        <button noDoubleClick *ngIf="!isModifyRequest" [disabled]="loading || disabled_save"
+                            type="button" (click)="onSubmit()" class="btn btn-primary mr-1">
+                            <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                            {{ loading ? 'Saving...' : 'Submit'}}
+                        </button>
+
+                        <button noDoubleClick [disabled]="loading" type="button" (click)="close()"
+                            class="btn btn-outline-danger mr-1 ml-2">
+                            <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                            {{ loading ? 'Saving...' : 'Cancel'}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <app-page-loader [loading]="dataLoading"></app-page-loader>
+
+</div>

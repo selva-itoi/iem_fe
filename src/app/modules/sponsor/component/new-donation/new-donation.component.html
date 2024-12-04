@@ -1,0 +1,196 @@
+<div class="modal-header" *ngIf="isModal">
+  <h6 class="mb-0 modal-title">Sponsorship Details</h6>
+  <button type="button" class="close" (click)="close()"><span>X</span></button>
+</div>
+
+<div class="block-header">
+  <div class="row clearfix">
+    <div class="col-md-6 col-sm-12">
+      <h1>{{ donationId ? "Update" : "New " }} Donation</h1>
+    </div>
+    <div class="col-md-6 col-sm-12 text-right hidden-xs" *ngIf="showViewAll">
+      <a [routerLink]="[urlService.SPONSOR.DONATION_LIST.URL]" class="btn btn-sm btn-success"
+        title="View All Sponsorship"><i class="icon-list"></i> Donation List</a>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="card">
+    <div class="body" [formGroup]="sponsor_Form">
+      <div class="list-group cursor-pointer" *ngIf="!donationId" style="flex-direction: row"
+        (click)="openSearchModal()">
+        <div class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start">
+          <label class="cursor-pointer">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">Select Donor</h5>
+            </div>
+            <small>To select the Sponsor for sponsorship</small>
+          </label>
+        </div>
+      </div>
+      <div class="media bg-info mt-2 p-2" style="line-height: 24px; color: #fff"
+        *ngIf="sponsorData?.name && !dataLoading">
+        <img class="rounded mr-3 img-thumbnail" style="width: 70px" [src]="sponsorData?.profile_img_path" imageLoad />
+        <div class="media-body">
+          <h5 class="m-0">{{ sponsorData?.name }}</h5>
+          <p class="mb-0">{{ sponsorData?.promotionalName }}</p>
+          <p class="mb-0">{{ sponsorData?.sponsor_id }}</p>
+          <p *ngIf="+sponsorData?.status == 2" class="text-primary mb-0 text-warning">
+            Pending verification
+          </p>
+        </div>
+      </div>
+      <hr />
+      <ng-container *ngIf="sponsorData?.id">
+        <ng-container *ngIf="!donationId">
+          <label class="control-inline fancy-checkbox ml-4 mb-3">
+            <input value="1" type="checkbox" formControlName="is_pay_sponsorship" style="margin-left: 2rem" />
+            <span>Pay on Sponsorship</span>
+          </label>
+          <app-table-list #tableList *ngIf="sponsor_Form?.value?.is_pay_sponsorship" selectable="MULTI"
+            (onSelect)="onSelectData($event)" [maxSelection]="maxSelection" [tableConfig]="tableConfig"
+            [parentGetList]="getListData">
+          </app-table-list>
+          <!-- Ministry -->
+
+          <!-- <app-form-generator #basicdonation [formData]="formdata"></app-form-generator> -->
+
+          <!-- <button (click)="add()">Add</button> -->
+          <!-- <dynamic-table-form #dyTbl [formData]="SELECTED_FORM" (onAction)="receive($event)"
+            [mode]="'EDIT'"></dynamic-table-form> -->
+
+          <app-form-generator [hidden]="hideform" #basicdonation [formData]="SELECTED_FORM"></app-form-generator>
+          <div [hidden]="hideform" class="col-md-3 col-lg-3 align-center">
+            <button class="btn-sm btn btn-primary mr-1" (click)="addData()">
+              <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+              {{ updatetable? 'Update' :'Add'}}</button>
+            <button (click)="reset()" class="btn-sm btn bg-indigo">Reset</button>
+          </div>
+          <a href="javascript:void(0)" [hidden]="hideform" (click)="hide()">Hide</a>
+
+          <!-- <div (click)="addData()">Add</div> -->
+          <h6 class="mb-0 modal-title" *ngIf="
+          sponsor_Form?.value?.is_pay_sponsorship && selecteddata.length
+        ">
+            Selected Sponsorship
+          </h6>
+          <br />
+          <a href="javascript:void(0)" [hidden]="!hideform" (click)="addNew()">Add New</a>
+          <app-table-list #selectedtableList [parenttblAction]="tblAction" [tableConfig]="selecttableConfig"
+            [parentGetList]="selectListData">
+          </app-table-list>
+          <!-- <div class="col-md-3 col-lg-3 align-center">
+            <button class="btn-sm btn btn-primary mr-1" (click)="addData()">Add New</button>
+          </div> -->
+
+
+          <!-- <app-table-list
+            #selectedtableList
+            *ngIf="
+              sponsor_Form?.value?.is_pay_sponsorship && selecteddata.length
+            "
+            [tableConfig]="selecttableConfig"
+            [parentGetList]="selectListData"
+          >
+          </app-table-list> -->
+          <div *ngIf="!sponsor_Form?.value?.is_pay_sponsorship">
+            <!-- <div *ngFor="let c of MASTER_DATA.sponsorship_module; let i=index"
+                            class="list-group-item list-group-item-action flex-column align-items-start cursor-pointer"
+                            [class.active]="sponsor_Form?.value?.sponsorship_module == c?.id" >
+                            <label [for]="'myCheck_'+c?.id" class="input_click"  >
+                                <input hidden [id]="'myCheck_'+c?.id" type="radio" (change)="onClickTab($event)"
+                                    formControlName="sponsorship_module" [value]="c?.id" >
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{c?.name}}</h5>
+                                </div>
+                                <small *ngIf="c?.amount">{{c?.amount | currencyFormat}} min amount</small>
+                            </label>
+                        </div> -->
+            <!-- (onChangeEvent)="basicOnChange($event)" -->
+            <!-- <dynamic-table-form
+              #dyTbl
+              [dynamicValidator]="basicDynamicValidator"
+              [formData]="SPONSORMODULE_FORM"
+              [mode]="'EDIT'"
+            ></dynamic-table-form> -->
+            <!-- <div class="form-group col-6 "  style="margin-left: 2rem;">
+                            <h6 class="text-muted">Sponsership</h6>
+                            <select  class="form-select form-select-lg mb-3" (change)="onClickTab($event)" style="width: 100%;padding: 0;height: 2.5rem;" aria-label="Default select example" formControlName="sponsorship_module" >
+                              <option value="">Select Sponsership</option>
+                              <option *ngFor="let sponser of MASTER_DATA.sponsorship_module" [value]="sponser?.id">{{sponser?.name}} </option>
+                            </select>
+                          </div> -->
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="donationId"><span class="font-14"><strong>Sponsorship Module :</strong>
+            {{ activeCategory?.name }}</span>
+        </ng-container>
+        <div class="row clearfix" style="margin: 2rem" [hidden]="dataLoading">
+          <div class="card">
+            <div class="body">
+              <div *ngIf="!sponsor_Form?.value?.is_pay_sponsorship">
+                <label for="exampleFormControlInput1" class="form-label">Purpose</label>
+                <input class="form-control form-control-lg" type="text" placeholder="Purpose"
+                  aria-label=".form-control-lg example" [formControl]="purpose" />
+                <br />
+              </div>
+
+              <app-form-generator #basicForm [formData]="basicFormData"></app-form-generator>
+            </div>
+          </div>
+        </div>
+
+        <app-table-list #bankList selectable="SINGLE" (onSelect)="onSelectbankdata($event)"
+          [maxSelection]="maxBankSelection" [tableConfig]="banktableConfig" [parentGetList]="getBankData">
+        </app-table-list>
+      </ng-container>
+
+      <div class="col-md-12 text-center">
+        <span class="error" *ngIf="requiredfields">
+          Some field not be valid</span>
+      </div>
+
+      <div class="row clearfix align-center" [hidden]="dataLoading">
+        <div class="col-12" *ngIf="isModifyRequest">
+          <div class="alert alert-primary" role="alert">
+            Modification Request is Pending you can'nt update / Raise New
+            Request!.
+          </div>
+        </div>
+
+        <div class="col-md-12 text-center">
+          <div class="btn-group btn-group-lg">
+            <button noDoubleClick *ngIf="!donationId" [disabled]="!sponserid || loading || disabled_save" type="button"
+              (click)="onSubmit()" class="btn btn-primary mr-1">
+              <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+              {{ loading ? "Paying..." : "Pay" }}
+            </button>
+            <ng-container *ngIf="donationId">
+              <button noDoubleClick [disabled]="loading || disabled_save" type="button" (click)="onSubmit('approve')"
+                class="btn btn-success mr-1">
+                <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                {{ loading ? "Approving..." : "Approve" }}
+              </button>
+              <button noDoubleClick [disabled]="loading || disabled_save" type="button" (click)="onSubmit('failed')"
+                class="btn btn-danger mr-1">
+                <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                {{ loading ? "Failed..." : "Failed" }}
+              </button>
+            </ng-container>
+
+            <button noDoubleClick [disabled]="loading" type="button" (click)="close()"
+              class="btn btn-outline-danger mr-1 ml-2">
+              <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+              Cancel
+              <!-- {{ loading ? 'Saving...' : 'Cancel'}} -->
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-page-loader [loading]="dataLoading"></app-page-loader>
+</div>

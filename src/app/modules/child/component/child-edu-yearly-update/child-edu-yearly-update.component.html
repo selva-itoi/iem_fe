@@ -1,0 +1,60 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="isModal"></app-page-breadcrumb>
+<div class="row clearfix" >
+    <div class="col-12 text-center" *ngIf="isModifyRequest && type !='VERIFICATION'">
+        <div class="alert alert-warning" role="alert">
+            Modification Request is Pending you can't Raise New Request!.
+        </div>
+    </div>
+</div>
+<div class="modal-body   pt-4 mb-4">
+    <div>
+        <div class="row clearfix">
+            <div class="col-lg-3 col-md-3 col-xl-3">
+                <profile-widget #profile type='CHILD' [refId]="childId"></profile-widget>
+            </div>
+            <div class="col-lg-9 col-md-9 col-xl-9">
+                <app-staff-education *ngIf="isModal" #childEdu  [config]="{title : '',type : 'CHILD' ,isRequest: type =='UPDATE' ?false : true}"></app-staff-education>
+            </div>
+        </div>
+        <div>
+            <div class="row clearfix body m-0 p-10 border-0">
+                <div class="col-12">
+                    <span class="sub_title">Physical Condition</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="body">
+                    <app-form-generator #basicForm *ngIf="basicFormData?.length && type=='UPDATE'" (onChangeEvent)="onChange($event)"
+                        [formData]="basicFormData"></app-form-generator>
+                    <info-view *ngIf="type=='VERIFICATION'" [formData]="basicFormData" [sourceData]="childData"></info-view>
+                </div>
+            </div>
+
+        </div>
+        <div class="row clearfix text-center">
+            <div class="col-12" *ngIf="isModifyRequest && type !='VERIFICATION'">
+                <div class="alert alert-primary" role="alert">
+                    Modification Request is Pending you can't Raise New Request!.
+                </div>
+            </div>
+            <div class="col-12">
+                <ng-container *ngIf="+modifyData?.status == 2 && hasPermissionApprove">
+                    <button [disabled]="loading" (click)="approve()" class="btn btn-round btn-success">
+                        <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                        {{loading ? 'Approving..' : type=='VERIFICATION' ? 'Approve' :'Submit'}}
+                    </button>
+                    <button [disabled]="loading"  (click)="reject()" class="btn ml-1 btn-round btn-danger">
+                        <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>{{loading ? 'Rejecting..' : 'Reject'}}
+                    </button>
+                </ng-container>
+                <ng-container *ngIf="!isModifyRequest">
+                    <button [disabled]="loading " *ngIf="type !='VERIFICATION' "  (click)="submit()" class="btn ml-1 btn-round btn-primary">
+                        <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>{{loading ? 'Submitting..' : 'Submit'}}
+                    </button>
+                </ng-container>
+                <button [disabled]="loading" (click)="close()" class="btn ml-1 btn-round btn-warning">{{ isModal ?
+                    'Close' : 'Back' }}</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,166 @@
+<div [formGroup]="dataForm">
+    <div class="row clearfix">
+        <div class="col-md-12 col-lg-12">
+            <label><b>{{data?.title || 'Child Parents Details'}}</b>
+            </label>
+        </div>
+    </div>
+    <!-- form start -->
+    <ng-container *ngIf="!data?.isView">
+        <!-- <div class="form-group"> -->
+        <div class="row clearfix ">
+            <div class="col-md-4 col-lg-4 form-group">
+                <label>Parents / Guardian Detail *</label>
+                <select class="custom-select" formControlName="parent_type">
+                    <ng-container *ngFor="let m of TYPE">
+                        <option [value]="m?.id">
+                            {{m?.parent_typeName}}
+                        </option>
+                    </ng-container>
+                </select>
+                <span class="error" *ngIf="submitted  && dataForm.get('parent_type')?.errors?.required">
+                    Status is Required</span>
+            </div>
+        </div>
+        <div class="row clearfix " [hidden]="data.type == 'MK'">
+            <div class="col-12 form-group">
+                <label class="text-primary">Is your Parents/Guardian working in {{shortOrg}} Or Already Register with us
+                    ? *</label>
+                <label class="control-inline fancy-checkbox ml-4">
+                    <input (change)="onChangeIsGems($event)" formControlName="isGemsStaff" type="checkbox">
+                    <span>Yes</span>
+                </label>
+            </div>
+        </div>
+        
+            <app-child-search-container *ngIf="dataForm.get('isGemsStaff')?.value" (onComplete)="mapParent($event)"
+            type="PARENT" [parent_type]="dataForm?.value?.parent_type"></app-child-search-container>
+        
+        </ng-container>
+        <div class="row clearfix col-12">
+            <dynamic-table-form [defaultBtn]="tblAction" (onAction)="showParentInfo($event)" [showViewAction]="false" class="w-100" (onChangeEvent)="onChangeEvent($event)" *ngIf="formColData.length" #dyTbl [formData]="formColData" [mode]="mode" [dynamicValidator]="dynamicValidator">
+            </dynamic-table-form>
+
+        </div>
+    <!-- end form -->
+
+    <!-- <div class="form-group">
+        <div class="row clearfix">
+            <div class="col-md-12 col-lg-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Email</th>
+                                <th>Mobile</th>
+                                <th>Occupation</th>
+                                <th>Status</th>
+                                <ng-container *ngIf="data?.isRequest || !data?.isView">
+                                    <th>Action</th>
+                                </ng-container>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let e of eduData; let i = index">
+                                <tr>
+                                    <td>{{i + 1}}</td>
+                                    <td><a href="javascript:void(0)"
+                                            (click)="showParentInfo(e,viewParents)">{{e?.name}}</a></td>
+                                    <td>{{ (TYPE | filter : 'id' :e?.parent_type)?.name }}</td>
+                                    <td>{{e?.email_id}}</td>
+                                    <td>{{e?.mobile_no}}</td>
+                                    <td>{{e?.occupation}}</td>
+                                    <td>{{ (STATUS | filter : 'id' :e?.alive_status)?.name }}</td>
+                                    <td>
+                                        <ng-container *ngIf="!data?.isView">
+                                            <ng-container *ngIf="e?.action !== 3; else noData">
+                                                <button *ngIf="e?.id && !e?.staff_emp_id"
+                                                    class="btn btn-sm btn-default ml-1" title="Edit"
+                                                    (click)="applyFormValue(e)"><i
+                                                        class="icon-pencil text-info"></i></button>
+                                                <button type="button" class="btn btn-sm btn-default  ml-1"
+                                                    title="Delete Parents" (click)="deleteTableData(i)"><i
+                                                        class="icon-trash text-danger"></i></button>
+                                                <button *ngIf="e?.id || e?.staff_emp_id" type="button"
+                                                    class="btn btn-sm btn-default  ml-1" title="View Info"
+                                                    (click)="showParentInfo(e,viewParents)"><i
+                                                        class="icon-eye text-info"></i></button>
+                                            </ng-container>
+                                            <ng-template #noData>
+                                                Deleted
+                                            </ng-template>
+                                        </ng-container>
+                                        <ng-container *ngIf="data?.isRequest">
+                                            {{e?.action==3? 'Deleted' : e?.action==2? 'updated': 'New' }}
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <ng-template #viewParents>
+                <div class="modal-header">
+                    <h4 class="modal-title pull-left">Parents Details</h4>
+                    <button type="button" (click)="closeModal()" class="btn-close close pull-right" aria-label="Close">
+                        <span aria-hidden="true" class="visually-hidden">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" *ngIf="!viewDataLoading">
+                    <div class="row pt-5 about-list">
+                        <div class="col-md-6">
+                            <div class="media"> <label>Name</label>
+                                <p>{{viewData?.name}}</p>
+                            </div>
+                            <div class="media"> <label>Occupation</label>
+                                <p>{{viewData?.occupation}}</p>
+                            </div>
+                            <div class="media"> <label>Gender</label>
+                                <p>
+                                     {{ (gender | filter : 'id' :viewData?.gender)?.name }} 
+                                </p>
+                            </div>
+                            <div class="media"> <label>Mobile</label>
+                                <p>{{viewData?.mobile_no}}</p>
+                            </div>
+                            <div class="media"> <label>Last Update</label>
+                                <p>{{ viewData?.updated_at | date}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="media"> <label>E-mail</label>
+                                <p>{{viewData?.email_id}}</p>
+                            </div>
+                            <div class="media"> <label>whatsApp No</label>
+                                <p>{{viewData?.whatsApp_no}}</p>
+                            </div>
+                            <div class="media"> <label>
+                                    <Address></Address>
+                                </label>
+                                <p>{{viewData?.address}}</p>
+                            </div>
+                            <div class="media"> <label>Stayed In</label>
+                                <p>{{viewData?.stayed_in}}</p>
+                            </div>
+                            <div class="media"> <label>Status</label>
+                                <p>{{ (EDU_STATUS | filter : 'id' :viewData?.status)?.name }}</p> 
+                            </div>
+                            <div class="media"> <label>Remarks</label>
+                                <p>{{ viewData?.remarks }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="viewDataLoading" style="margin-top: 3rem; margin-bottom: 3rem;"
+                        class="fetching mt-20 mb-20 col-lg-12 col-md-12 col-sm-12" style="text-align: center">
+                        <i class="pi pi-spin pi-spinner"></i>
+                        please wait.. fetching data...
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div> -->
+</div>

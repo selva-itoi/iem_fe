@@ -1,0 +1,65 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="isModal"></app-page-breadcrumb>
+<div class="modal-body  pt-4 mb-4">
+    <!-- <div class="row clearfix" *ngIf="info_message">
+        <div class="col-lg-12 col-md-12 col-sm-12 card">
+            <div class="body text-center">
+                {{info_message}}
+            </div>
+        </div>
+    </div> -->
+    <div [hidden]="dataLoading || info_message">
+        <!-- <div class="row clearfix">
+            <div class="col-12 text-right">
+                <a href="javascript:void(0)" class="btn bg-pink"><i ></i>Edit</a>
+            </div>
+        </div> -->
+        <div class="row clearfix">
+            <div class="col-lg-3 col-md-3 col-xl-3">
+                <profile-widget [profileData]="volunterData"></profile-widget>
+                <div class="card">
+                    <div class="body">
+                        <!-- <small class="text-muted">Address: </small>
+                        <p>{{presentAddress?.full_address}}</p>
+                        <hr> -->
+                        <small class="text-muted">Volunteer Id: </small>
+                        <p>{{volunterData?.volunteer_id}}</p>
+                        <hr>
+                        <small class="text-muted">Mobile: </small>
+                        <p>{{volunterData?.mobile_no}}</p>
+                        <hr>
+                        <small class="text-muted">Birth Date: </small>
+                        <p class="m-b-0">{{volunterData?.date_of_birth | dateFormat}}</p>
+                        <hr>
+                        <small class="text-muted">Date of Join: </small>
+                        <p class="m-b-0">{{volunterData?.date_of_join | dateFormat}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9 col-md-9 col-xl-9">
+                <!-- <tab-head [segement]="segement" [inital]="segement.BASIC"
+                    (onSelect)="segmentVisited = $event.visited; currentSegment =$event.key"></tab-head> -->
+                    <tab-head [segment]="segement" [initial]="segement.BASIC"  (onSelect)="segmentVisited = $event.visited; currentSegment =$event.key"></tab-head>
+
+                  
+                <div class="tab-content mt-0">
+                    <div class="tab-pane show active" [hidden]="currentSegment != segement.BASIC">
+                        <div class="card">
+                            <div class="body">
+                                <info-view [sourceData]="volunterData" [formData]="basicFormData"></info-view>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane show active" [hidden]="currentSegment != segement.SETTLEMENT">
+                        <app-table-list [tableConfig]="tableConfig" [parentGetList]="getListData"></app-table-list>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix text-center">
+            <div class="col-12">
+                <button [disabled]="loading" (click)="close()" class="btn ml-1 btn-round btn-warning">{{ isModal ?
+                    'Close' : 'Back' }}</button>
+            </div>
+        </div>
+    </div>
+</div>

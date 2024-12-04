@@ -1,0 +1,92 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="false"></app-page-breadcrumb>
+<div class="row" (keyup.enter)="onSubmit()">
+    <div class="card">
+        <div class="body" [formGroup]="dataForm">
+            <app-form-generator #basicForm (onChangeEvent)="onChange($event)" [formData]="basicFormData">
+            </app-form-generator>
+
+            <div class="form-group">
+                <div class="row clearfix">
+                    <div class="col-md-4 col-lg-4">
+                        <label>No of Girls </label>
+                        <input class="form-control" [class.error]="submitted && dataForm.get('no_of_girls')?.errors"
+                            formControlName="no_of_girls" type="text">
+                        <span class="error"
+                            *ngIf=" dataForm.get('no_of_girls').dirty  && dataForm.get('no_of_girls')?.errors?.pattern">
+                            No of Girls should be Valid</span>
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        <label>No of Boys </label>
+                        <input class="form-control" [class.error]="submitted && dataForm.get('no_of_boys')?.errors"
+                            formControlName="no_of_boys" type="text">
+                        <span class="error" *ngIf="dataForm.get('no_of_boys')?.errors?.email">
+                            No of Boys Should be valid</span>
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        <span class="helper p-2 text-info"> Total Number of Students
+                            {{(+dataForm.get('no_of_boys').value) + (+dataForm.get('no_of_girls').value) }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <app-form-generator #officeForm (onChangeEvent)="onChange($event)" [formData]="officeFormData">
+            </app-form-generator>
+
+            <!-- Address -->
+            <app-address #address [isPage]="true" title="Address Details" [submitted]="submitted"></app-address>
+            
+            <div class="row clearfix">
+                <div class="col-md-12 col-lg-12">
+                    <label>
+                        <b>In charge Details</b>
+                    </label>
+                </div>
+            </div>
+
+
+            <div class="row clearfix ">
+                <div class="col-md-6 col-lg-6 form-group" *ngIf="!homeId">
+                    <div class="list-group cursor-pointer" style="flex-direction: row;" (click)="openStaffModal()">
+                        <div
+                            class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                            <label class="cursor-pointer">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Select Staff</h5>
+                                </div>
+                                <small> </small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-6 form-group">
+                    <profile-widget [refId]="homeData?.staff_incharge_fk_id" widgetType="SMALL" [profileData]="inChargeData"></profile-widget>
+                    <span class="error" *ngIf="dataForm.get('staff_incharge_fk_id')?.errors?.required">Home In Charge required</span>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="body">
+            <div class="row clearfix align-center" [hidden]="dataLoading">
+                <div class="col-md-12 text-center">
+                    <div class="btn-group btn-group-lg">
+
+                        <button noDoubleClick [disabled]="loading" type="button" (click)="onSubmit()"
+                            class="btn btn-primary mr-1">
+                            <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                            {{ loading ? 'Saving...' : 'Submit'}}
+                        </button>
+                        <button [disabled]="loading" (click)="close()" type="button"
+                            class="btn btn-outline-danger ml-1">Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+            <app-page-loader [loading]="dataLoading"></app-page-loader>
+        </div>
+    </div>
+
+</div>

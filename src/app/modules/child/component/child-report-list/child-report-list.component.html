@@ -1,0 +1,30 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="false"></app-page-breadcrumb>
+
+<ul class="nav nav-tabs1 table-nav">
+    <ng-container *ngFor="let s of segement | keyvalue:returnZero">
+        <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'show active': currentSegment==s.value}" (click)="changeSegment(s.value)"
+                href="javascript:void(0)">{{s.value |
+                titlecase}}</a>
+        </li>
+    </ng-container>
+</ul>
+<div class="tab-content mt-0">
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.LIST">
+        <app-table-list *ngIf="segmentVisited.LIST" [tableConfig]="inActiveTblConfig" [parenttblAction]="tblAction"
+            [parentGetList]="getListData" [viewAction]="viewInfoHandler">
+        </app-table-list>
+    </div>
+
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.PENDING">
+        <app-table-list *ngIf="segmentVisited.PENDING" [tableConfig]="inActiveTblConfig" [parenttblAction]="tblAction"
+            [parentGetList]="getListPendingData" [viewAction]="viewInfoHandler">
+        </app-table-list>
+    </div>
+
+    <!-- <div class="tab-pane show active" [hidden]="currentSegment != segement.DRAFT">
+        <app-table-list *ngIf="segmentVisited.DRAFT" [tableConfig]="inActiveTblConfig" [parenttblAction]="tblAction"
+            [parentGetList]="getMyDraftData" [viewAction]="viewInfoHandler">
+        </app-table-list>
+    </div> -->
+</div>

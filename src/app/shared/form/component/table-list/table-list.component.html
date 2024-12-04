@@ -1,0 +1,248 @@
+<div class="card">
+    <div class="body p-0">
+        <div class="row clearfix">
+        </div>
+        <div class="table-responsive">
+            <p-table #d1 [value]="data" [alwaysShowPaginator]="false" [lazy]="tableConfig?.isLazy || false"
+                [paginator]="!tableConfig?.noPagination" (onLazyLoad)="loadData($event)" [rows]="defaultRow"
+                [autoLayout]="true" [totalRecords]="totalRecords" [globalFilterFields]="cols" [resizableColumns]="true"
+                [first]="first" columnResizeMode="expand" [globalFilterFields]="globalFilterField" [responsive]="true"
+                tableStyleClass="table  width-full" [virtualScroll]="tableConfig?.virtualScroll || false"
+                [scrollable]="tableConfig?.virtualScroll || false" [columns]="cols"
+                [scrollHeight]="tableConfig?.scrollHeightPx ? ((data?.length *(tableConfig?.scrollHeightPx || 0)) > 1000 ? '1000px' : ((data?.length || 1) + 1) * (tableConfig?.scrollHeightPx || 100)+'px') :undefined"
+                [virtualScrollItemSize]="tableConfig?.virtualScrollItemSize || 0">
+
+                <ng-template pTemplate="caption">
+                    <div class="d-flex flex-row justify-content-end">
+                        <div class="form-group p-2 flex-grow-" *ngIf="tableConfig?.globalFilter">
+                            <input class="form-control" placeholder="Search.." pInputText type="text"
+                                (input)="d1.filterGlobal($any($event.target).value, 'contains')">
+                        </div>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>S/No.</th>
+                        <ng-container *ngFor="let col of cols; let i = index">
+                            <th [pSortableColumn]="col.field" *ngIf="col.sort; else nonSort">
+                                {{col.header}}
+                                <p-sortIcon [field]="col.field" ariaLabel="Activate to sort"
+                                    ariaLabelDesc="Activate to sort in descending order"
+                                    ariaLabelAsc="Activate to sort in ascending order">
+                                </p-sortIcon>
+                            </th>
+                            <ng-template #nonSort>
+                                <th> {{col.header}}</th>
+                            </ng-template>
+                        </ng-container>
+                        <th *ngIf="actionBtn?.length">Actions
+                            <button type="button" (click)="reload()" class="ml-1 btn btn-sm btn-default"
+                                title="Reload Table" [disabled]="tableLoader">
+                                <i class="pi pi-refresh" [ngClass]="{'pi-spin pi-spinner': tableLoader}"></i></button>
+                            <button *ngIf="tableConfig?.addBtn" type="button" (click)="btnAction('','ADD')"
+                                class="ml-1 btn btn-sm btn-primary" title="Add New" [disabled]="tableLoader">
+                                <i class="pi pi-plus" [ngClass]="{'pi-spin pi-spinner': tableLoader}"></i></button>
+                            <button *ngIf="tableConfig?.exportBtn" type="button" (click)="btnAction('','EXPORT')"
+                                class="ml-1 btn btn-sm btn-success" title="Export"
+                                [disabled]="exportLoading || tableLoader">
+                                <i class="pi pi-file-excel"
+                                    [ngClass]="{'pi-spin pi-spinner': exportLoading || tableLoader}"></i></button>
+                        </th>
+                    </tr>
+                    <tr *ngIf="tableConfig?.showFilter">
+                        <th></th>
+                        <ng-container *ngFor="let c of cols;">
+                            <th *ngIf="c?.filter === true; else nonFilter">
+                                <ng-container *ngIf="c?.filterCol?.type == 'TEXT' || !c?.filterCol?.type">
+                                    <p-columnFilter type="text" placeholder="search" matchMode="contains"
+                                        [showMenu]="false" [field]="c?.field"></p-columnFilter>
+                                </ng-container>
+                                <ng-container *ngIf="c?.filterCol?.type == 'DROPDOWN'">
+                                    <p-columnFilter [field]="c?.colName" matchMode="equals" [showMenu]="false">
+                                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                            <p-dropdown [appendTo]="'body'"
+                                                [filter]="FORM_SUPPORT_DATA[c?.colName]?.length > 15 ? true : false"
+                                                (onChange)="filter($event.value)"
+                                                [options]="FORM_SUPPORT_DATA[c?.colName]"
+                                                [optionValue]="c?.filterCol?.selectPrimaryKey ||  'key'"
+                                                [placeholder]="c?.filterCol?.placeholder || 'Any'"
+                                                [optionLabel]="c?.filterCol?.selectKeyName || 'label'"
+                                                [showClear]="true">
+                                                <ng-template let-option pTemplate="item">
+                                                    <span class="customer-badge status"
+                                                        *ngIf="DATA_LOADING[c?.colName]">{{ 'loading...' }}</span>
+                                                    <span
+                                                        class="customer-badge status">{{option[c?.filterCol?.selectKeyName
+                                                        || 'label']}}</span>
+                                                </ng-template>
+                                            </p-dropdown>
+                                        </ng-template>
+                                    </p-columnFilter>
+                                </ng-container>
+                                <ng-container *ngIf="c?.filterCol?.type == 'DATE'">
+                                    <p-columnFilter [field]="c?.field" matchMode="equals" [showMenu]="false">
+                                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                            <p-calendar [readonlyInput]="true" dateFormat="dd/mm/yy"
+                                                [showButtonBar]="true" appendTo="body"
+                                                [view]="c?.filterCol?.dateViewMode || 'date'"
+                                                (onSelect)="filter($event)" (onClearClick)="filter($event)"
+                                                [maxDate]="c?.filterCol?.maxDate"
+                                                [monthNavigator]="c?.filterCol?.monthNavigator ?true : false"
+                                                [yearNavigator]="c?.filterCol?.yearNavigator ? true : false"
+                                                [minDate]="c?.filterCol?.minDate"
+                                                [yearRange]="c?.filterCol?.yearRange || yearRange"
+                                                [placeholder]="c?.filterCol?.placeholder || 'Any'">
+                                            </p-calendar>
+                                        </ng-template>
+                                    </p-columnFilter>
+                                </ng-container>
+                            </th>
+                            <ng-template #nonFilter>
+                                <th></th>
+                            </ng-template>
+                        </ng-container>
+                        <th></th>
+                    </tr>
+                    <tr *ngIf="tableLoader">
+                        <td [attr.colspan]="cols.length" class="text-center"><i class="pi pi-spin pi-spinner"></i>Please
+                            wait data fetching...</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td [attr.colspan]="cols.length" class="text-center">No data found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-request let-i="rowIndex">
+                    <tr (click)="onSelectData(request)"
+                        [ngClass]="{'bg-primary text-light selectedRow' : request.selectable,'cursor-pointer' : request.selectable}"
+                        class="{{request.selectable ? 'cursor-pointer bg-primary text-light' : request.classList ? request.classList : '' }}">
+                        <td>{{i + 1}}</td>
+                        <ng-container *ngFor="let col of cols; let i = index">
+                            <ng-container *ngIf="!col?.isEditable;else isEditable">
+                                <ng-container [ngSwitch]="col?.type">
+                                    <td *ngSwitchCase="'IMAGE'">
+                                        <img imageLoad [src]="request[col.field]" alt="Document"
+                                            class="w35 h35 rounded">
+                                    </td>
+                                    <!-- <td colspan="" *ngSwitchCase="'NAME_WITH_IMG'">
+                                        <span>
+                                            <img imageLoad [src]="request[col.field]" alt="Document"
+                                            class="w35 h35 rounded">
+                                        </span>
+                                        <span>
+                                            <span *ngIf="col?.icon_append?.text && request[col.field] ; else noAppend"
+                                                [innerHTML]="request[col.field] + ' ' +col?.icon_append?.text || '' | safeHtml"></span>
+                                            <ng-template #noAppend><span
+                                                    [innerHTML]="request[col.field] || '' | safeHtml"></span></ng-template>
+                                            <ng-container
+                                                *ngFor="let f of request[col.field] | transformArray:',':' & '">
+                                                <strong><a title="Staff Info" (click)="openStaffInfo(f)"
+                                                        href="javascript:void(0)">{{f}}</a></strong>
+                                            </ng-container>
+                                        </span>
+                                    </td> -->
+                                    <td *ngSwitchCase="'DATE'">
+                                        {{request[col.field] | dateFormat:'dd-MM-yyyy'}}</td>
+                                    <td *ngSwitchCase="'CURRENCY'">{{request[col.field] | currencyFormat}}</td>
+                                    <td *ngSwitchCase="'STATUS'">
+                                        <span class="badge"
+                                            [ngClass]="{'badge-success' : +request[col.field]==1 , 'badge-danger' : +request[col.field] ==0, 'badge-warning' : +request[col.field] == 2 }">{{statusArray[request[col.field]]}}</span>
+                                    </td>
+                                    <td *ngSwitchCase="'DROPDOWN'">
+                                        <ng-container *ngFor="let m of FORM_SUPPORT_DATA[col?.colName]">
+                                            <ng-container
+                                                *ngIf="m[col?.filterCol?.selectPrimaryKey || 'key'] == request[col.colName]">
+                                                <span *ngIf="m?.color else sDLF"
+                                                    class="badge badge-{{m?.color || 'info'}}">{{
+                                                    m[col?.filterCol?.selectKeyName || 'label']}}</span>
+                                                <ng-template #sDLF>
+                                                    {{ m[col?.filterCol?.selectKeyName || 'label']}}
+                                                </ng-template>
+                                            </ng-container>
+                                        </ng-container>
+                                    </td>
+                                    <td *ngSwitchCase="'STAFF_EMP_ID'">
+                                        <ng-container *ngFor="let f of request[col.field] | transformArray:',':' & '">
+                                            <strong><a title="Staff Info" (click)="openStaffInfo(f)"
+                                                    href="javascript:void(0)">{{f}}</a></strong>
+                                        </ng-container>
+                                    </td>
+                                    <td *ngSwitchCase="'VIEW_INFO'">
+                                        <ng-container *ngFor="let f of request[col.field] | transformArray:',':' & '">
+                                            <strong><a title="View Info" (click)="btnAnchorAction(f,request)"
+                                                    href="javascript:void(0)" [innerHTML]="f |safeHtml"></a></strong>
+                                        </ng-container>
+                                    </td>
+                                    <td *ngSwitchCase="'VIEW_TAG_INFO'"
+                                        style="white-space: normal; min-width: 100px;max-width:30vw;"
+                                        class="cursor-pointer">
+                                        <ng-container *ngFor="let f of request[col.field]">
+                                            <span (click)="btnTagInfo(f,request)"
+                                                [innerHTML]="f?.text |safeHtml"></span>
+                                        </ng-container>
+                                    </td>
+                                    <td *ngSwitchDefault>
+                                        <span *ngIf="col?.icon_append?.text && request[col.field] ; else noAppend"
+                                            [innerHTML]="request[col.field] + ' ' +col?.icon_append?.text || '' | safeHtml"></span>
+                                        <ng-template #noAppend><span
+                                                [innerHTML]="request[col.field] || '' | safeHtml"></span></ng-template>
+                                    </td>
+                                </ng-container>
+                            </ng-container>
+
+                            <ng-template #isEditable>
+                                <td pEditableColumn>
+                                    <p-cellEditor>
+                                        <ng-template pTemplate="input">
+                                            <input pInputText type="text"
+                                                (keydown.enter)="updateRow(request,col?.field,request[col.field])"
+                                                (change)="updateRow(request,col?.field,request[col.field])"
+                                                class="w-100" [(ngModel)]="request[col.field]" required>
+                                        </ng-template>
+                                        <ng-template pTemplate="output">
+                                            <span>{{request[col.field]}}</span>
+                                        </ng-template>
+                                    </p-cellEditor>
+                                </td>
+                            </ng-template>
+
+                        </ng-container>
+
+                        <td *ngIf="actionBtn?.length && makeChange">
+                            <ng-container *ngFor="let b of actionBtn">
+                                <ng-container [ngSwitch]="b?.category">
+                                    <ng-container *ngSwitchCase="'TEXT'">
+                                        <span
+                                            *ngIf="!b.condition || (b.condition && (request | conditionOperator : b.condition))">{{b.name}}</span>
+                                    </ng-container>
+                                    <ng-container *ngSwitchDefault>
+                                        <button
+                                            *ngIf="!b.condition || (b.condition && (request | conditionOperator : b.condition))"
+                                            class="btn btn-sm ml-1 {{b.class || ''}}" [class.btn-default]="!b.class"
+                                            [title]="b?.title | titlecase"
+                                            (click)="$event.stopPropagation();btnAction(request[primaryKey] || '', b?.type,request)"><i
+                                                class="{{b.iconClass || 'text-default'}} {{b.icon}}"></i></button>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="paginatorleft" let-state>
+                    Total Request {{ state.first ? state.first+1 :1}} -
+                    {{ (state.first+state.rows) > state.totalRecords ?
+                    state.totalRecords : state.rows+state.first }}
+                    of {{state.totalRecords}}
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<ng-template #rowTable let request let-col>
+    <td>
+
+    </td>
+</ng-template>

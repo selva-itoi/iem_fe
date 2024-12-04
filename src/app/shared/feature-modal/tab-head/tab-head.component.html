@@ -1,0 +1,61 @@
+<ul class="nav nav-tabs1 table-nav" [hidden]="getHideStatus()">
+    <ng-container *ngFor="let s of segment | keyvalue:returnZero">
+        <li class="nav-item">
+            <a class="nav-link" [class.error-segment]="segmentError[s.key] == true"
+                [ngClass]="{'show active': currentSegment==s.value}" (click)="toSelectSegment(s.value)"
+                href="javascript:void(0)">{{s.value | titlecase}}</a>
+        </li>
+    </ng-container>
+</ul>
+<ng-container *ngIf="tabBody">
+    <div class="tab-content mt-0">
+        <div class="tab-pane show active">
+            <div class="card">
+                <div class="body">
+                    <ng-container [ngTemplateOutlet]="tabBody"
+                        [ngTemplateOutletContext]="{active:currentSegment,is_visited : this.segmentVisited[currentSegment] || false,visited : segmentVisited}"></ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>
+<modify-head-info [bsModalRef]="bsModalRef" [getApiApprove]="approveRequest" #tabModify [modifyData]="modifyData" [data]="data" [module]="module" [type]="type"></modify-head-info>
+<ng-template pTemplate="tabFooter" #tabFooter>
+    <ng-container *ngIf="type == 'MODIFICATION_APPROVE'; else submitBtn">
+        <ng-container [ngTemplateOutlet]="tabModify?.modifyFooter"></ng-container>
+    </ng-container>
+</ng-template>
+
+<ng-template #modifyAlert>
+    <ng-container [ngTemplateOutlet]="tabModify?.modifyAlert"></ng-container>
+</ng-template>
+
+<ng-template #submitBtn>
+    <div class="col-md-12 mb-2 text-center" *ngIf="isSubmitted">
+        <span class="error" *ngIf="checkAllError()">Few field not be valid</span>
+    </div>
+    <div class="col-md-12 text-center">
+        <div class="btn-group btn-group-lg">
+            <ng-container *ngIf="(type=='SUBMIT' || type=='MODIFICATION_SUBMIT') && !+data?.modify_request">
+                <button [disabled]="disabledBtn" *ngIf="!isFirstSegment()" (click)="prevSegment()" type="button"
+                    class="btn btn-primary mr-2">Prev</button>
+                <button noDoubleClick *ngIf="showSubmit && isLastSegment()"
+                    [disabled]="disabledBtn || loading || checkAllError()" type="button" (click)="onSubmit()"
+                    class="btn btn-primary ">
+                    <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>{{ loading ? 'Saving...' : 'Submit'}}
+                </button>
+                <button [disabled]="disabledBtn || checkSegmentStatus()" *ngIf="!isLastSegment()"
+                    (click)="nextSegment()" type="button" class="btn btn-primary mr-1">Save & Next</button>
+            </ng-container>
+            <button [disabled]="loading" (click)="close(false)" type="button"
+                class="btn btn-danger ml-2">Cancel</button>
+        </div>
+    </div>
+</ng-template>
+<ng-template #modifyFooter>
+    <modify-head-info #tabModify [modifyData]="modifyData" [type]="type"></modify-head-info>
+    <ng-container [ngTemplateOutlet]="tabModify?.modifyFooter"></ng-container>
+</ng-template>
+<ng-template #modifyInfo>
+    <ng-container [ngTemplateOutlet]="tabModify?.modifyInfo"></ng-container>
+</ng-template>

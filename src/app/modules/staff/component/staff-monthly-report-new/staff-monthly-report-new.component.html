@@ -1,0 +1,277 @@
+<app-page-breadcrumb [pageInfo]="pageInfo"></app-page-breadcrumb>
+
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="card">
+            <div class="tab-content mt-0" [formGroup]="dataForm">
+                <div class="card" [hidden]="dataLoading || info_message">
+                    <div class="body">
+                        <div *ngIf="showSelectStaff" class="list-group cursor-pointer" style="flex-direction: row;"
+                            (click)="openStaffModal()">
+                            <div
+                                class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                                <label class="cursor-pointer">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Select Staff</h5>
+                                    </div>
+                                    <small>To select the Staff to allotment</small>
+                                </label>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row clearfix" *ngIf="staffData.staff_emp_id">
+                            <ng-container *ngFor="let a of [staffData,staffData?.family || {}]">
+                                <div class="col-6" *ngIf="a.staff_emp_id">
+                                    <div class="card">
+                                        <div class="body ribbon">
+                                            <div class="ribbon-box" class="{{+a.gender ==1 ? 'green' : 'pink'}}"
+                                                style="top:-2px">{{a?.genderName}}</div>
+                                            <div class="media">
+                                                <img class="rounded mr-3 img-thumbnail" style="width: 70px;"
+                                                    [src]="a?.profile_img_path" imageLoad>
+                                                <div class="media-body">
+                                                    <h5 class="mb-1">{{a?.name}}</h5>
+                                                    <div class="d-flex">
+                                                        <p class="w-50 text-muted mb-1">{{staffData?.zoneName}}</p>
+                                                        <p class="w-50 text-right text-muted mb-1">
+                                                        {{staffData?.fieldName ? staffData?.fieldName : 'No Field Assigned'}}</p>
+                                                    </div>
+                                                    <div class="d-flex">
+                                                        <p class="w-50 text-muted mb-1">{{a?.deName}}</p>
+                                                        <p class="w-50 text-right text-muted mb-1">{{a?.dName}}</p>
+                                                    </div>
+                                                    <div class="d-flex">
+                                                        <p class="w-50 mb-1">
+                                                            <a href="javascript:void(0)"
+                                                                (click)="showBasicStaff(a?.staff_emp_id)"
+                                                                class=" mb-0">{{a?.staff_emp_id}}</a>
+                                                        </p>
+                                                        <p class="w-50 text-right text-muted mb-1">
+                                                            {{a?.staff_cross_id}}
+                                                        </p>
+                                                    </div>
+                                                    <p *ngIf="staffData?.family?.staff_emp_id">{{staffData?.no_of_child?
+                                                        staffData?.no_of_child : 'No Child Linked'}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                        
+
+                        <table class="table card-table mb-0" *ngIf="staffData.staff_emp_id">
+                            <tbody>
+                                <tr *ngIf="reportData?.report_month && reportData?.report_year">
+                                    <td class="p-0 font-weight-bold">Report Year & Month</td>
+                                    <td class="text-right">{{reportData?.monthName}} - {{reportData?.report_year}}</td>
+                                    <td *ngIf="showLang" class="font-weight-bold">Language</td>
+                                    <td *ngIf="showLang" class="text-right text-capitalized">{{reportData?.langName}}</td>
+                                </tr>
+                                <tr *ngIf="showLang">
+                                    <td class="p-0 font-weight-bold">Assigned Sponsors</td>
+                                    <td>
+                                        <ng-container *ngFor="let a of sponsorData">
+                                            <span (click)="showSponsorInfo(a?.sponsor_id)"
+                                                class="text-info m-1 cursor-pointer"> {{a?.sponsor_id}}</span>
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <ng-container *ngIf="staffData?.id">
+                            <div class="form-group mt-3" *ngIf="!reportData?.report_month && !reportData?.report_year">
+                                <div class="row clearfix">
+                                    <div class="col-md-6 col-lg-6">
+                                        <label>Report Month & Year * </label>
+                                        <p-calendar dateFormat="mm/yy" view="month"
+                                            [class.error]="submitted && dataForm.get('report_date_month')?.errors"
+                                            inputStyleClass="form-control" [maxDate]="maxDate" [minDate]="minDate"
+                                            [yearRange]="yearRange" placeholder="Month & Year"
+                                            formControlName="report_date_month">
+                                        </p-calendar>
+                                        <span class="error" *ngIf="dataForm.get('report_month')?.errors?.required">
+                                            Month of Report is Required</span>
+                                        <span class="error" *ngIf=" dataForm.get('report_year')?.errors?.required">
+                                            Year of Report should be Valid</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6" [hidden]="!showLang">
+                                        <label>Sponsor Reporting Language *</label>
+                                        <select class="custom-select" formControlName="lang_id"
+                                            [class.error]="submitted && dataForm.get('lang_id')?.errors">
+                                            <option value="">{{langLoading ? 'loading...' : 'Select Language'}}</option>
+                                            <ng-container *ngFor="let m of MASTER_LANG">
+                                                <option class="text-capitalized" [value]="m?.lang_id">
+                                                    {{m?.langName}}
+                                                </option>
+                                            </ng-container>
+                                        </select>
+                                        <span class="error" *ngIf="dataForm.get('lang_id')?.errors?.required">Language Name Required</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 mt-1">
+                                        <label>Typing Language</label>
+                                        <select class="custom-select" formControlName="typing_lang" >
+                                            <option value="1">English</option>
+                                            <option value="2">Tamil</option>
+                                            <option value="3">Hindi</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row text" *ngIf="!isViewMode">
+                                <div class="col-md-6">
+                                    <ng-container *ngFor="let a of availableLang">
+                                        <span *ngIf="a?.report_id"
+                                            [ngClass]="{'text-primary': +a?.save_draft == 1,'text-success': +a?.report_status == 1, 'text-info' : +a?.report_status == 3,'text-warning' : +a?.report_status == 2 }">{{a?.langName}}</span>
+                                    </ng-container>
+                                </div>
+                                <div class="col-md-6 align-right " style="font-size: small;">
+                                    <i class="pi pi-circle-on text-success"></i> Sent
+                                    <i class="pi pi-circle-on text-warning"></i> Submitted
+                                    <i class="pi pi-circle-on text-info"></i> Processed
+                                    <i class="pi pi-circle-on text-primary"></i> Draft
+                                    <i class="pi pi-circle-on text-default"></i> Not Typed
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row clearfix">
+                                    <div class="col-md-12 col-lg-12">
+                                        <label>Brief Ministry Report *</label>
+                                        <ng-container *ngIf="!isViewMode">
+                                            <app-editor [defaultLang]="dataForm.value.typing_lang"
+                                                [content]="reportData?.src_content?.brief_ministry"
+                                                (onChangeData)="onDescriptionChange($event,'brief_ministry')">
+                                            </app-editor>
+                                            <span class="error"
+                                                *ngIf="dataForm.get('brief_ministry')?.errors?.required">
+                                                Brief Ministry is Required</span>
+                                        </ng-container>
+                                        <p *ngIf="isViewMode" [innerHtml]="reportData?.src_content?.brief_ministry"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row clearfix">
+                                    <div class="col-md-12 col-lg-12">
+                                        <label>Praise Points *</label>
+                                        <ng-container *ngIf="!isViewMode">
+                                            <app-editor [content]="reportData?.src_content?.praise_points"
+                                                [defaultLang]="dataForm.value.typing_lang"
+                                                (onChangeData)="onDescriptionChange($event,'praise_points')">
+                                            </app-editor>
+                                            <span class="error" *ngIf="dataForm.get('praise_points')?.errors?.required">
+                                                Praise Points Required</span>
+                                        </ng-container>
+                                        <p *ngIf="isViewMode" [innerHtml]="reportData?.src_content?.praise_points"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row clearfix">
+                                    <div class="col-md-12 col-lg-12">
+                                        <label>Prayer Points *</label>
+                                        <ng-container *ngIf="!isViewMode">
+                                            <app-editor [content]="reportData?.src_content?.prayer_points"
+                                                [defaultLang]="dataForm.value.typing_lang"
+                                                (onChangeData)="onDescriptionChange($event,'prayer_points')">
+                                            </app-editor>
+                                            <span class="error" *ngIf="dataForm.get('prayer_points')?.errors?.required">
+                                                Prayer Points is Required</span>
+                                        </ng-container>
+                                        <p *ngIf="isViewMode" [innerHtml]="reportData?.src_content?.prayer_points"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row clearfix">
+                                    <div class="col-md-12 col-lg-12">
+                                        <label>Family News: *</label>
+                                        <ng-container *ngIf="!isViewMode">
+                                            <app-editor [content]="reportData?.src_content?.family_news"
+                                                [defaultLang]="dataForm.value.typing_lang"
+                                                (onChangeData)="onDescriptionChange($event,'family_news')"></app-editor>
+                                            <span class="error" *ngIf="dataForm.get('family_news')?.errors?.required">
+                                                Family News is Required</span>
+                                        </ng-container>
+                                        <p *ngIf="isViewMode" [innerHtml]="reportData?.src_content?.family_news"></p>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row clearfix">
+                                    <div class="col-md-6 col-lg-6">
+                                        <label>Promise Verse</label>
+                                        <ng-container *ngIf="!isViewMode">
+                                            <input [class.error]="submitted && dataForm.get('promise_verse')?.errors"
+                                                type="text" formControlName="promise_verse" class="form-control"
+                                                placeholder="Promise Verse">
+                                            <span class="error" *ngIf="dataForm.get('promise_verse')?.errors?.required">
+                                                Promise Verse is Required</span>
+                                        </ng-container>
+                                        <div *ngIf="isViewMode" [innerHtml]="reportData?.src_content?.promise_verse">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class="media">
+                                            <img class="rounded mr-3 img-thumbnail" style="width: 70px;"
+                                                [src]="staffData?.family_img_path" imageLoad>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <!-- end if -->
+
+
+                        <div class="row clearfix align-center" [hidden]="dataLoading">
+                            <div class="col-md-12 mb-2 text-center">
+                                <span class="text-info" *ngIf="+reportData?.email_send"> Last Email Send On
+                                    {{reportData?.email_send_on | date : 'medium'}}</span>
+                            </div>
+
+                            <div class="col-md-12 mb-2 text-center">
+                                <span class="text-primary" *ngIf="textInfo"> {{textInfo}}</span>
+                            </div>
+                            <div class="col-md-12 mb-2 text-center" *ngIf="sendingEmail">
+                                <span class="text-info" *ngIf="sendingEmail"> Email sending...</span>
+                            </div>
+                            <div class="col-md-12 text-center">
+                                <div class="btn-group btn-group-lg">
+                                    <button [disabled]="loading || !staffData.staff_emp_id"
+                                        *ngIf="showActionBtn && !isViewMode" (click)="saveDraft()" type="button"
+                                        class="btn btn-primary mr-1">Save
+                                        Draft</button>
+                                    <button *ngIf="showActionBtn && !isViewMode" noDoubleClick
+                                        [disabled]="loading || !dataForm.valid || disabled_save" type="button"
+                                        (click)="onSubmit()" class="btn btn-success mr-1">
+                                        <i *ngIf="loading || sendingEmail" class="pi pi-spin pi-spinner"></i>
+                                        {{ loading ? 'Saving...' : textSave}}
+                                    </button>
+                                    <button [disabled]="loading || sendingEmail" (click)="goBack()" type="button"
+                                        class="btn btn-danger">Cancel</button>
+                                    <button [disabled]="loading || sendingEmail || !dataForm.valid" noDoubleClick
+                                        (click)="showPreview()" type="button" class="btn btn-info">Preview</button>
+                                    <button *ngIf="emailBtn" [disabled]="loading || sendingEmail" noDoubleClick
+                                        (click)="sendEmail()" type="button" class="btn btn-info">
+                                        <i *ngIf="sendingEmail" class="pi pi-spin pi-spinner"></i>
+                                        {{sendingEmail ? 'Sending...' : 'Send'}} <i class="pi pi-envelope"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <app-page-loader [loading]="dataLoading || info_message?true :false"></app-page-loader>
+            </div>
+            <!--End tab-->
+        </div> <!-- End Card-->
+    </div>
+</div>
+<!--End row-->

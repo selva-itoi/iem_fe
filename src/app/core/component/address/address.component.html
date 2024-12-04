@@ -1,0 +1,159 @@
+<div class="modal-header" *ngIf="!isPage">
+    <h6 class="mb-0 modal-title"> <b>{{title | titlecase}}</b></h6>
+    <button type="button" class="close" (click)="close()"><span>X</span></button>
+</div>
+
+<div class="card" [hidden]="hideMe">
+    <div class="body" [formGroup]="addressForm">
+        <div class="row clearfix" *ngIf="isPage">
+            <div class="col-md-6 col-lg-6">
+                <label>
+                    <b>{{title | titlecase}}</b>
+                </label>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="!data?.hideBasic">
+            <div class="row clearfix">
+                <div class="col-md-6 col-lg-6">
+                    <label>Address Line 1</label>
+                    <input formControlName="street" [class.error]="submitted && addressForm.get('street')?.errors"
+                        class="form-control" type="text">
+                    <span class="error ml-2" *ngIf="addressForm.get('street')?.errors?.required">
+                        Address Line 1 Required</span>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                    <label>
+                        Address Line 2
+                    </label>
+                    <input formControlName="address" [class.error]="submitted && addressForm.get('address')?.errors"
+                        class="form-control" type="text">
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-md-6 col-lg-6">
+                    <label>Address Line 3</label>
+                    <input formControlName="address_line" [class.error]="submitted && addressForm.get('address_line')?.errors"  class="form-control" type="text">
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+            <div class="form-group col-6">
+                <label>Country</label>
+                <select (change)="getFullData([],'stateData',true)"
+                    [class.error]="submitted && addressForm.get('country')?.errors" class="custom-select"
+                    formControlName="country">
+                    <option value="">{{masterLoading['countryData'] ? 'loading...' : 'Select Country'}}</option>
+                    <ng-container *ngFor="let m of countryData">
+                        <option [value]="m?.id">
+                            {{m?.countryName}}
+                        </option>
+                    </ng-container>
+                </select>
+                <span class="error"
+                    *ngIf="addressForm.get('country').dirty && addressForm.get('country')?.errors?.required">
+                    Select any country.
+                </span>
+            </div>
+
+            <div class="form-group col-6">
+                <label>State</label>
+                <select (change)="getFullData([],'districtData',true)"
+                    [class.error]="submitted && addressForm.get('state')?.errors" class="custom-select"
+                    formControlName="state">
+                    <option value="">{{masterLoading['stateData'] ? 'loading...' : 'Select State'}}</option>
+                    <ng-container *ngFor="let m of stateData">
+                        <option [value]="m?.id">
+                            {{m?.stateName | titlecase}}
+                        </option>
+                    </ng-container>
+                </select>
+                <span class="error" *ngIf="addressForm.get('state').dirty && addressForm.get('state')?.errors?.required">Select any state.</span>
+            </div>
+
+            <div class="form-group col-6">
+                <label>District</label>
+                <select (change)="getFullData([],'subDistrictData',true)"
+                    [class.error]="submitted && addressForm.get('district')?.errors" class="custom-select"
+                    formControlName="district">
+                    <option value="">{{masterLoading['districtData'] ? 'loading...' : 'Select District'}}</option>
+                    <ng-container *ngFor="let m of districtData">
+                        <option [value]="m?.id">
+                            {{m?.districtName | titlecase}}
+                        </option>
+                    </ng-container>
+                </select>
+                <span class="error"
+                    *ngIf="addressForm.get('district').dirty && addressForm.get('district')?.errors?.required">
+                    Select any district.
+                </span>
+            </div>
+            <ng-container>
+                <!-- <div class="form-group col-6">
+                    <label>Sub District</label>
+                    <select (change)="getFullData([],'autocompleteLevelValue',true)"
+                        [class.error]="submitted && addressForm.get('s_district')?.errors" class="custom-select"
+                        formControlName="s_district">
+                        <option value="">{{masterLoading['subDistrictData'] ? 'loading...' : 'Select Sub District'}}
+                        </option>
+                        <ng-container *ngFor="let m of subDistrictData">
+                            <option [value]="m?.id">
+                                {{m?.subDistrictName | titlecase}}
+                            </option>
+                        </ng-container>
+                    </select>
+                    <span class="error"
+                        *ngIf="addressForm.get('s_district').dirty && addressForm.get('s_district')?.errors?.required">
+                        Select any sub district.
+                    </span>
+                </div> -->
+
+                <!-- <div class="form-group col-6" *ngIf="addressForm.get('level')">
+                    <ng-container *ngFor="let m of LEVEL | keyvalue">
+                        <label class="fancy-radio custom-color-green"><input (change)="onChangeLevel()"
+                                formControlName="level" [value]="m?.value" type="radio"><span><i></i> {{m?.key |
+                                titlecase}}</span></label>
+                    </ng-container>
+                    <p-dropdown [style]="{'width':'100%' ,'padding' : '0'}"
+                        styleClass="form-control {'error' : addressForm.get('levelSearch')?.errors}" optionValue='id'
+                        [placeholder]="levelFilterKey ==LEVEL.CITY ? 'Select a City' : 'Select a Panchayat'"
+                        (onChange)="getFullData([],'autocompleteValue',true)" [options]="autocompleteLevelValue"
+                        formControlName="levelSearch" [optionLabel]="levelFilterKey"></p-dropdown>
+                    <span class="error"
+                        *ngIf="addressForm.get('levelSearch')?.errors?.required || (addressForm.get('levelSearch')?.value | json)=='{}'">
+                        {{levelFilterKey ==LEVEL.CITY ? 'City' : 'Panchayat'}} Name Required
+                    </span>
+                </div>
+                <div class="form-group col-6" *ngIf="addressForm.get('locationSearch')">
+                    <label>{{levelFilterKey ==LEVEL.CITY ? 'Ward Name' : 'Village Name' }}</label>
+                    <p-dropdown [style]="{'width':'100%' ,'padding' : '0'}"
+                        styleClass="form-control {'error' : addressForm.get('locationSearch')?.errors}" optionValue='id'
+                        [placeholder]="levelFilterKey ==LEVEL.CITY ? 'Select a Ward' : 'Select a Village'"
+                        [options]="autocompleteValue" formControlName="locationSearch" [optionLabel]="filterKey">
+                    </p-dropdown>
+                    <span class="error"
+                        *ngIf="addressForm.get('locationSearch')?.errors?.required || (addressForm.get('locationSearch')?.value |json )== '{}'">
+                        location should'nt be blank
+                    </span>
+                </div> -->
+
+            </ng-container>
+
+            <div class="form-group col-6" *ngIf="!data?.hideBasic">
+                <label>Pin Code</label>
+                <input formControlName="pincode" [class.error]="submitted && addressForm.get('pincode')?.errors"
+                    class="form-control" type="text">
+                <span class="error" *ngIf="addressForm.get('pincode')?.errors?.required">
+                    Pin code is Required.
+                </span>
+                <span class="error" *ngIf="addressForm.get('pincode')?.errors?.pattern">
+                    Pin code should be valid.
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer" *ngIf="!isPage">
+    <button type="button" class="btn btn-round btn-default" (click)="close()">Close</button>
+    <button type="button" class="btn btn-round btn-primary" (click)="submit()">Save changes</button>
+</div>

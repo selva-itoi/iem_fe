@@ -1,0 +1,20 @@
+<app-page-breadcrumb [pageInfo]="{title : 'Dedication Info'}" [isModal]="true"></app-page-breadcrumb>
+
+<div class="row text-center w-100" *ngIf="!loadingData">
+    <div class="col-lg-4 col-md-12 col-xl-4">
+        <profile-widget type="SPONSOR" [profileData]="sponsorData"></profile-widget>
+        <div class="m-3">
+            <info-view [sourceData]="dedicationData" [direction]="'VERTICAL'" [mapData]="dedicatedUpdateInfo">
+            </info-view>
+        </div>
+    </div>
+    <div class="col-lg-8 col-md-12 col-xl-8 mb-2">
+        <h6 class="title text-left">Staff Dedication Info</h6>
+        <info-view [sourceData]="dedicationData" [direction]="'VERTICAL'" [mapData]="dedicationShowData"></info-view>
+        <h6 class="title text-left">Staff Info</h6>
+        <info-view [sourceData]="staffData" [direction]="'VERTICAL'" [mapData]="staffShowData"></info-view>
+        <h6 class="title text-left">Staff Accompany Info</h6>
+        <info-view [sourceData]="staffAccData" [direction]="'VERTICAL'" [mapData]="staffShowData"></info-view>
+    </div>
+</div>
+<app-page-loader *ngIf="loadingData"></app-page-loader>

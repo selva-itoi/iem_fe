@@ -1,0 +1,143 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="false"></app-page-breadcrumb>
+
+<div class=" mb-4">
+    <!-- <div class="body"> -->
+    <div class="row clearfix" [hidden]="dataLoading">
+        <div class="col-lg-3 col-md-3 col-xl-3">
+            <profile-widget [profileData]="sponsorData"></profile-widget>
+            <div class="card">
+                <div class="body">
+                    <small class="text-muted">Address: </small>
+                    <p>{{sponsorData?.fullAddress}}</p>
+                    <div>
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1923731.7533500232!2d-120.39098936853455!3d37.63767091877441!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80859a6d00690021%3A0x4a501367f076adff!2sSan+Francisco%2C+CA%2C+USA!5e0!3m2!1sen!2sin!4v1522391841133"
+                            width="100%" height="150" frameborder="0" style="border:0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-9 col-md-9 col-xl-9">
+            <ul class="nav nav-tabs1 table-nav">
+                <ng-container *ngFor="let s of segement | keyvalue:returnZero">
+                    <li class="nav-item">
+                        <a class="nav-link" [ngClass]="{'show active': currentSegment==s.value}"
+                            (click)="changeSegement(s.value)" href="javascript:void(0)">{{s.value}}</a>
+                    </li>
+                </ng-container>
+            </ul>
+            <div class="tab-content mt-0 card">
+                <div class="tab-pane show active body" [hidden]="currentSegment != segement.BASIC">
+                    <info-view *ngIf="segmentVisited.BASIC" [sourceData]="sponsorData" [direction]="'HORIZONTAL'" [mapData]="showData">
+                    </info-view>
+                </div>
+
+                <div class="tab-pane show active body" [hidden]="currentSegment != segement.ACTIVE">
+                    <app-table-list *ngIf="segmentVisited.ACTIVE" [tableConfig]="tableConfig" [parenttblAction]="[]" [parentGetList]="getListData">
+                    </app-table-list>
+                </div>
+                <div class="tab-pane show active body" [hidden]="currentSegment != segement.SPONSORSHIP">
+                    <app-table-list *ngIf="segmentVisited.SPONSORSHIP" [tableConfig]="tableConfig"
+                        [parenttblAction]="[]" [parentGetList]="getListData">
+                    </app-table-list>
+                </div>
+                <div class="tab-pane show active body" [hidden]="currentSegment != segement.DONATION">
+                    <donation-list-ref *ngIf="segmentVisited.DONATION" [type]="'SPONSOR'"
+                        [ref_id]="sponsor_id"></donation-list-ref>
+                </div>
+                <div class="tab-pane show active body" [hidden]="currentSegment != segement.ALLOTMENT">
+                    <div class="card">
+                        <div class="body">
+                            <!-- <div class="list-group cursor-pointer" style="flex-direction: row;"
+                                (click)="openSponsorModal()">
+                                <div
+                                    class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                                    <label class="cursor-pointer">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h5 class="mb-1">Select Donor</h5>
+                                        </div>
+                                        <small>To select the Sponsor to allotment</small>
+                                    </label>
+                                </div>
+                            </div> -->
+                            <hr>
+                            <!-- <div class="media" *ngIf="sponsorData?.name">
+                                <img class="rounded mr-3 img-thumbnail" style="width: 70px;"
+                                    [src]="sponsorData?.profile_img_path" imageLoad>
+                                <div class="media-body">
+                                    <h5 class="m-0">{{sponsorData?.name}}</h5>
+                                    <p class="text-muted mb-0">{{sponsorData?.promotionalName}}</p>
+                                    <p class="text-muted mb-0">{{sponsorData?.sponsor_id}}</p>
+                                    <p *ngIf="+sponsorData?.status==2" class="text-muted mb-0 text-warning">
+                                        Pending verification</p>
+                                </div>
+                            </div> -->
+
+                            <table class="table table-hover table-custom spacing8 table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>id</th>
+                                        <th>Amount</th>
+                                        <th>Ref Code</th>
+                                        <th>status</th>
+                                        <th>cc email</th>
+                                        <th>Allotment As On</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ng-container *ngFor="let a of sponsorshipList">
+                                        <tr [ngClass]="{'bg-blue' : +a?.id==+sponsorshipData?.id}">
+                                            <!-- <td> <input [hidden]="+a?.modify_request"
+                                                    (change)="selectSponsorship()"
+                                                    formControlName="sponsorship_id" [value]="a?.id"
+                                                    type="radio">
+                                            </td> -->
+                                            <td>{{a?.id}}</td>
+                                            <td>
+                                                <a href="javascript:void(0);" title="">{{a?.alloted_amount |
+                                                    currencyFormat}}</a>
+                                                <!-- <p class="mb-0">Scott Ortega</p> -->
+                                            </td>
+                                            <td>
+                                                <span>{{a?.ref_code}}</span>
+                                            </td>
+                                            <td>
+                                                <ng-container *ngFor="let m of statusData">
+                                                    <span *ngIf="m?.key == a.status"
+                                                        class="badge badge-{{m?.color || 'info'}}">{{
+                                                        m?.label}}</span>
+                                                </ng-container>
+                                            </td>
+                                            <td>{{+(a?.cc_email) ? 'Modification Req Pending' : '' }}</td>
+                                            <td>
+                                                <span>{{a?.created_at | date}}</span>
+                                            </td>
+                                        </tr>
+
+                                    </ng-container>
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- end tab -->
+            <div class="row clearfix text-center">
+                <div class="col-md-12 text-center">
+                    <div class=" btn-group-lg">
+                        <button [disabled]="loading" (click)="active()"
+                            class="btn ml-1 btn-round btn-{{sponsorData.status == 0 ? 'sucess':'primary'}}">
+                            {{sponsorData.status == 0 ? 'Make Active':'Make Inactive'}}</button>
+                        <button [disabled]="loading" (click)="close()"
+                            class="btn ml-1 btn-round btn-danger">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-page-loader [loading]="dataLoading"></app-page-loader>
+    <!-- end of page content -->

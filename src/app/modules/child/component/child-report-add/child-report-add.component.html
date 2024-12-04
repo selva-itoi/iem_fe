@@ -1,0 +1,137 @@
+<app-page-breadcrumb [pageInfo]="pageInfo"></app-page-breadcrumb>
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="card">
+            <div class="tab-content mt-0" [formGroup]="dataForm">
+                <div class="card" [hidden]="dataLoading">
+                    <div class="body">
+                        <div *ngIf="showSelectChild" class="list-group cursor-pointer" style="flex-direction: row;"
+                            (click)="openChildModal()">
+                            <div
+                                class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                                <label class="cursor-pointer">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Select Child</h5>
+                                    </div>
+                                    <small>Select the Child to Report</small>
+                                </label>
+                            </div>
+                        </div>
+                        <hr>
+                        <table class="table card-table mb-0" *ngIf="childData?.child_id">
+                            <tbody>
+                                <tr>
+                                    <td><img class="rounded mr-3 img-thumbnail" style="width: 70px;"
+                                        [src]="childData?.profile_img_path" imageLoad>
+                                    </td>
+                                    <td class="text-right"><h5>{{childData?.name}}</h5></td>
+                                    <td class="font-weight-bold">Child No</td>
+                                    <td class="text-right">{{childData?.child_no }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-weight-bold">Home</td>
+                                    <td class="text-right">{{childData?.homeName}}</td>
+                                    <td class="font-weight-bold">Gender</td>
+                                    <td class="text-right">{{childData?.genderName }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-weight-bold">Date of Birth</td>
+                                    <td class="text-right">{{childData?.dob | date :'dd-MM-yyyy'}}</td>
+                                    <td class="font-weight-bold">Child Id</td>
+                                    <td class="text-right">{{childData?.child_id}}</td>
+                                </tr>
+
+                                <tr *ngIf="reportData?.report_month && reportData?.report_year">
+                                    <td class="font-weight-bold">Report Year & Month</td>
+                                    <td class="text-right">{{reportData?.report_month}} & {{reportData?.report_year}}
+                                    </td>
+                                </tr>
+                                <tr *ngIf="sponsorData">
+                                    <td class="font-weight-bold">Donor Id</td>
+                                    <td class="text-right text-capitalized">
+                                        <ng-container *ngFor="let a of sponsorData">
+                                            <span (click)="showSponsorInfo(a?.sponsor_id)" class="text-info m-1 cursor-pointer"> {{a?.sponsor_id}}</span>
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <ng-container *ngIf="childData?.id">
+                            <div class="form-group" *ngIf="!reportData?.report_month && !reportData?.report_year">
+                                <div class="row clearfix">
+                                    <div class="col-md-6 col-lg-6">
+                                        <label>From Report Month & Year * </label>
+                                        <p-calendar (onSelect)="changeCal()" dateFormat="mm/yy" view="month"
+                                            [class.error]="submitted && dataForm.get('report_date_month')?.errors"
+                                            inputStyleClass="form-control" [maxDate]="maxDate" [minDate]="minDate"
+                                            [yearRange]="yearRange" placeholder="Month & Year"
+                                            formControlName="from_report_date_month">
+                                        </p-calendar>
+                                        <span class="error" *ngIf="dataForm.get('report_month')?.errors?.required">
+                                            Month of Report is Required</span>
+                                        <span class="error" *ngIf=" dataForm.get('report_year')?.errors?.required">
+                                            Year of Report should be Valid</span>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <label>To Report Month & Year * </label>
+                                        <p-calendar (onSelect)="changeCal()" dateFormat="mm/yy" view="month"
+                                            [class.error]="submitted && dataForm.get('to_report_month')?.errors"
+                                            inputStyleClass="form-control" [maxDate]="maxDate" [minDate]="minDate"
+                                            [yearRange]="yearRange" placeholder="Month & Year"
+                                            formControlName="to_report_date_month">
+                                        </p-calendar>
+                                        <span class="error" *ngIf="dataForm.get('report_month')?.errors?.required">
+                                            Month of Report is Required</span>
+                                        <span class="error" *ngIf=" dataForm.get('report_year')?.errors?.required">
+                                            Year of Report should be Valid</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row clearfix">
+                                    <div class="col-md-12 col-lg-12">
+                                        <label>Brief Report *</label>
+                                        <app-editor [content]="reportData?.src_content?.brief"
+                                            (onChangeData)="onDescriptionChange($event)"></app-editor>
+                                        <span class="error" *ngIf="dataForm.get('brief')?.errors?.required">
+                                            Brief Report is Required</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </ng-container>
+                        <!-- end child ngif -->
+
+                        <div class="row clearfix align-center" [hidden]="dataLoading">
+                            <div class="col-md-12 mb-2 text-center">
+                                <span class="text-primary" *ngIf="textInfo"> {{textInfo}}</span>
+                            </div>
+                            <div class="col-md-12 mb-2 text-center" *ngIf="sendingEmail">
+                                <span class="text-info" *ngIf="textInfo"> Email sending...</span>
+                            </div>
+                            <div class="col-md-12 text-center">
+                                <div class="btn-group btn-group-lg">
+                                    <button *ngIf="showActionBtn" noDoubleClick [disabled]="loading || disabled_save || !dataForm.valid"
+                                        type="button" (click)="onSubmit()" class="btn btn-success mr-1">
+                                        <i *ngIf="loading || sendingEmail" class="pi pi-spin pi-spinner"></i>
+                                        {{ loading ? 'Saving...' : textSave}}
+                                    </button>
+                                    <button [disabled]="loading || sendingEmail" (click)="goBack()" type="button"
+                                        class="btn btn-danger">Cancel</button>
+                                    <button [disabled]="loading || sendingEmail || !dataForm?.valid" noDoubleClick (click)="showPreview()" type="button"
+                                        class="btn btn-info">Preview</button>
+                                    <button *ngIf="emailBtn" noDoubleClick [disabled]="loading || sendingEmail || disabled_save"
+                                        (click)="sendEmail()" type="button" class="btn btn-info">Send Email</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <app-page-loader [loading]="dataLoading"></app-page-loader>
+            </div>
+            <!--End tab-->
+        </div> <!-- End Card-->
+    </div>
+</div>
+<!--End row-->

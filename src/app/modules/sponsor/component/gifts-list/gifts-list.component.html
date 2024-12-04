@@ -1,0 +1,28 @@
+<div class="block-header">
+    <div class="row clearfix">
+        <div class="col-md-6 col-sm-12">
+            <h1>Manage Gift</h1>
+        </div>
+        <div class="col-md-6 col-sm-12 text-right hidden-xs" *ngIf="showAddBtn">
+            <a [routerLink]="[urlService.SPONSOR.SPONSOR_GIFT_ADD.URL]" class="btn btn-sm btn-primary"
+                title="Add New Sponsor"><i class="pi pi-plus"></i>
+                New Gift</a>
+        </div>
+    </div>
+</div>
+<ul class="nav nav-tabs1 table-nav">
+    <ng-container *ngFor="let s of segement | keyvalue:returnZero">
+        <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'show active': currentSegment==s.value}" (click)="changeSegment(s.value)"
+                href="javascript:void(0)">{{s.value |
+                titlecase}}</a>
+        </li>
+    </ng-container>
+</ul>
+<div class="tab-content mt-0">
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.LIST">
+        <app-table-list *ngIf="segmentVisited.LIST" [viewAction]="viewInfoHandler" [tableConfig]="tableConfig" [parenttblAction]="tblAction"
+            [parentGetList]="getListData">
+        </app-table-list>
+    </div>
+</div>

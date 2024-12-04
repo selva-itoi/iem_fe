@@ -1,0 +1,13 @@
+<app-page-breadcrumb [pageInfo]="pageInfo"></app-page-breadcrumb>
+<!-- <tab-head [segement]="segement" [inital]="segement.ACTIVE"
+    (onSelect)="segmentVisited = $event.visited; currentSegment =$event.key"></tab-head> -->
+    <tab-head [segment]="segement" [initial]="segement.ACTIVE"  (onSelect)="segmentVisited = $event.visited; currentSegment =$event.key"></tab-head>
+<div class="tab-content mt-0">
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.ACTIVE">
+        <app-table-list #active  *ngIf="segmentVisited.ACTIVE" [tableConfig]="tableConfig" [parentGetList]="getListData" [parenttblAction]="tblAction" ></app-table-list>
+    </div>
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.PENDING">
+        <app-table-list #pending  *ngIf="segmentVisited.PENDING" [tableConfig]="tableClosed" [parentGetList]="getclosedData" ></app-table-list>
+    </div>
+    
+</div>

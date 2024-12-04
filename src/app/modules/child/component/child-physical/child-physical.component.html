@@ -1,0 +1,16 @@
+<div>
+    <div class="row clearfix body m-0 p-10 border-0">
+        <div class="col-12">
+            <span class="sub_title">{{data?.title}}</span>
+        </div>
+    </div>
+    <!-- form start -->
+    <div class="card">
+        <div class="body">
+            <dynamic-table-form *ngIf="basicFormData.length" #dyTbl [formData]="basicFormData" [mode]="mode">
+            </dynamic-table-form>
+        </div>
+        <!--body -->
+    </div> <!-- card-->
+</div>
+<!--end form-->

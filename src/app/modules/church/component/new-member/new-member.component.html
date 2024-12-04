@@ -1,0 +1,46 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" [isModal]="false"></app-page-breadcrumb>
+<div class="card">
+    <div class="body" (keyup.enter)="onSubmit()">
+        <div [hidden]="dataLoading">
+            <!-- <div class="row clearfix ">
+                <div *ngIf="!churchId && !memberId" style="flex-direction: row;" class="col-12 mb-4" (click)="openSearchModal()">
+                    <div class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                        <label class="cursor-pointer">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">Select Church</h5>
+                            </div>
+                            <small>Search Church to add</small>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <info-view *ngIf="!churchId && !memberId" [sourceData]="churchData" [direction]="'HORIZONTAL'" [mapData]="churchShowData"></info-view> -->
+
+            <div class="row clearfix ">
+                <app-form-generator #basicForm [dynamicValidator]="churchDynamicValidator"
+                    (onChangeEvent)="onChange($event)" [formData]="basicFormData">
+                </app-form-generator>
+            </div>
+
+            <div class="col-md-12 mb-2 text-center">
+                <span class="error" *ngIf="!isValid"> Please Make sure all are Valid</span>
+            </div>
+            <div class="col-md-12 text-center">
+                <div class="btn-group btn-group-lg">
+                    <button noDoubleClick  [disabled]="disabled_save || loading" type="button"
+                        (click)="onSubmit()" class="btn btn-primary mr-1">
+                        <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                        {{ loading ? 'Saving...' : 'Submit'}}
+                    </button>
+                    <button [disabled]="loading" (click)="close()" type="button" class="btn btn-danger mr-1">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- loader -->
+        <app-page-loader [loading]="dataLoading"></app-page-loader>
+    </div>
+    <!--end body -->
+</div>
+<!--end card-->

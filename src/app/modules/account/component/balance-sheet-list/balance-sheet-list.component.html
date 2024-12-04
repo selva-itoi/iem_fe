@@ -1,0 +1,30 @@
+<app-page-breadcrumb [pageInfo]="pageInfo"></app-page-breadcrumb>
+<div class="container-fluid">
+    <div class="card">
+        <div class="body">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <div class="col-md-12 col-lg-12 mt-1 mb-1">
+                            <h6 class="text-muted">Account ID</h6>
+                        </div>
+                        <select class="form-control col-6" [formControl]="account_value" (change)="onChange($event)">
+                            <option value="">Select Account Code</option>
+                            <option *ngFor="let list of accountlist" [value]="list?.id">{{list?.account_code}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4"><strong>Account Name : </strong> {{maindata?.accountName}}</div>
+                <div class="col-4"><strong>Account Number :</strong> {{maindata?.account_code}}</div>
+                <div class="col-4"><strong> Current Balance :</strong>{{maindata?.current_balance}}</div>
+            </div>
+            <button class=" btn btn-primary" style="margin-left: 45%;margin-top: 1%;" (click)="getaccountdetails()">submit</button>
+        </div>
+    </div>
+</div>
+<app-table-list #bulkTbl  [tableConfig]="IncomeAmount" [parenttblAction]="tblAction"
+    [parentGetList]="getAccountData" >
+</app-table-list>

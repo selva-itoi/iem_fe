@@ -1,0 +1,18 @@
+<app-page-breadcrumb [pageInfo]="pageInfo" (btnClickEvent)="addNew($event)"></app-page-breadcrumb>
+<tab-head [segment]="segement" [initial]="segement.PAYROLL_HEAD"
+    (onSelect)="segmentVisited = $event.visited; currentSegment =$event.key"></tab-head>
+<div class="tab-content mt-0">
+    <div class="tab-pane show active">
+        <ng-container *ngFor="let a of allKeys">
+            <app-master #masterPage [addBtn]="false"
+                *ngIf="currentSegment== segement[a] &&currentSegment !=segement.LEAVE_POLICY" [title]="a | titlecase"
+                [tblCol]="COL[a]" [tbl]="a | lowercase" (onTblAction)="tblAction($event)"  [defaultEdit] = "currentSegment == segement.PAYROLL_HEAD? false : true" [saveApi]="currentSegment == segement.PAYROLL_HEAD ? 'savePayrollHead' : ''"></app-master>
+        </ng-container>
+    </div>
+    <div class="tab-pane show active" [hidden]="currentSegment != segement.LEAVE_POLICY">
+        <app-edit-payroll-policy></app-edit-payroll-policy>
+    </div>
+</div>
+<ng-template #payHead>
+    <app-new-payroll-head></app-new-payroll-head>
+  </ng-template>

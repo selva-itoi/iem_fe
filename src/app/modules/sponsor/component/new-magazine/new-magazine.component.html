@@ -1,0 +1,74 @@
+<app-page-breadcrumb [pageInfo]="pageInfo"></app-page-breadcrumb>
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="card">
+            <div class="tab-content mt-0">
+                <div class="card">
+                    <div class="body">
+                        <div *ngIf="!magazineId" class="list-group cursor-pointer" style="flex-direction: row;"
+                            (click)="openSponsorModal()">
+                            <div
+                                class="list-group-item cursor-pointer list-group-item-action flex-column align-items-start ">
+                                <label class="cursor-pointer">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Select Donor</h5>
+                                    </div>
+                                    <small>To select the Sponsor to create a New Magazine</small>
+                                </label>
+                            </div>
+                        </div>
+                        <a *ngIf="!magazineId" class="align-center mt-3" href="javascript:void(0)"
+                            (click)="addSponsor()">Add New</a>
+                        <hr>
+                        <div class="clearfix" *ngIf="sponsorData?.id || magazineId">
+                            <div class="media bg-info mt-2 p-2" style="    line-height: 24px; color :#fff"
+                                *ngIf="sponsorData?.name && !dataLoading || magazineId">
+                                <img class="rounded mr-3 img-thumbnail" style="width: 70px;"
+                                    [src]="sponsorData?.profile_img_path" imageLoad>
+                                <div class="media-body">
+                                    <h5 class="m-0">{{sponsorData?.name || magazineData?.sponsorName }}</h5>
+                                    <p class=" mb-0">{{sponsorData?.promotionalName || magazineData?.promotionalName}}
+                                    </p>
+                                    <p class=" mb-0">{{sponsorData?.sponsor_id||magazineData?.sponsor_id}}</p>
+                                    <p *ngIf="+sponsorData?.status==2" class="text-primary mb-0 text-warning">Pending
+                                        verification</p>         
+                                </div>
+                                <div class="media-body">
+                                    <h5 class="m-0">{{sponsorData?.address_line_1 || magazineData?.address_line_1 }}</h5>
+                                    <p class=" mb-0">{{sponsorData?.address_line_2 || magazineData?.address_line_2}}
+                                    </p>
+                                    <p class=" mb-0">{{sponsorData?.address_line_3||magazineData?.address_line_3}}</p>
+                                    <p *ngIf="+sponsorData?.status==2" class="text-primary mb-0 text-warning">Pending
+                                        verification</p>         
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" row clearfix" *ngIf="sponsorData?.id  || magazineData">
+                            <div class="card">
+                                <div class="body">
+                                    <app-form-generator *ngIf="magazineId" #address
+                                    [formData]="addressFormData"></app-form-generator>
+                                    <app-form-generator #basicForm [formData]="basicFormData"></app-form-generator>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <div class="btn-group btn-group-lg">
+                                <ng-container *ngIf="sponsorData?.id || magazineId">
+                                    <button noDoubleClick *ngIf="sponsorData || magazineId" [disabled]="loading"
+                                        type="button" (click)="onSubmit()" class="btn btn-primary mr-1">
+                                        <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+                                        {{ loading ? 'Saving...' : 'Submit'}}
+                                    </button>
+                                </ng-container>
+                                <button [disabled]="loading" (click)="goBack()" type="button"
+                                    class="btn btn-danger mr-1">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

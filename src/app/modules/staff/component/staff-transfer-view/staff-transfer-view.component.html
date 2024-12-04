@@ -1,0 +1,45 @@
+<app-page-breadcrumb [pageInfo]="{title :'Transfer Details'}" [isModal]="true"></app-page-breadcrumb>
+<div class="modal-body   pt-4 mb-4">
+    <div [hidden]="dataLoading">
+        <div class="row clearfix">
+            <div class="col-lg-4 col-md-12 col-xl-4">
+                <profile-widget [refId]="transferData?.staff_emp_id || transferData?.staff_fk_id" type="STAFF"></profile-widget>
+                <div class="m-3" *ngIf="transferData?.staff_emp_id">
+                    <info-view [sourceData]="modifyData.id ? modifyData : transferData" [direction]="'VERTICAL'"
+                        [mapData]="updateInfo">
+                    </info-view>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-8 col-sm-12">
+                <tab-head #tab [type]="modifyMode ? 'MODIFICATION_APPROVE' : 'VIEW'" [segment]="segment"
+                    [initial]="'Basic'" [loading]="dataLoading" [modifyData]="modifyData" [bsModalRef]="_bsModalRef"
+                    module="STAFF_TRANSFER" [getApiApprove]="approveRequest">
+                    <ng-template #tabBody let-active="active">
+                        <div class="tab-pane show active" [hidden]="active != segment.BASIC">
+                            <app-staff-exp-gems #staffExpGems [mode]="'ACTIVE'" [type]="'TRANSFER'"
+                                [config]="{title : 'Previous Position',isView:true, isRequest : modifyMode}">
+                            </app-staff-exp-gems>
+                            <app-staff-exp-gems #officeForm
+                                [config]="{title : 'Transfer To',isView:true, isRequest : modifyMode,cols:[{colName : 'is_primary', title : 'Primary'}]}">
+                            </app-staff-exp-gems>
+                        </div>
+                        <div class="tab-pane show active" [hidden]="active != segment.ADDRESS">
+                            <info-view [sourceData]="addressData" [formData]="showData"></info-view>
+                        </div>
+                        <div class="tab-pane show active" [hidden]="active != segment.SPOUSE">
+                            <app-staff-exp-gems #spouseExpGems [mode]="'ACTIVE'" [type]="'TRANSFER'"
+                                [config]="{title : 'Previous Position',isView:true, isRequest : modifyMode}">
+                            </app-staff-exp-gems>
+                            <app-staff-exp-gems #spouseOfficeForm
+                                [config]="{title : 'Transfer To',isView:true, isRequest : modifyMode,cols:[{colName : 'is_primary', title : 'Primary'}]}">
+                            </app-staff-exp-gems>
+                        </div>
+
+                    </ng-template>
+                </tab-head>
+            </div>
+        </div>
+        <ng-container [ngTemplateOutlet]="tab?.tabFooter"></ng-container>
+    </div>
+    <app-page-loader [loading]="dataLoading"></app-page-loader>
+</div>

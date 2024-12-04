@@ -1,0 +1,45 @@
+<div id="left-sidebar" class="sidebar">
+    <div class="navbar-brand">
+        <a href="index.html"><img src="assets/images/logo_iem.png" alt="Oculux Logo"
+                class="img-fluid logo"><span>IEM</span></a>
+        <button type="button" class="btn-toggle-offcanvas btn btn-sm float-right"><i
+                class="lnr lnr-menu icon-close"></i></button>
+    </div>
+    <div class="sidebar-scroll">
+        <nav id="left-sidebar-nav" class="sidebar-nav">
+            <ul class="metismenu">
+                <li class="header">Main</li>
+                <li *ngFor="let m of menu">
+                    <a *ngIf="m?.children" class="has-arrow" href="javascript:void(0)">
+                        <i [attr.class]="m.icon"></i><span>{{m?.title}}</span>
+                    </a>
+
+                    <a *ngIf="!m?.children" [routerLink]="['/'+m?.link]" [attr.tittle]="m?.title"
+                        [queryParams]="m?.queryParams">
+                        <i [attr.class]="m.icon"></i><span>{{m?.title}}</span>
+                    </a>
+
+
+                    <ul *ngIf="m?.children">
+                        <li *ngFor="let item of m?.children">
+                            <a [routerLink]="item?.link" [attr.tittle]="item?.title"
+                                [queryParams]="item?.queryParams">{{item?.title}}</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- <li><a href="../html/index.html"><i class="icon-home"></i><span>Dashboard</span></a></li>
+                <li><a href="index.html"><i class="icon-speedometer"></i><span>HR Dashboard</span></a></li>
+                <li><a href="users.html"><i class="icon-user"></i><span>Users</span></a></li>
+                <li><a href="departments.html"><i class="icon-grid"></i><span>Departments</span></a></li>
+                <li><a href="employee.html"><i class="icon-users"></i><span>Employee</span></a></li>
+                <li><a href="activities.html"><i class="icon-equalizer"></i><span>Activities</span></a></li>
+                <li><a href="holidays.html"><i class="icon-flag"></i><span>Holidays</span></a></li>
+                <li><a href="events.html"><i class="icon-calendar"></i><span>Events</span></a></li>
+                <li><a href="payroll.html"><i class="icon-credit-card"></i><span>Payroll</span></a></li>
+                <li class="active open"><a href="accounts.html"><i class="icon-wallet"></i><span>Accounts</span></a></li>
+                <li><a href="report.html"><i class="icon-bar-chart"></i><span>Report</span></a></li> -->
+            </ul>
+        </nav>
+    </div>
+</div>

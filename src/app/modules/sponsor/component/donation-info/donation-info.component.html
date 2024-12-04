@@ -1,0 +1,80 @@
+<app-page-breadcrumb [pageInfo]="{title :'Donation Details'}" [isModal]="true"></app-page-breadcrumb>
+<div class="modal-body   pt-4 mb-4">
+    <div [hidden]="loadingData">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-xl-12">
+                <ul class="nav nav-tabs1 table-nav">
+                    <ng-container *ngFor="let s of segement | keyvalue:returnZero">
+                        <li class="nav-item">
+                            <a class="nav-link" [ngClass]="{'show active': currentSegment==s.value}"
+                                (click)="changeSegement(s.value)" href="javascript:void(0)">{{s.value}}</a>
+                        </li>
+                    </ng-container>
+                </ul>
+                <div class="tab-content mt-0">
+                    <div class="tab-pane show active" [hidden]="currentSegment != segement.BASIC">
+                        <div class="card">
+                            <div class="body">
+                                <info-view [sourceData]="donationData" [formData]="showData"></info-view>
+                                <!-- <app-form-generator *ngIf="datatype== 'APPROVE'" #remarks
+                                    [formData]="basicFormData"></app-form-generator> -->
+                                <!-- <app-form-generator #remarks [formData]="basicFormData"></app-form-generator> -->
+                                <!-- <sponsorship-donation-ref [type]="'DONATION'"
+                                    [ref_id]="donationId"></sponsorship-donation-ref> -->
+                                <app-table-list #tableList [tableConfig]="purposetableConfig"
+                                    [parentGetList]="getListData">
+                                </app-table-list>
+                                <!-- <div class="col-12">
+                                    <button [disabled]="loadingData" (click)="download()"
+                                        class="btn ml-1 btn-round btn-success">Download</button>
+                                </div> -->
+
+                                <info-view [sourceData]="donationData" [formData]="amountData"></info-view>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="tab-pane show active body" [hidden]="currentSegment != segement.SPONSORSHIP">
+                        <sponsorship-donation-ref [type]="'DONATION'" [ref_id]="donationId"></sponsorship-donation-ref>
+                    </div> -->
+                    <!-- <app-table-list *ngIf="segmentVisited.SPONSORSHIP && donationData?.id" 
+                        [tableConfig]="tableConfig" [parenttblAction]="[]" #tbl [parentGetList]="getListDonation">
+                    </app-table-list> -->
+                    <div class="tab-pane show active" [hidden]="currentSegment != segement.BANK">
+                        <div class="card">
+                            <div class="body">
+                                <info-view [sourceData]="donationData" [formData]="BankData"></info-view>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row clearfix text-center">
+                    <div *ngIf="datatype== 'APPROVE'" class="col-12">
+                        <button [disabled]="loadingData" (click)="approve()"
+                            class="btn ml-1 btn-round btn-success">Approve</button>
+                        <button [disabled]="loadingData" (click)="reject()"
+                            class="btn ml-1 btn-round btn-danger">Reject</button>
+                        <button [disabled]="loadingData" (click)="download()"
+                            class="btn ml-1 btn-round btn-info">Download</button>
+                    </div>
+                </div>
+                <div class="row clearfix text-center">
+                    <div *ngIf="datatype != 'APPROVE' && datatype != 'verify' " class="col-12">
+                        <button [disabled]="loadingData" (click)="download()"
+                            class="btn ml-1 btn-round btn-success">Download</button>
+                        <button [disabled]="loadingData" (click)="close()"
+                            class="btn ml-1 btn-round btn-warning">Close</button>
+                    </div>
+                </div>
+                <div class="row clearfix text-center">
+                    <div *ngIf="datatype == 'verify'" class="col-12">
+                        <button [disabled]="loadingData" (click)="verify()"
+                            class="btn ml-1 btn-round btn-success">Verify</button>
+                        <button [disabled]="loadingData" (click)="close()"
+                            class="btn ml-1 btn-round btn-warning">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-page-loader *ngIf="loadingData"></app-page-loader>
+</div>

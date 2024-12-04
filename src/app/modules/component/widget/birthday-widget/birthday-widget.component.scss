@@ -1,0 +1,26 @@
+.notification-dot{
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    border-radius: 0.125rem;
+    color: #fff;
+    width: fit-content;
+    height: fit-content;
+    line-height: 15px;
+    position: relative;
+    right: 10px;
+    text-align: center;
+    font-size: 8px;
+    padding: 3px;
+    top: -12px;
+}
+.btn-cake{
+    display: inline-block;
+    width: 85px;
+}
+.dob_text{
+    font-size: small;
+    margin-top: 10px;
+}

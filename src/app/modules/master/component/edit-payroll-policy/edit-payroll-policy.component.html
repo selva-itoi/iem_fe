@@ -1,0 +1,76 @@
+<div class="card">
+    <div class="body">
+        <div class="form-group" [formGroup]="policyForm">
+            <div class="row clearfix">
+                <div class="col-md-4 col-lg-4">
+                    <label>Policy Name</label>
+                    <br>
+                    <input class="form-control" formControlName="leave_policyName"
+                        [class.error]="policyForm.get('leave_policyName')?.errors" />
+                    <span class="error" *ngIf="policyForm.get('leave_policyName')?.errors?.required">
+                        Policy Name is Required</span>
+                </div>
+                <div class="mt-4">
+                    <button type="button" class="btn btn-primary mr-1" (click)="savePolicy()">
+                        {{policyData?.id ?'Update':'Add'}}</button>
+                        <button type="button" class="btn btn-warning mr-1" (click)="reset()">Reset</button>
+                </div>
+               <div class="col-md-6 text-right" *ngIf="policyData?.id">
+                   <span class="helper-text">* click the update button to policy and policy table also </span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-lg-4">
+                <app-table-list #policyTbl [tableConfig]="tablePolicyConfig" [selectable]="'SINGLE'"
+                    [parentGetList]="getListData" (onSelect)="onDataSelect($event)"
+                    [maxSelection]="maxSelection"></app-table-list>
+            </div>
+            <div class="col-md-8 col-lg-8" *ngIf="tableData.length && isSelect">
+                <div class="card">
+                    <div class="body p-0">
+                        <div class="table-responsive">
+                            <p-table #d1 [value]="tableData" dataKey="id" [responsive]="true" [resizableColumns]="true"
+                                tableStyleClass="table width-full" columnResizeMode="expand" [autoLayout]="true">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>S/No.</th>
+                                        <ng-container *ngFor="let head of NEW_POLICY_COL">
+                                            <th>{{head?.title}}</th>
+                                        </ng-container>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-data let-i="rowIndex">
+                                    <tr>
+                                        <td>{{i+1}}</td>
+                                        <ng-container *ngFor="let b of cols">
+                                            <td pEditableColumn [style.background-color]="b.colName =='leave_typeName' ? data?.color_code : ''">
+                                                <p-cellEditor *ngIf="b?.isEditable;else isNotEdit">
+                                                    <ng-template pTemplate="input">
+                                                        <input pInputText type="text" class="w-100"
+                                                            [(ngModel)]="data[b.colName]" required>
+                                                    </ng-template>
+                                                    <ng-template pTemplate="output">
+                                                        <span>{{data[b.colName] || ''}}</span>
+                                                    </ng-template>
+                                                </p-cellEditor>
+                                                <ng-template #isNotEdit>
+                                                    <span>{{data[b.colName] || ''}} ({{data.leave_code}})</span>
+                                                </ng-template>
+                                            </td>
+                                        </ng-container>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td [attr.colspan]="cols.length" class="text-center">No data found.</td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
